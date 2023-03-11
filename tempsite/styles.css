@@ -1,0 +1,154 @@
+*{
+  transition: 1;
+}
+body{
+	background-color: rgb(124,26,144);
+}
+table.iksweb{text-decoration: none;border-collapse:collapse;width:100%;text-align:center;border-radius: 10px;border-spacing: 0px}
+table.iksweb th{
+	font-size:17px; color: rgb(255,255,255);background-color: rgb(124,26,144);font-weight: bold;
+	font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;}
+table.iksweb td{font-size:13px;color:#000000;background-color: rgba(244,195,227);font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;}
+table.iksweb td,table.iksweb th{white-space:pre-wrap;padding:10px 5px;line-height:13px;vertical-align: middle;border: 1px solid rgb(182,44,173);}
+table.iksweb tr:hover td{color:#000000;cursor:default;}
+	.mobile-table{width: 100%; max-width: 100%; overflow-x: auto;}
+p.mat{
+	background-color: rgb(111,51,250);
+	color: rgb(127,249,228);
+
+}
+p.mat:hover{
+	background-color: rgb(124,26,144);
+	color: white;
+	transition: color .2s ease-out;
+}
+p.swi{
+	background-color: rgb(200,174,252);
+	color: rgb(30,75,27);
+}
+p.swi:hover{
+	background-color: rgb(124,26,144);
+	color: white;
+	transition: color .2s ease-out;
+}
+p.che{
+	background-color: rgb(62,204,102);
+	color: rgb(239,254,85);
+}
+p.che:hover{
+	background-color: rgb(124,26,144);
+	color: white;
+	transition: color .2s ease-out;
+}
+p.jpk{
+	background-color: rgb(167,119,30);
+	color: rgb(234,198,224);
+}
+p.jpk:hover{
+	background-color: rgb(124,26,144);
+	color: white;
+	transition: color .2s ease-out;
+}
+p.fiz{
+	background-color: rgb(62,228,225);
+	color: rgb(72,33,190);
+}
+p.fiz:hover{
+	background-color: rgb(124,26,144);
+	color: white;
+	transition: color .2s ease-out;
+}
+p.lat{
+	background-color: rgb(27,44,153);
+	color: rgb(109,236,166);
+}
+p.lat:hover{
+	background-color: rgb(124,26,144);
+	color: white;
+	transition: color .2s ease-out;
+}
+p.rel{
+	background-color: rgb(254,218,9);
+	color: rgb(109,2,141);
+}
+p.rel:hover{
+	background-color: rgb(124,26,144);
+	color: white;
+	transition: color .2s ease-out;
+}
+p.bio{
+	background-color: rgb(19,221,43);
+	color: rgb(71,4,105);
+}
+p.bio:hover{
+	background-color: rgb(124,26,144);
+	color: white;
+	transition: color .2s ease-out;
+}
+p.wf{
+	background-color: rgb(215,96,11);
+	color: rgb(238,230,4);
+}
+p.wf:hover{
+	background-color: rgb(124,26,144);
+	color: white;
+	transition: color .2s ease-out;
+}
+p.ang{
+	background-color: rgb(98,7,102);
+	color: rgb(24,241,4);
+}
+p.ang:hover{
+	background-color: rgb(124,26,144);
+	color: white;
+	transition: color .2s ease-out;
+}
+p.lek{
+	background-color: rgb(120,40,31);
+	color: rgb(219,239,219);
+}
+p.lek:hover{
+	background-color: rgb(124,26,144);
+	color: white;
+	transition: color .2s ease-out;
+}
+p.ros{
+	background-color: rgb(218,26,151);
+	color: rgb(205,249,233);
+}
+p.ros:hover{
+	background-color: rgb(124,26,144);
+	color: white;
+	transition: color .2s ease-in;
+}
+p.gw{
+	background-color: rgb(73,75,197);
+	color: rgb(207,241,234);
+}
+p.gw:hover{
+	background-color: rgb(124,26,144);
+	color: white;
+	transition: color .2s ease-out;
+}
+p.chujnia{
+	background-color: rgb(150,110,238);
+	color: rgb(70,18,99);
+}
+p.chujnia:hover{
+	background-color: rgb(124,26,144);
+	color: white;
+	transition: color .2s ease-in;
+}
+h1{
+	font-family: 'Verdana', sans-serif;
+	color: rgb(243,210,2);
+}
+h2{
+	font-family: 'Verdana', sans-serif;
+	color: rgb(243,210,2);
+	font-size: 1.2em;
+}
+hr.new {
+  border: 10px solid rgb(182,44,173);
+  border-radius: 5px;
+}
