@@ -5,7 +5,7 @@ body {
   align-items: center;
   height: 100vh;
   margin: 0;
-  background-image: url("path/to/your/image.jpg");
+  background-color: black;
   background-size: cover; /* Растянуть изображение на весь фон */
   text-align: center;
 }
