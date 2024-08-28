@@ -7,20 +7,25 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="icon" type="image/jpg" href="lol.jpg">
   <script>
-      function handleClick(event) {
-          // Предотвращаем стандартное поведение ссылки
+  window.addEventListener('DOMContentLoaded', (event) => {
+    const buttons = document.querySelectorAll('.button-container button');
+
+    buttons.forEach(button => {
+      button.addEventListener('click', (event) => {
+        const link = button.querySelector('a');
+        if (link) {
           event.preventDefault();
-          // Получаем ссылку из кнопки
-          const link = event.target.querySelector('a');
-          // Переходим по ссылке
           window.location.href = link.href;
-      }
+        }
+      });
+    });
+  });
   </script>
 <body>
   <img src="logo.png" class='logo'>
   <div class="button-container">
-    <button class="glow-on-hover" onclick="handleClick(event)"><a href="polish.html">Polski</a></button>
-    <button class="glow-on-hover" onclick="handleClick(event)"><a href="english.html">English</a></button>
+    <button class="glow-on-hover"><a href="polish.html">Polski</a></button>
+    <button class="glow-on-hover"><a href="english.html">English</a></button>
   </div>
 </body>
 </html>
