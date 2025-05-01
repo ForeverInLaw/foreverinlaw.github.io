@@ -179,3 +179,24 @@ i {
 	font-size: calc(var(--index) * .75);
 	letter-spacing: calc(var(--index) / 37.5);
 }
+#spotify-now-playing {
+    background-color: #1DB954; /* Spotify Green */
+    color: #ffffff;
+    padding: 15px;
+    margin: 20px 0;
+    border-radius: 8px;
+    max-width: 400px; /* Или другая ширина */
+    /* Можно добавить display: flex для выравнивания элементов */
+}
+#spotify-now-playing.not-playing {
+   background-color: #555; /* Серый, если ничего не играет */
+}
+
+#spotify-now-playing p {
+  margin: 5px 0;
+}
+
+ #spotify-now-playing iframe {
+    margin-top: 10px;
+    border-radius: 8px; /* Скруглить углы плеера */
+}
