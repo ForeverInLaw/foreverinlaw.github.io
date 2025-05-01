@@ -180,23 +180,57 @@ i {
 	letter-spacing: calc(var(--index) / 37.5);
 }
 #spotify-now-playing {
-    background-color: #1DB954; /* Spotify Green */
-    color: #ffffff;
-    padding: 15px;
-    margin: 20px 0;
-    border-radius: 8px;
-    max-width: 400px; /* Или другая ширина */
-    /* Можно добавить display: flex для выравнивания элементов */
+	/* --- Новые стили для позиционирования --- */
+	position: fixed; /* Фиксируем относительно окна браузера */
+	top: 20px;       /* Отступ сверху */
+	left: 20px;      /* Отступ слева */
+	z-index: 1000;   /* Убедимся, что виджет поверх других элементов */
+
+	/* --- Обновленные стили для внешнего вида --- */
+	/* Прозрачный фон в стиле Spotify */
+	background-color: rgba(29, 185, 84, 0.7); /* Spotify Green с ~70% непрозрачностью */
+	color: #ffffff;
+	padding: 15px;
+	border-radius: 12px; /* Сделаем радиус чуть больше для красоты */
+	max-width: 300px;    /* Уменьшим немного макс. ширину для угла */
+    backdrop-filter: blur(8px); /* Эффект размытия фона под виджетом */
+    -webkit-backdrop-filter: blur(8px); /* Для Safari */
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Тонкая светлая граница (опционально) */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Небольшая тень */
 }
+
 #spotify-now-playing.not-playing {
-   background-color: #555; /* Серый, если ничего не играет */
+   /* Прозрачный серый фон, если ничего не играет/нет данных */
+   background-color: rgba(85, 85, 85, 0.7); /* Серый с ~70% непрозрачностью */
+   /* Остальные стили (backdrop-filter, border, box-shadow) остаются */
 }
 
 #spotify-now-playing p {
-  margin: 5px 0;
+  margin: 8px 0; /* Немного увеличим вертикальные отступы у текста */
+  font-size: 0.9rem; /* Можно чуть уменьшить текст */
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6); /* Тень для читаемости текста */
 }
 
- #spotify-now-playing iframe {
+#spotify-now-playing p:first-child {
+    margin-top: 0; /* Убрать лишний отступ у первого параграфа */
+    font-weight: bold; /* Сделать "Сейчас слушаю..." жирным */
+}
+
+#spotify-now-playing iframe {
     margin-top: 10px;
+    margin-bottom: 5px; /* Уменьшим отступ снизу iframe */
     border-radius: 8px; /* Скруглить углы плеера */
+    display: block; /* Убрать лишний отступ под iframe */
+    border: none; /* Убрать границу у iframe, если она вдруг появится */
+    width: 100%; /* Убедимся, что iframe занимает всю ширину контейнера */
+}
+
+#spotify-now-playing a {
+    color: #ffffff; /* Ссылка "Открыть в Spotify" белая */
+    text-decoration: underline;
+    font-size: 0.9rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6); /* Тень для читаемости */
+}
+#spotify-now-playing a:hover {
+    color: #1DB954; /* Зеленый при наведении */
 }
