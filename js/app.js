@@ -23,29 +23,28 @@ async function fetchNowPlaying() {
 
 		const data = await response.json();
 
-		if (data.isPlaying && data.trackId) {
-			// Используем Spotify Embed для отображения и превью
-			// Высота 80px - компактный виджет
+		if (data.trackId) {
+			// Если есть trackId (неважно, isPlaying true или false), показываем плеер
+			const label = data.isPlaying ? "Сейчас слушаю на Spotify:" : "Последний трек на Spotify:";
 			const embedHtml = `
-				<p>Сейчас слушаю на Spotify:</p>
+				<p>${label}</p>
 				<iframe
 					style="border-radius:12px"
 					src="https://open.spotify.com/embed/track/${data.trackId}?utm_source=generator&theme=0"
-					width="100%"
-					height="80"
-					frameBorder="0"
-					allowfullscreen=""
+					width="100%" height="80" frameBorder="0" allowfullscreen=""
 					allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
 					loading="lazy">
 				</iframe>
-				<p><a href="${data.songUrl}" target="_blank" rel="noopener noreferrer" style="color: white; text-decoration: underline;">Открыть в Spotify</a></p>
+				<p><a href="${data.songUrl}" target="_blank" rel="noopener noreferrer">Открыть в Spotify</a></p>
 			`;
 			spotifyWidget.innerHTML = embedHtml;
-			spotifyWidget.className = ''; // Убрать класс not-playing, если он был
+			spotifyWidget.className = ''; // Убираем класс not-playing
 		} else {
-			spotifyWidget.textContent = 'Сейчас ничего не играет на Spotify.';
-			spotifyWidget.className = 'not-playing'; // Добавить класс для стилизации
+			// Сюда попадаем ТОЛЬКО если бэкенд не вернул trackId
+			spotifyWidget.textContent = 'Spotify неактивен.'; // Текст для случая, когда нет ни текущего, ни последнего трека
+			spotifyWidget.className = 'not-playing';
 		}
+		
 
 	} catch (error) {
 		console.error('Ошибка при запросе к API:', error);
