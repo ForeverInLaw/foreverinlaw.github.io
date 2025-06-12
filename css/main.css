@@ -169,6 +169,9 @@ i {
 #spotify {
 	--link-color: #1db954bb;
 }
+#github {
+	--link-color: #24292e;
+}
 .content {
 	will-change: transform;
 }
