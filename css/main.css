@@ -1,239 +1,254 @@
 * {
-	margin: 0;
-	padding: 0;
-	box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 :root {
-	--index: calc(1vw + 1vh);
-	--text: #b7f4ff;
-	--transition: transform .75s cubic-bezier(0.075, 0.5, 0, 1);
+    --bg: #000000;
+    --fg: #f5f5f7;
+    --muted: #a1a1a6;
+    --card: #0a0a0a;
+    --border: #1a1a1a;
+    --accent: #f492f0; /* lilac accent */
 }
 @font-face {
-	font-family: raleway_f;
-	src: url(../fonts/raleway-regular.woff2);
+    font-family: raleway_f;
+    src: url(../fonts/raleway-regular.woff2);
 }
 @font-face {
-	font-family: raleway_f;
-	src: url(../fonts/raleway-black.woff2);
-	font-weight: 900;
+    font-family: raleway_f;
+    src: url(../fonts/raleway-black.woff2);
+    font-weight: 900;
 }
 body {
-	background-color: #010101;
-	font-family: raleway_f, sans-serif;
-	line-height: 1.55;
+    background-color: var(--bg);
+    color: var(--fg);
+    font-family: raleway_f, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+    height: 100vh;
+    overflow: hidden; /* disable scroll */
 }
-.main-header {
-	position: relative;
-}
-.layers {
-	height: 100vh;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	text-align: center;
-	overflow: hidden;
-	position: relative;
-}
-.layer {
-	height: 100%;
-	width: 100%;
-	position: absolute;
-	background-size: cover;
-	background-position: center;
-	will-change: transform;
-	z-index: 2;
-	transition: var(--transition);
-}
-.layers__base {
-	transform: translate3d(0, calc(var(--scrollTop) / 1.6), 0);
-	z-index: 0;
-}
-.layers__middle {
-	transform: translate3d(0, calc(var(--scrollTop) / 2.5), 0);
-	z-index: 1;
-}
-.layers__front {
-	transform: translate3d(0, calc(var(--scrollTop) / 5.7), 0);
-	z-index: 3;
-}
-.layer__header {
-	z-index: 2;
-	transform: translate3d(0, calc(var(--scrollTop) / 2), 0);
-	transition: var(--transition);
-	will-change: transform;
-	text-transform: uppercase;
-	font-weight: 900;
-	color: var(--text);
-}
-.layers__title {
-	font-size: calc(var(--index) * 2.5);
-	letter-spacing: calc(var(--index) / 2.7);
-	text-shadow: 0 0 15px #5197ff;
-}
-.layers__caption {
-	font-size: calc(var(--index) / 1.175);
-	letter-spacing: calc(var(--index) / 3.5);
-	margin-top: calc(var(--index) * -.75);
-	text-shadow: 0 0 5px #5197ff;
-}
-.main-article {
-	--main-article-transform: translate3d(0, calc(var(--scrollTop) / -10), 0);
-	min-height: 100vh;
-	background-size: cover;
-	background-color: center;
-	color: var(--text);
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	position: relative;
-	text-align: center;
-}
-.main-article__header {
-	text-transform: uppercase;
-	font-size: calc(var(--index) * 1.8);
-	letter-spacing: calc(var(--index) / 7.5);
-	transform: var(--main-article-transform);
-	transition: var(--transition);
-	will-change: transform;
-}
-.main-article__paragraph {
-	justify-content: center;
-	transform: var(--main-article-transform);
-	transition: var(--transition);
-	will-change: transform;
-	margin-top: calc(var(--index) * 1.5);
-}
-.main-article__links {
-	justify-content: center;
-	display: flex;
-	width: 100%;
-	max-width: 380px;
-	transform: var(--main-article-transform);
-	transition: var(--transition);
-	will-change: transform;
-	margin-top: calc(var(--index) * 2)
-}
-ul {
-	margin: 0;
-	padding: 0;
-	list-style: none;
-	display: grid;
-	justify-content: center;
-	align-items: center;
-}
-li {
-	width: 100%;
-	min-width: 300px;
-}
-a {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	flex-wrap: wrap;
+.wrapper { min-height: 100vh; }
+.content { isolation: isolate; }
 
-	padding: 0.2rem;
-	margin-bottom: 1rem;
-	border-radius: 8px;
+/* Header */
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    background-color: rgba(0,0,0,.6);
+    border-bottom: 1px solid var(--border);
+}
+.site-header .nav {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.brand {
+    color: var(--fg);
+    text-decoration: none;
+    font-weight: 900;
+    letter-spacing: .5px;
+}
+.menu a {
+    color: var(--muted);
+    text-decoration: none;
+    margin-left: 18px;
+}
+.menu a:hover { color: var(--fg); }
 
-	text-align: center;
-	text-decoration: none;
-	font-weight: 500;
-	font-size: 1.25rem;
-	color: var(--text);
+/* Hero */
+.hero {
+    height: 100vh;
+    display: flex;
+    align-items: flex-start; /* reduce center bias vertically */
+    justify-content: center; /* keep global container centered with left-aligned text */
+    padding-top: clamp(48px, 12vh, 140px);
+    position: relative;
+    background:
+        /* diagonal lilac haze top-right */
+        radial-gradient(1000px 520px at 85% -10%, rgba(244,146,240,.22), rgba(244,146,240,0) 60%),
+        /* deep violet base bottom-left */
+        radial-gradient(900px 520px at 15% 110%, rgba(94,66,156,.24), rgba(94,66,156,0) 58%),
+        /* subtle vertical grounding */
+        linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.22) 72%);
+}
+.hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.08'/></svg>");
+    background-size: 120px 120px;
+    mix-blend-mode: soft-light;
+}
+.hero__inner { max-width: 1100px; width: 100%; text-align: left; padding: 0 24px; }
+.hero h1 { font-size: clamp(32px, 6vw, 72px); letter-spacing: -1px; }
+.subtitle { margin-top: 10px; color: var(--muted); font-size: clamp(14px, 2vw, 18px); }
+.hero__cta { margin-top: 26px; }
+.btn {
+    display: inline-block;
+    padding: 12px 18px;
+    border-radius: 999px;
+    text-decoration: none;
+    color: #fff;
+    font-weight: 700;
+    letter-spacing: .2px;
+    background-color: #1f1f1f;
+    border: 1px solid #2a2a2a;
+}
+.btn--primary { background-color: var(--accent); border-color: rgba(244,146,240,.35); }
+.btn--primary:hover { filter: brightness(1.1); }
 
-	box-shadow: 0px 0.5rem 1.5rem -0.25rem var(--link-color);
-	background-color: var(--link-color);
+/* Links grid */
+.links-section { padding: 0 20px; }
+.section-title { max-width: 1100px; margin: 0 auto 18px; color: var(--muted); font-size: 14px; text-transform: uppercase; letter-spacing: .12em; }
+.links-grid {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+    max-width: 1100px;
+    margin: 10px auto 0;
+}
+.link-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    color: var(--fg);
+    text-decoration: none;
+    transition: transform .25s ease, border-color .25s ease, background .25s ease;
+}
+.link-card:hover { transform: translateY(-2px); border-color: #2c2c2c; background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03)); }
+.link-card i { font-size: 18px; width: 22px; text-align: center; }
+.link-card span { font-weight: 600; }
 
-	transition: box-shadow 0.5s;
-	will-change: transform;
-}
-a:hover {
-	box-shadow: 0px 1rem 1.5rem 0rem var(--link-color);
-}
-i {
-	margin-right: 0.5rem;
-	font-size: 1.5rem;
-}
-#telegram {
-	--link-color: #229fd9c5;
-}
-#youtube {
-	--link-color: #c4302bbe;
-}
-#instagram {
-	--link-color: #e1206db7;
-}
-#vk {
-	--link-color: #4c75a3e7;
-}
-#spotify {
-	--link-color: #1db954bb;
-}
-#github {
-	--link-color: #24292e;
-}
-.content {
-	will-change: transform;
-}
-.copy {
-	position: absolute;
-	bottom: calc(var(--index) * 0.9);
-	opacity: .45;
-	font-size: calc(var(--index) * .75);
-	letter-spacing: calc(var(--index) / 37.5);
-}
+.link-card.telegram { --brand: #229ED9; }
+.link-card.youtube { --brand: #FF0000; }
+.link-card.instagram { --brand: #E1306C; }
+.link-card.vk { --brand: #4C75A3; }
+.link-card.spotify { --brand: #1DB954; }
+.link-card.github { --brand: #ffffff; }
+.link-card:hover { box-shadow: 0 10px 30px -10px rgba(0,0,0,.6); }
+.link-card:hover i { color: var(--brand); }
+
+/* Footer */
+.site-footer { border-top: 1px solid var(--border); }
+.site-footer .footer__inner { max-width: 1100px; margin: 0 auto; padding: 26px 20px; color: var(--muted); font-size: 14px; }
+
+/* Now Playing widget - refined */
 #spotify-now-playing {
-	/* --- Новые стили для позиционирования --- */
-	position: fixed; /* Фиксируем относительно окна браузера */
-	top: 20px;       /* Отступ сверху */
-	left: 20px;      /* Отступ слева */
-	z-index: 1000;   /* Убедимся, что виджет поверх других элементов */
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 1000;
+    background-color: transparent;
+    color: var(--fg);
+    padding: 0;
+    border-radius: 0;
+    width: clamp(260px, 28vw, 360px);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border: none;
+}
+#spotify-now-playing.not-playing { background-color: transparent; }
+#spotify-now-playing p { margin: 6px 0; font-size: 0.9rem; }
+#spotify-now-playing p:first-child { margin-top: 0; font-weight: 700; }
+#spotify-now-playing .np-caption { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .12em; margin-bottom: 6px; }
+#spotify-now-playing .np-placeholder {
+    width: 100%; min-width: 260px; height: 80px; border-radius: 12px; display: block;
+    background: linear-gradient(90deg, rgba(255,255,255,.04) 0%, rgba(255,255,255,.08) 50%, rgba(255,255,255,.04) 100%);
+    background-size: 200% 100%;
+    animation: npShimmer 1.2s ease-in-out infinite;
+}
+@keyframes npShimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+#spotify-now-playing iframe { margin-top: 0; border-radius: 12px; display: block; border: none; width: 100%; height: 80px; opacity: .7; }
 
-	/* --- Обновленные стили для внешнего вида --- */
-	/* Прозрачный фон в стиле Spotify */
-	background-color: rgba(29, 185, 84, 0.7); /* Spotify Green с ~70% непрозрачностью */
-	color: #ffffff;
-	padding: 15px;
-	border-radius: 12px; /* Сделаем радиус чуть больше для красоты */
-	max-width: 300px;    /* Уменьшим немного макс. ширину для угла */
-    backdrop-filter: blur(8px); /* Эффект размытия фона под виджетом */
-    -webkit-backdrop-filter: blur(8px); /* Для Safari */
-    border: 1px solid rgba(255, 255, 255, 0.1); /* Тонкая светлая граница (опционально) */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Небольшая тень */
+/* Mobile adjustments */
+@media (max-width: 640px) {
+    /* enable page scrolling on small screens */
+    body { height: auto; overflow: auto; }
+
+    /* reserve space for the fixed Spotify embed at the bottom */
+    .hero {
+        height: auto;
+        /* avoid forcing extra space below content */
+        min-height: 0;
+        padding-top: max(12px, calc(env(safe-area-inset-top) + 6px));
+        padding-bottom: max(8px, env(safe-area-inset-bottom));
+    }
+
+    /* ensure wrapper also follows dynamic viewport */
+    .wrapper { min-height: auto; }
+
+    /* place Spotify embed in normal flow near page bottom */
+    #spotify-now-playing {
+        position: static;
+        left: auto; right: auto; bottom: auto; transform: none;
+        width: min(92vw, 360px);
+        margin: 18px auto 0;
+    }
+    #spotify-now-playing.not-playing { display: none; }
+    #spotify-now-playing .np-placeholder,
+    #spotify-now-playing iframe { width: 100%; }
+
+    /* stack projects vertically */
+    .projects-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .project-card { min-height: auto; }
 }
 
-#spotify-now-playing.not-playing {
-   /* Прозрачный серый фон, если ничего не играет/нет данных */
-   background-color: rgba(85, 85, 85, 0.7); /* Серый с ~70% непрозрачностью */
-   /* Остальные стили (backdrop-filter, border, box-shadow) остаются */
+/* Tablet breakpoint: 2 columns for projects for better fit */
+@media (max-width: 960px) {
+    .projects-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
-#spotify-now-playing p {
-  margin: 8px 0; /* Немного увеличим вертикальные отступы у текста */
-  font-size: 0.9rem; /* Можно чуть уменьшить текст */
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6); /* Тень для читаемости текста */
-}
+/* Hero scoped spacing overrides to follow best practices */
+.hero__links .section-title { max-width: none; margin: 26px 0 10px; }
+.hero__links .links-grid { max-width: 760px; margin: 0; }
 
-#spotify-now-playing p:first-child {
-    margin-top: 0; /* Убрать лишний отступ у первого параграфа */
-    font-weight: bold; /* Сделать "Сейчас слушаю..." жирным */
+/* Projects row - compact, single-line scrollable on small screens */
+.projects { margin-top: 24px; }
+.projects-title { color: var(--muted); font-size: 13px; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 10px; }
+.projects-row {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 12px;
+    overflow: visible;
 }
+.project-card {
+    background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    color: var(--fg);
+    min-height: 110px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transition: transform .25s ease, border-color .25s ease, background .25s ease;
+    will-change: transform;
+}
+.project-card:hover { transform: translateY(-2px); border-color: #2c2c2c; background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03)); }
+.project-card h4 { font-size: 14px; font-weight: 700; }
+.project-card p { font-size: 13px; color: var(--muted); line-height: 1.35; }
 
-#spotify-now-playing iframe {
-    margin-top: 10px;
-    margin-bottom: 5px; /* Уменьшим отступ снизу iframe */
-    border-radius: 8px; /* Скруглить углы плеера */
-    display: block; /* Убрать лишний отступ под iframe */
-    border: none; /* Убрать границу у iframe, если она вдруг появится */
-    width: 100%; /* Убедимся, что iframe занимает всю ширину контейнера */
+/* Responsive overrides AFTER base grid to ensure precedence */
+@media (max-width: 960px) {
+    .projects-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
-
-#spotify-now-playing a {
-    color: #ffffff; /* Ссылка "Открыть в Spotify" белая */
-    text-decoration: underline;
-    font-size: 0.9rem;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6); /* Тень для читаемости */
-}
-#spotify-now-playing a:hover {
-    color: #1DB954; /* Зеленый при наведении */
+@media (max-width: 640px) {
+    .projects-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }

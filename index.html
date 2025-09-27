@@ -25,72 +25,93 @@
 <body>
 
 <div id="spotify-now-playing">
-<!-- Содержимое будет загружено через JS -->
-	Загрузка данных Spotify...
+<!-- placeholder while loading -->
+	<div class="np-placeholder" aria-hidden="true"></div>
 </div>
 	
 <div class="wrapper">
 	<div class="content">
 
-		<header class="main-header">
-			<div class="layers">
-				<div class="layer__header">
-					<div class="layers__caption">Welcome to my BIO page</div>
-					<div class="layers__title">ForeverInLaw</div>
-				</div>
-				<div class="layer layers__base" style="background-image: url(img/main.png);"></div>
-				<div class="layer layers__middle" style="background-image: url(img/middle.png);"></div>
-				<div class="layer layers__front" style="background-image: url(img/front.png);"></div>
-			</div>
-		</header>
-	
-		<article class="main-article" style="background-image: url(img/dungeon.jpg);">
-			<div class="main-article__content">
-				<h2 class="main-article__header">Here are my links</h2>
-<!-- 				<p class="main-article__paragraph">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Commodi blanditiis sit ratione, natus doloremque laboriosam. Nihil atque quibusdam repudiandae deleniti, eum amet. Ipsa nihil aperiam repellat quia sunt architecto et iusto maxime.</p>
- -->				<nav class="main-article__paragraph">
-					<ul>
-						<li id="telegram">
-							<a href="https://t.me/shxdowgxd">
+		<section class="hero">
+			<div class="hero__inner">
+				<h1>ForeverInLaw</h1>
+				<p class="subtitle">Creative Developer</p>
+				<div id="links" class="hero__links">
+					<h2 class="section-title">Connect</h2>
+					<ul class="links-grid">
+						<li>
+							<a class="link-card telegram" href="https://t.me/shxdowgxd" target="_blank" rel="noopener noreferrer">
 								<i class="fab fa-telegram"></i>
-								Telegram
+								<span>Telegram</span>
 							</a>
 						</li>
-						<li id="youtube">
-							<a href="https://www.youtube.com/channel/UCPwNfqoxDW0wELPkgm1v9og">
+						<li>
+							<a class="link-card youtube" href="https://www.youtube.com/channel/UCPwNfqoxDW0wELPkgm1v9og" target="_blank" rel="noopener noreferrer">
 								<i class="fab fa-youtube"></i>
-								YouTube
+								<span>YouTube</span>
 							</a>
 						</li>
-						<li id="instagram">
-							<a href="https://instagram.com/sxwxrslxt/">
+						<li>
+							<a class="link-card instagram" href="https://instagram.com/sxwxrslxt/" target="_blank" rel="noopener noreferrer">
 								<i class="fab fa-instagram"></i>
-								Instagram
+								<span>Instagram</span>
 							</a>
 						</li>
-						<li id="vk">
-							<a href="https://vk.com/jebana/">
+						<li>
+							<a class="link-card vk" href="https://vk.com/jebana/" target="_blank" rel="noopener noreferrer">
 								<i class="fab fa-vk"></i>
-								VK
+								<span>VK</span>
 							</a>
 						</li>
-						<li id="spotify">
-							<a href="https://open.spotify.com/user/aj9lqav0oqw73nb9ra85orfil?si=e17b7de344de4724">
+						<li>
+							<a class="link-card spotify" href="https://open.spotify.com/user/aj9lqav0oqw73nb9ra85orfil?si=e17b7de344de4724" target="_blank" rel="noopener noreferrer">
 								<i class="fab fa-spotify"></i>
-								Spotify
+								<span>Spotify</span>
 							</a>
 						</li>
-						<li id="github">
-							<a href="https://github.com/ForeverInLaw">
+						<li>
+							<a class="link-card github" href="https://github.com/ForeverInLaw" target="_blank" rel="noopener noreferrer">
 								<i class="fab fa-github"></i>
-								Github
+								<span>GitHub</span>
 							</a>
 						</li>
 					</ul>
-				</nav>
+				</div>
+				<section class="projects" aria-labelledby="projects-title">
+					<h3 id="projects-title" class="projects-title">Projects</h3>
+					<ul class="projects-row" role="list">
+						<li class="project-card">
+							<h4>Garant Bot</h4>
+							<p>Modular Node.js bot for secure P2P transactions in Telegram. Payments via Stars, Cryptobot, Bitpapa. MySQL-backed.</p>
+						</li>
+						<li class="project-card">
+							<h4>Nellexint</h4>
+							<p>OSINT bot in Go for Big Data processing with integrated PostgreSQL for storage and retrieval.</p>
+						</li>
+						<li class="project-card">
+							<h4>Django Helpdesk Integration</h4>
+							<p>Enhanced Django helpdesk with WhatsApp ticketing and RustDesk remote support integration.</p>
+						</li>
+						<li class="project-card">
+							<h4>Unsolvable Admin</h4>
+							<p>Telegram administration bot in Python with robust moderation and PostgreSQL persistence.</p>
+						</li>
+						<li class="project-card">
+							<h4>PLON Klasyk Bot</h4>
+							<p>Python bot for students providing schedules and school news updates in Warsaw.</p>
+						</li>
+						<li class="project-card">
+							<h4>Spotify Downloader Bot</h4>
+							<p>Aiogram + Spotipy + Pytube bot that downloads tracks from Spotify links.</p>
+						</li>
+						<li class="project-card">
+							<h4>Spotify Show Last</h4>
+							<p>Embeddable web widget showing the current or last Spotify track with preview.</p>
+						</li>
+					</ul>
+				</section>
 			</div>
-			<div class="copy">©️ Sergei Morozov</div>
-		</article>
+		</section>
 	</div>
 </div>
 
