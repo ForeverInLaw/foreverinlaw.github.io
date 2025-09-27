@@ -25,7 +25,7 @@ async function fetchNowPlaying() {
 
 		if (data.trackId) {
 			// Если есть trackId (неважно, isPlaying true или false), показываем плеер
-			const label = data.isPlaying ? "Сейчас слушаю на Spotify:" : "Последний трек на Spotify:";
+			const label = data.isPlaying ? "Now listening:" : "Last song on Spotify:";
 			const embedHtml = `
 				<p>${label}</p>
 				<iframe
@@ -35,7 +35,6 @@ async function fetchNowPlaying() {
 					allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
 					loading="lazy">
 				</iframe>
-				<p><a href="${data.songUrl}" target="_blank" rel="noopener noreferrer">Открыть в Spotify</a></p>
 			`;
 			spotifyWidget.innerHTML = embedHtml;
 			spotifyWidget.className = ''; // Убираем класс not-playing
