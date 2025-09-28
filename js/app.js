@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const spotifyWidget = document.getElementById('spotify-now-playing');
     const apiUrl = 'https://spotify-show-last-68db402e666c.herokuapp.com/api/now-playing';
 
-    // Fallback proxies to bypass strict CORS on the API
+    // --- Helper Functions ---
     const proxyBuilders = [
         (url) => `https://cors.isomorphic-git.org/${url}`,
         (url) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`
@@ -27,44 +27,84 @@ document.addEventListener('DOMContentLoaded', () => {
                     try { data = JSON.parse(text); } catch (_) { continue; }
                 }
                 return data;
-            } catch (_) {
-                // try next attempt
-            }
+            } catch (_) { /* try next attempt */ }
         }
         return null;
     }
 
+    // --- State and DOM Management ---
+    let currentTrackId = null;
+    let currentIframe = null;
+
+    // Create and append the placeholder initially
+    const placeholder = document.createElement('div');
+    placeholder.className = 'np-placeholder';
+    placeholder.setAttribute('aria-hidden', 'true');
+    placeholder.innerHTML = '<div></div>'; // for the shimmer effect
+    spotifyWidget.appendChild(placeholder);
+
+    function showTrack(html) {
+        // Create a new iframe from the oEmbed HTML
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = html;
+        const newIframe = tempDiv.querySelector('iframe');
+
+        if (!newIframe) return;
+
+        // Remove the old iframe if it exists
+        if (currentIframe) {
+            currentIframe.remove();
+        }
+        currentIframe = newIframe;
+        
+        // Append the new iframe (it's initially invisible due to CSS)
+        spotifyWidget.appendChild(currentIframe);
+
+        // Once the iframe content has loaded, trigger the cross-fade
+        currentIframe.onload = () => {
+            spotifyWidget.classList.add('is-loaded');
+        };
+    }
+
+    function showPlaceholder() {
+        spotifyWidget.classList.remove('is-loaded');
+    }
+
+    // --- Main Logic ---
     async function fetchNowPlaying() {
         try {
             const data = await fetchJsonWithFallback(apiUrl);
+
             if (!data || !data.trackId) {
-                spotifyWidget.innerHTML = '';
-                spotifyWidget.className = 'not-playing';
+                if (currentTrackId !== null) {
+                    currentTrackId = null;
+                    showPlaceholder();
+                }
                 return;
             }
 
+            if (data.trackId === currentTrackId) {
+                return; // Track hasn't changed
+            }
+
+            currentTrackId = data.trackId;
             const spotifyTrackUrl = `https://open.spotify.com/track/${data.trackId}`;
             const oembedUrl = `https://open.spotify.com/oembed?url=${encodeURIComponent(spotifyTrackUrl)}`;
-            
             const oembedData = await fetchJsonWithFallback(oembedUrl);
 
             if (oembedData && oembedData.html) {
-                // The oEmbed response contains a self-sufficient iframe.
-                // We just need to inject it into our container.
-                spotifyWidget.innerHTML = oembedData.html;
-                spotifyWidget.className = '';
+                showTrack(oembedData.html);
             } else {
-                spotifyWidget.innerHTML = '';
-                spotifyWidget.className = 'not-playing';
+                throw new Error('Invalid oEmbed data');
             }
         } catch (error) {
-            console.error('Ошибка при запросе к API:', error);
-            spotifyWidget.innerHTML = '';
-            spotifyWidget.className = 'not-playing';
+            console.error('Error fetching Spotify data:', error);
+            currentTrackId = null;
+            showPlaceholder();
         }
     }
 
     fetchNowPlaying();
-    setInterval(fetchNowPlaying, 30000);
+    setInterval(fetchNowPlaying, 15000);
 
-}); // Конец 'DOMContentLoaded'
+}); // End of 'DOMContentLoaded'

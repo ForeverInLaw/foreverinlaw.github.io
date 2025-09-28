@@ -174,8 +174,7 @@ body {
     .hero {
         height: auto; /* Let content define height */
         min-height: 90vh; /* Keep it tall but allow scrolling */
-        padding-top: clamp(32px, 10vh, 100px);
-        padding-bottom: 48px; /* Revert to original padding */
+        padding-top: clamp(32px, 4vh, 80px);
     }
 
     .hero__inner {
@@ -216,7 +215,7 @@ body {
 .hero__links .links-grid { max-width: 760px; margin: 0; }
 
 /* Projects row - compact, single-line scrollable on small screens */
-.projects { margin-top: 24px; }
+.projects { margin-top: 24px; margin-bottom: 24px; }
 .projects-title { color: var(--muted); font-size: 13px; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 10px; }
 .projects-row {
     list-style: none;
@@ -238,19 +237,92 @@ body {
     transition: transform .25s ease, border-color .25s ease, background .25s ease;
     will-change: transform;
 }
-.projects-row { contain: paint; }
-.project-card:hover { transform: translateY(-2px); border-color: #2c2c2c; background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03)); }
+.project-card:hover { transform: scale(1.05); border-color: #2c2c2c; background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03)); }
 .project-card h4 { font-size: 14px; font-weight: 700; }
 .project-card p { font-size: 13px; color: var(--muted); line-height: 1.35; }
 
 /* Spotify Embed Section */
+.spotify-title {
+	color: var(--muted);
+	font-size: 13px;
+	letter-spacing: .12em;
+	text-transform: uppercase;
+	margin-bottom: 10px;
+}
+
+.spotify-widget-container {
+	margin-bottom: 27px;
+}
+
+@media (min-width: 769px) {
+    .spotify-widget-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 100;
+        width: 300px;
+		margin-bottom: 0;
+    }
+}
+
 #spotify-now-playing {
-    margin-top: 24px;
-    max-width: 400px; /* Limit the width on larger screens */
+    position: relative;
+    height: 152px; /* Set fixed height for the container */
+}
+
+#spotify-now-playing .np-placeholder,
+#spotify-now-playing iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+    border: none;
+    transition: opacity 0.4s ease-in-out;
+}
+
+#spotify-now-playing .np-placeholder {
+    opacity: 1;
+    z-index: 2;
 }
 
 #spotify-now-playing iframe {
-    border-radius: 12px;
-    border: none;
-    width: 100%; /* Ensure it's responsive */
+    opacity: 0;
+    z-index: 1;
+}
+
+#spotify-now-playing.is-loaded .np-placeholder {
+    opacity: 0;
+    z-index: 1;
+}
+
+#spotify-now-playing.is-loaded iframe {
+    opacity: 1;
+    z-index: 2;
+}
+
+.np-placeholder {
+    background-color: rgba(255, 255, 255, 0.05);
+    overflow: hidden;
+}
+
+.np-placeholder::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+    animation: shimmer 1.5s infinite linear;
+}
+
+@keyframes shimmer {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
 }
