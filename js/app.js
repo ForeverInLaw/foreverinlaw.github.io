@@ -1,61 +1,70 @@
 window.addEventListener('scroll', e=> {
 	document.body.style.cssText += `--scrollTop: ${this.scrollY}px`
 })
-gsap.registerPlugin(ScrollTrigger, ScrollSmoother)
-ScrollSmoother.create({
-	wrapper: '.wrapper',
-	content: '.content'
-})
+
 document.addEventListener('DOMContentLoaded', () => {
-const spotifyWidget = document.getElementById('spotify-now-playing');
-const apiUrl = 'https://spotify-show-last-68db402e666c.herokuapp.com/api/now-playing';
-async function fetchNowPlaying() {
-	try {
-		const response = await fetch(apiUrl);
-		if (!response.ok) {
-			// Попытаться получить текст ошибки с сервера
-			const errorData = await response.json().catch(() => ({})); // Попытаться распарсить JSON, если нет - пустой объект
-			console.error(`Ошибка получения данных с API: ${response.status}`, errorData.error || '');
-			spotifyWidget.textContent = 'Не удалось загрузить данные Spotify.';
-			 spotifyWidget.className = 'not-playing'; // Добавить класс для стилизации ошибки/неактивности
-			return;
-		}
+    const spotifyWidget = document.getElementById('spotify-now-playing');
+    const apiUrl = 'https://spotify-show-last-68db402e666c.herokuapp.com/api/now-playing';
 
-		const data = await response.json();
+    // Fallback proxies to bypass strict CORS on the API
+    const proxyBuilders = [
+        (url) => `https://cors.isomorphic-git.org/${url}`,
+        (url) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`
+    ];
+    
+    async function fetchJsonWithFallback(url) {
+        const attempts = [url, ...proxyBuilders.map(b => b(url))];
+        for (const attemptUrl of attempts) {
+            try {
+                const response = await fetch(attemptUrl, { cache: 'no-store' });
+                if (!response.ok) continue;
+                const contentType = response.headers.get('content-type') || '';
+                let data;
+                if (contentType.includes('application/json')) {
+                    data = await response.json();
+                } else {
+                    const text = await response.text();
+                    try { data = JSON.parse(text); } catch (_) { continue; }
+                }
+                return data;
+            } catch (_) {
+                // try next attempt
+            }
+        }
+        return null;
+    }
 
-		if (data.trackId) {
-			// Если есть trackId (неважно, isPlaying true или false), показываем плеер
-			const label = data.isPlaying ? "Now listening:" : "Last song on Spotify:";
-			const embedHtml = `
-				<p>${label}</p>
-				<iframe
-					style="border-radius:12px"
-					src="https://open.spotify.com/embed/track/${data.trackId}?utm_source=generator&theme=0"
-					width="100%" height="80" frameBorder="0" allowfullscreen=""
-					allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-					loading="lazy">
-				</iframe>
-			`;
-			spotifyWidget.innerHTML = embedHtml;
-			spotifyWidget.className = ''; // Убираем класс not-playing
-		} else {
-			// Сюда попадаем ТОЛЬКО если бэкенд не вернул trackId
-			spotifyWidget.textContent = 'Spotify неактивен.'; // Текст для случая, когда нет ни текущего, ни последнего трека
-			spotifyWidget.className = 'not-playing';
-		}
-		
+    async function fetchNowPlaying() {
+        try {
+            const data = await fetchJsonWithFallback(apiUrl);
+            if (!data || !data.trackId) {
+                spotifyWidget.innerHTML = '';
+                spotifyWidget.className = 'not-playing';
+                return;
+            }
 
-	} catch (error) {
-		console.error('Ошибка при запросе к API:', error);
-		spotifyWidget.textContent = 'Ошибка соединения с сервером Spotify.';
-		 spotifyWidget.className = 'not-playing';
-	}
-}
+            const spotifyTrackUrl = `https://open.spotify.com/track/${data.trackId}`;
+            const oembedUrl = `https://open.spotify.com/oembed?url=${encodeURIComponent(spotifyTrackUrl)}`;
+            
+            const oembedData = await fetchJsonWithFallback(oembedUrl);
 
-// Запрашивать данные сразу при загрузке
-fetchNowPlaying();
+            if (oembedData && oembedData.html) {
+                // The oEmbed response contains a self-sufficient iframe.
+                // We just need to inject it into our container.
+                spotifyWidget.innerHTML = oembedData.html;
+                spotifyWidget.className = '';
+            } else {
+                spotifyWidget.innerHTML = '';
+                spotifyWidget.className = 'not-playing';
+            }
+        } catch (error) {
+            console.error('Ошибка при запросе к API:', error);
+            spotifyWidget.innerHTML = '';
+            spotifyWidget.className = 'not-playing';
+        }
+    }
 
-// И затем обновлять каждые 30 секунд (30000 миллисекунд)
-setInterval(fetchNowPlaying, 30000);
+    fetchNowPlaying();
+    setInterval(fetchNowPlaying, 30000);
 
 }); // Конец 'DOMContentLoaded'

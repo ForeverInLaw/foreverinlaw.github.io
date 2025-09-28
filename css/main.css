@@ -25,10 +25,24 @@ body {
     color: var(--fg);
     font-family: raleway_f, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     line-height: 1.6;
-    height: 100vh;
-    overflow: hidden; /* disable scroll */
 }
-.wrapper { min-height: 100vh; }
+.wrapper {
+    position: relative;
+    z-index: 1;
+}
+.wrapper::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background:
+        /* diagonal lilac haze top-right */
+        radial-gradient(1000px 520px at 85% -10%, rgba(244,146,240,.22), rgba(244,146,240,0) 60%),
+        /* deep violet base bottom-left */
+        radial-gradient(900px 520px at 15% 110%, rgba(94,66,156,.24), rgba(94,66,156,0) 58%),
+        /* subtle vertical grounding */
+        linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.22) 72%);
+}
 .content { isolation: isolate; }
 
 /* Header */
@@ -70,13 +84,6 @@ body {
     justify-content: center; /* keep global container centered with left-aligned text */
     padding-top: clamp(48px, 12vh, 140px);
     position: relative;
-    background:
-        /* diagonal lilac haze top-right */
-        radial-gradient(1000px 520px at 85% -10%, rgba(244,146,240,.22), rgba(244,146,240,0) 60%),
-        /* deep violet base bottom-left */
-        radial-gradient(900px 520px at 15% 110%, rgba(94,66,156,.24), rgba(94,66,156,0) 58%),
-        /* subtle vertical grounding */
-        linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.22) 72%);
 }
 .hero::before {
     content: "";
@@ -145,73 +152,63 @@ body {
 .site-footer { border-top: 1px solid var(--border); }
 .site-footer .footer__inner { max-width: 1100px; margin: 0 auto; padding: 26px 20px; color: var(--muted); font-size: 14px; }
 
-/* Now Playing widget - refined */
-#spotify-now-playing {
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    z-index: 1000;
-    background-color: transparent;
-    color: var(--fg);
-    padding: 0;
-    border-radius: 0;
-    width: clamp(260px, 28vw, 360px);
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    border: none;
-}
-#spotify-now-playing.not-playing { background-color: transparent; }
-#spotify-now-playing p { margin: 6px 0; font-size: 0.9rem; }
-#spotify-now-playing p:first-child { margin-top: 0; font-weight: 700; }
-#spotify-now-playing .np-caption { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .12em; margin-bottom: 6px; }
-#spotify-now-playing .np-placeholder {
-    width: 100%; min-width: 260px; height: 80px; border-radius: 12px; display: block;
-    background: linear-gradient(90deg, rgba(255,255,255,.04) 0%, rgba(255,255,255,.08) 50%, rgba(255,255,255,.04) 100%);
-    background-size: 200% 100%;
-    animation: npShimmer 1.2s ease-in-out infinite;
-}
-@keyframes npShimmer {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
-}
-#spotify-now-playing iframe { margin-top: 0; border-radius: 12px; display: block; border: none; width: 100%; height: 80px; opacity: .7; }
+/* --- Responsive Design --- */
 
-/* Mobile adjustments */
+/* Tablet & Landscape Phone */
+@media (max-width: 768px) {
+    .links-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+    .projects-row {
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+}
+
+/* Portrait Phone */
 @media (max-width: 640px) {
-    /* enable page scrolling on small screens */
-    body { height: auto; overflow: auto; }
+    body { 
+        height: auto; 
+        overflow-x: hidden; /* Prevent horizontal scroll */
+    }
 
-    /* reserve space for the fixed Spotify embed at the bottom */
     .hero {
-        height: auto;
-        /* avoid forcing extra space below content */
-        min-height: 0;
-        padding-top: max(12px, calc(env(safe-area-inset-top) + 6px));
-        padding-bottom: max(8px, env(safe-area-inset-bottom));
+        height: auto; /* Let content define height */
+        min-height: 90vh; /* Keep it tall but allow scrolling */
+        padding-top: clamp(32px, 10vh, 100px);
+        padding-bottom: 48px; /* Revert to original padding */
     }
 
-    /* ensure wrapper also follows dynamic viewport */
-    .wrapper { min-height: auto; }
-
-    /* place Spotify embed in normal flow near page bottom */
-    #spotify-now-playing {
-        position: static;
-        left: auto; right: auto; bottom: auto; transform: none;
-        width: min(92vw, 360px);
-        margin: 18px auto 0;
+    .hero__inner {
+        padding: 0 16px;
     }
-    #spotify-now-playing.not-playing { display: none; }
-    #spotify-now-playing .np-placeholder,
-    #spotify-now-playing iframe { width: 100%; }
 
-    /* stack projects vertically */
-    .projects-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .project-card { min-height: auto; }
+    .links-grid {
+        grid-template-columns: 1fr; /* Single column for links */
+    }
+
+    .projects-row { 
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); 
+        gap: 10px;
+    }
+    .project-card { 
+        min-height: auto; 
+        padding: 12px;
+    }
+    .project-card h4 { font-size: 13px; }
+    .project-card p { font-size: 12px; }
 }
 
-/* Tablet breakpoint: 2 columns for projects for better fit */
-@media (max-width: 960px) {
-    .projects-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+/* Small Phones */
+@media (max-width: 375px) {
+    .hero h1 {
+        font-size: clamp(28px, 8vw, 48px);
+    }
+    .subtitle {
+        font-size: clamp(13px, 4vw, 16px);
+    }
+    .projects-row {
+        grid-template-columns: 1fr; /* Single column for projects on very small screens */
+    }
 }
 
 /* Hero scoped spacing overrides to follow best practices */
@@ -224,7 +221,7 @@ body {
 .projects-row {
     list-style: none;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 12px;
     overflow: visible;
 }
@@ -241,14 +238,19 @@ body {
     transition: transform .25s ease, border-color .25s ease, background .25s ease;
     will-change: transform;
 }
+.projects-row { contain: paint; }
 .project-card:hover { transform: translateY(-2px); border-color: #2c2c2c; background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03)); }
 .project-card h4 { font-size: 14px; font-weight: 700; }
 .project-card p { font-size: 13px; color: var(--muted); line-height: 1.35; }
 
-/* Responsive overrides AFTER base grid to ensure precedence */
-@media (max-width: 960px) {
-    .projects-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+/* Spotify Embed Section */
+#spotify-now-playing {
+    margin-top: 24px;
+    max-width: 400px; /* Limit the width on larger screens */
 }
-@media (max-width: 640px) {
-    .projects-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+#spotify-now-playing iframe {
+    border-radius: 12px;
+    border: none;
+    width: 100%; /* Ensure it's responsive */
 }
