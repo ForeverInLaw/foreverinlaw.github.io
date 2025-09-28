@@ -3,6 +3,20 @@ window.addEventListener('scroll', e=> {
 })
 
 document.addEventListener('DOMContentLoaded', () => {
+    gsap.registerPlugin(SplitText);
+
+    const heroTitle = document.querySelector('.hero__inner h1');
+    if (heroTitle) {
+        const split = new SplitText(heroTitle, { type: 'chars' });
+        gsap.from(split.chars, {
+            duration: 0.6,
+            ease: 'power3.out',
+            y: 40,
+            opacity: 0,
+            stagger: 0.05
+        });
+    }
+
     const spotifyWidget = document.getElementById('spotify-now-playing');
     const spotifyTitle = document.querySelector('.spotify-title');
     const apiUrl = 'https://spotify-show-last-68db402e666c.herokuapp.com/api/now-playing';
@@ -111,5 +125,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     fetchNowPlaying();
     setInterval(fetchNowPlaying, 15000);
+
+    // Page load animations
+    gsap.set('.link-card, .project-card', { autoAlpha: 0, scale: 0.9 });
+
+    const tl = gsap.timeline({ defaults: { ease: 'power3.out', overwrite: 'auto' } });
+
+    tl.to('.link-card', {
+        duration: 0.8,
+        autoAlpha: 1,
+        scale: 1,
+        stagger: 0.1,
+        delay: 0.5 // Start after title animation
+    })
+    .to('.project-card', {
+        duration: 1,
+        autoAlpha: 1,
+        scale: 1,
+        stagger: 0.1
+    }, "-=0.7"); // Overlap with previous animation
 
 }); // End of 'DOMContentLoaded'

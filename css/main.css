@@ -136,6 +136,7 @@ body::before {
     color: var(--fg);
     text-decoration: none;
     transition: transform .25s ease, border-color .25s ease, background .25s ease;
+    visibility: hidden; /* Prepare for GSAP animation */
 }
 .link-card:hover { transform: translateY(-2px); border-color: #2c2c2c; background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03)); }
 .link-card i { font-size: 18px; width: 22px; text-align: center; }
@@ -238,6 +239,7 @@ body::before {
     gap: 6px;
     transition: transform .25s ease, border-color .25s ease, background .25s ease;
     will-change: transform;
+    visibility: hidden; /* Prepare for GSAP animation */
 }
 .project-card:hover { transform: scale(1.05); border-color: #2c2c2c; background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03)); }
 .project-card h4 { font-size: 14px; font-weight: 700; }
