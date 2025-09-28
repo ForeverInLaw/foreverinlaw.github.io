@@ -25,6 +25,17 @@ body {
     color: var(--fg);
     font-family: raleway_f, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     line-height: 1.6;
+    position: relative;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.08'/></svg>");
+    background-size: 150px 150px;
 }
 .wrapper {
     position: relative;
@@ -84,15 +95,6 @@ body {
     justify-content: center; /* keep global container centered with left-aligned text */
     padding-top: clamp(48px, 12vh, 140px);
     position: relative;
-}
-.hero::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.08'/></svg>");
-    background-size: 120px 120px;
-    mix-blend-mode: soft-light;
 }
 .hero__inner { max-width: 1100px; width: 100%; text-align: left; padding: 0 24px; }
 .hero h1 { font-size: clamp(32px, 6vw, 72px); letter-spacing: -1px; }
