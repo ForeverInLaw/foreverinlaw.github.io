@@ -4,6 +4,7 @@ window.addEventListener('scroll', e=> {
 
 document.addEventListener('DOMContentLoaded', () => {
     const spotifyWidget = document.getElementById('spotify-now-playing');
+    const spotifyTitle = document.querySelector('.spotify-title');
     const apiUrl = 'https://spotify-show-last-68db402e666c.herokuapp.com/api/now-playing';
 
     // --- Helper Functions ---
@@ -74,6 +75,10 @@ document.addEventListener('DOMContentLoaded', () => {
     async function fetchNowPlaying() {
         try {
             const data = await fetchJsonWithFallback(apiUrl);
+
+            if (spotifyTitle) {
+                spotifyTitle.textContent = data && data.isPlaying ? 'Now Playing' : 'Last Played';
+            }
 
             if (!data || !data.trackId) {
                 if (currentTrackId !== null) {
