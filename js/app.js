@@ -3,7 +3,7 @@ window.addEventListener('scroll', e=> {
 })
 
 document.addEventListener('DOMContentLoaded', () => {
-    gsap.registerPlugin(SplitText);
+    gsap.registerPlugin(SplitText, ScrollTrigger);
 
     const heroTitle = document.querySelector('.hero__inner h1');
     if (heroTitle) {
@@ -39,10 +39,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     data = await response.json();
                 } else {
                     const text = await response.text();
-                    try { data = JSON.parse(text); } catch (_) { continue; }
+                    try { data = JSON.parse(text); } catch (err) { console.warn('JSON parse failed for attempt', err); continue; }
                 }
                 return data;
-            } catch (_) { /* try next attempt */ }
+            } catch (err) { console.warn('Fetch attempt failed, trying next proxy…', err); }
         }
         return null;
     }
@@ -91,10 +91,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await fetchJsonWithFallback(apiUrl);
 
             if (spotifyTitle) {
-                spotifyTitle.textContent = data && data.isPlaying ? 'Now Playing' : 'Last Played';
+                spotifyTitle.textContent = data?.isPlaying ? 'Now Playing' : 'Last Played';
             }
 
-            if (!data || !data.trackId) {
+            if (!data?.trackId) {
                 if (currentTrackId !== null) {
                     currentTrackId = null;
                     showPlaceholder();
@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const oembedUrl = `https://open.spotify.com/oembed?url=${encodeURIComponent(spotifyTrackUrl)}`;
             const oembedData = await fetchJsonWithFallback(oembedUrl);
 
-            if (oembedData && oembedData.html) {
+            if (oembedData?.html) {
                 showTrack(oembedData.html);
             } else {
                 throw new Error('Invalid oEmbed data');
@@ -126,23 +126,39 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchNowPlaying();
     setInterval(fetchNowPlaying, 15000);
 
-    // Page load animations
-    gsap.set('.link-card, .project-card', { autoAlpha: 0, scale: 0.9 });
+    // Reveal animations (desktop & mobile consistent)
+    // Initial state for cards: match desktop effect (fade + scale)
+    // Also add a temporary class to disable CSS transform transitions during reveal
+    const cards = document.querySelectorAll('.link-card, .project-card');
+    cards.forEach(el => el.classList.add('no-transform-transition'));
+    gsap.set(cards, { autoAlpha: 0, scale: 0.9 });
 
-    const tl = gsap.timeline({ defaults: { ease: 'power3.out', overwrite: 'auto' } });
+    // Batch-animate link cards on enter
+    ScrollTrigger.batch('.link-card', {
+        start: 'top 90%',
+        once: true,
+        onEnter: (batch) => gsap.to(batch, {
+            duration: 0.6,
+            autoAlpha: 1,
+            scale: 1,
+            stagger: 0.08,
+            ease: 'power3.out',
+            overwrite: 'auto'
+        }).then(() => batch.forEach(el => el.classList.remove('no-transform-transition')))
+    });
 
-    tl.to('.link-card', {
-        duration: 0.8,
-        autoAlpha: 1,
-        scale: 1,
-        stagger: 0.1,
-        delay: 0.5 // Start after title animation
-    })
-    .to('.project-card', {
-        duration: 1,
-        autoAlpha: 1,
-        scale: 1,
-        stagger: 0.1
-    }, "-=0.7"); // Overlap with previous animation
+    // Batch-animate project cards on enter
+    ScrollTrigger.batch('.project-card', {
+        start: 'top 90%',
+        once: true,
+        onEnter: (batch) => gsap.to(batch, {
+            duration: 0.7,
+            autoAlpha: 1,
+            scale: 1,
+            stagger: 0.08,
+            ease: 'power3.out',
+            overwrite: 'auto'
+        }).then(() => batch.forEach(el => el.classList.remove('no-transform-transition')))
+    });
 
 }); // End of 'DOMContentLoaded'

@@ -138,7 +138,12 @@ body::before {
     transition: transform .25s ease, border-color .25s ease, background .25s ease;
     visibility: hidden; /* Prepare for GSAP animation */
 }
-.link-card:hover { transform: translateY(-2px); border-color: #2c2c2c; background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03)); }
+.link-card:hover { 
+    transform: translateY(-2px); 
+    border-color: #2c2c2c; 
+    background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+    box-shadow: 0 10px 30px -10px rgba(0,0,0,.6);
+}
 .link-card i { font-size: 18px; width: 22px; text-align: center; }
 .link-card span { font-weight: 600; }
 
@@ -148,7 +153,6 @@ body::before {
 .link-card.vk { --brand: #4C75A3; }
 .link-card.spotify { --brand: #1DB954; }
 .link-card.github { --brand: #ffffff; }
-.link-card:hover { box-shadow: 0 10px 30px -10px rgba(0,0,0,.6); }
 .link-card:hover i { color: var(--brand); }
 
 /* Footer */
@@ -244,6 +248,11 @@ body::before {
 .project-card:hover { transform: scale(1.05); border-color: #2c2c2c; background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03)); }
 .project-card h4 { font-size: 14px; font-weight: 700; }
 .project-card p { font-size: 13px; color: var(--muted); line-height: 1.35; }
+
+/* Disable transform transition temporarily during GSAP reveal to avoid double-easing */
+.no-transform-transition {
+    transition: border-color .25s ease, background .25s ease !important;
+}
 
 /* Spotify Embed Section */
 .spotify-title {
