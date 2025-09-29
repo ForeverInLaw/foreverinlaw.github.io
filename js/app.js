@@ -20,36 +20,51 @@ document.addEventListener('DOMContentLoaded', () => {
     const spotifyWidget = document.getElementById('spotify-now-playing');
     const spotifyTitle = document.querySelector('.spotify-title');
     const apiUrl = 'https://spotify-show-last-68db402e666c.herokuapp.com/api/now-playing';
+    
+    // Add loading class initially
+    if (spotifyTitle) {
+        spotifyTitle.classList.add('loading');
+    }
 
     // --- Helper Functions ---
-    const proxyBuilders = [
-        (url) => `https://cors.isomorphic-git.org/${url}`,
-        (url) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`
-    ];
-    
     async function fetchJsonWithFallback(url) {
-        const attempts = [url, ...proxyBuilders.map(b => b(url))];
-        for (const attemptUrl of attempts) {
-            try {
-                const response = await fetch(attemptUrl, { cache: 'no-store' });
-                if (!response.ok) continue;
-                const contentType = response.headers.get('content-type') || '';
-                let data;
-                if (contentType.includes('application/json')) {
-                    data = await response.json();
-                } else {
-                    const text = await response.text();
-                    try { data = JSON.parse(text); } catch (err) { console.warn('JSON parse failed for attempt', err); continue; }
-                }
-                return data;
-            } catch (err) { console.warn('Fetch attempt failed, trying next proxy…', err); }
+        try {
+            const response = await fetch(url, { cache: 'no-store' });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return await response.json();
+        } catch (error) {
+            console.error('Fetch failed:', error);
+            return null;
         }
-        return null;
     }
 
     // --- State and DOM Management ---
     let currentTrackId = null;
     let currentIframe = null;
+    
+    // Function to smoothly update title text
+    function updateTitleText(newText) {
+        if (!spotifyTitle || spotifyTitle.textContent === newText) return;
+        
+        spotifyTitle.classList.add('fade-out');
+        
+        setTimeout(() => {
+            spotifyTitle.textContent = newText;
+            spotifyTitle.classList.remove('fade-out');
+            spotifyTitle.classList.add('fade-in');
+            
+            // Remove loading class when we have actual content
+            if (newText !== 'Loading...') {
+                spotifyTitle.classList.remove('loading');
+            }
+            
+            setTimeout(() => {
+                spotifyTitle.classList.remove('fade-in');
+            }, 500);
+        }, 200);
+    }
 
     // Create and append the placeholder initially
     const placeholder = document.createElement('div');
@@ -90,9 +105,8 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const data = await fetchJsonWithFallback(apiUrl);
 
-            if (spotifyTitle) {
-                spotifyTitle.textContent = data?.isPlaying ? 'Now Playing' : 'Last Played';
-            }
+            const newTitle = data?.isPlaying ? 'Now Playing' : 'Last Played';
+            updateTitleText(newTitle);
 
             if (!data?.trackId) {
                 if (currentTrackId !== null) {
@@ -119,6 +133,10 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             console.error('Error fetching Spotify data:', error);
             currentTrackId = null;
+            updateTitleText('Loading...');
+            if (spotifyTitle) {
+                spotifyTitle.classList.add('loading');
+            }
             showPlaceholder();
         }
     }

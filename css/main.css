@@ -266,6 +266,9 @@ body::before {
 	letter-spacing: .12em;
 	text-transform: uppercase;
 	margin-bottom: 10px;
+	transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+	will-change: transform, opacity;
+	position: relative;
 }
 
 .spotify-widget-container {
@@ -343,4 +346,22 @@ body::before {
     100% {
         transform: translateX(100%);
     }
+}
+
+/* Loading Animation */
+.spotify-title.loading {
+    position: relative;
+}
+
+/* Smooth text transitions */
+.spotify-title.fade-out {
+    opacity: 0;
+    transform: translateY(-8px);
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.spotify-title.fade-in {
+    opacity: 1;
+    transform: translateY(0);
+    transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
