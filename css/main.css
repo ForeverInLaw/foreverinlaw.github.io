@@ -246,23 +246,17 @@ body::before {
     visibility: hidden; /* Prepare for GSAP animation */
 }
 .projects-row a.project-card { text-decoration: none; color: inherit; display: flex; }
-.projects-row.is-interactive .project-card:hover,
-.project-card.is-ready:hover { transform: scale(1.03); border-color: #2c2c2c; background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03)); }
-.projects-row.is-interactive .project-card:focus-visible,
-.project-card.is-ready:focus-visible { outline: none; transform: scale(1.03); border-color: #2c2c2c; box-shadow: 0 0 0 2px rgba(244,146,240,.35); }
+.project-card:hover { transform: scale(1.03); border-color: #2c2c2c; background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03)); }
+.project-card:focus-visible { outline: none; transform: scale(1.03); border-color: #2c2c2c; box-shadow: 0 0 0 2px rgba(244,146,240,.35); }
 .project-card h4 { font-size: 14px; font-weight: 700; }
 .project-card p { font-size: 13px; color: var(--muted); line-height: 1.35; }
 
-/* Disable transform transition temporarily during GSAP reveal to avoid double-easing */
-.no-transform-transition {
-    transition: border-color .25s ease, background .25s ease !important;
-}
+/* Transition helpers no longer needed; hover remains smooth on first interaction */
 
 /* Respect reduced motion preferences */
 @media (prefers-reduced-motion: reduce) {
     .project-card { transition: border-color .25s ease, background .25s ease; }
-    .projects-row.is-interactive .project-card:hover,
-    .project-card.is-ready:hover { transform: none; }
+    .project-card:hover { transform: none; }
 }
 
 /* Spotify Embed Section */

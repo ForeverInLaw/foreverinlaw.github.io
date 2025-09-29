@@ -130,24 +130,22 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initial state for cards: match desktop effect (fade + scale)
     // Also add a temporary class to disable CSS transform transitions during reveal
     const cards = document.querySelectorAll('.link-card, .project-card');
-    cards.forEach(el => el.classList.add('no-transform-transition'));
-    gsap.set(cards, { autoAlpha: 0, scale: 0.9 });
+    // Start hidden; avoid initial transform that could block :hover
+    gsap.set(cards, { autoAlpha: 0 });
 
     // Batch-animate link cards on enter
     ScrollTrigger.batch('.link-card', {
         start: 'top 90%',
         once: true,
         onEnter: (batch) => gsap.to(batch, {
-            duration: 0.6,
+            duration: 0.5,
             autoAlpha: 1,
-            scale: 1,
             stagger: 0.08,
             ease: 'power3.out',
             overwrite: 'auto'
         }).then(() => {
-            // Re-enable CSS transform transitions and clear inline transform so :hover can work
             batch.forEach(el => {
-                el.classList.remove('no-transform-transition');
+                // Clear inline transform so :hover can work seamlessly
                 gsap.set(el, { clearProps: 'transform' });
             });
         })
@@ -169,19 +167,15 @@ document.addEventListener('DOMContentLoaded', () => {
         start: 'top 90%',
         once: true,
         onEnter: (batch) => gsap.to(batch, {
-            duration: 0.7,
+            duration: 0.6,
             autoAlpha: 1,
-            scale: 1,
             stagger: 0.08,
             ease: 'power3.out',
             overwrite: 'auto'
         }).then(() => {
             batch.forEach(el => {
-                el.classList.remove('no-transform-transition');
-                // Clear inline transform so CSS :hover scale can apply
+                // Ensure no inline transform remains to block CSS :hover
                 gsap.set(el, { clearProps: 'transform' });
-                // Mark this card ready for interaction as soon as it finished revealing
-                el.classList.add('is-ready');
                 if (!el.dataset.revealed) {
                     el.dataset.revealed = 'true';
                     revealedCount += 1;
@@ -191,8 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
         })
     });
 
-    // In case some cards are already in view on load and immediately revealed by GSAP,
-    // double-check once the document is idle to avoid race conditions.
+    // Keep the global flag logic (harmless now), but it’s no longer required for hover to work.
     if ('requestIdleCallback' in window) {
         requestIdleCallback(() => markInteractiveIfDone());
     } else {
