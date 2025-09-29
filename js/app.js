@@ -144,10 +144,27 @@ document.addEventListener('DOMContentLoaded', () => {
             stagger: 0.08,
             ease: 'power3.out',
             overwrite: 'auto'
-        }).then(() => batch.forEach(el => el.classList.remove('no-transform-transition')))
+        }).then(() => {
+            // Re-enable CSS transform transitions and clear inline transform so :hover can work
+            batch.forEach(el => {
+                el.classList.remove('no-transform-transition');
+                gsap.set(el, { clearProps: 'transform' });
+            });
+        })
     });
 
-    // Batch-animate project cards on enter
+    // Batch-animate project cards on enter and enable hover only after all revealed
+    const projectsRow = document.querySelector('.projects-row');
+    const projectCards = document.querySelectorAll('.project-card');
+    let revealedCount = 0;
+
+    function markInteractiveIfDone() {
+        if (!projectsRow) return;
+        if (revealedCount >= projectCards.length && projectCards.length > 0) {
+            projectsRow.classList.add('is-interactive');
+        }
+    }
+
     ScrollTrigger.batch('.project-card', {
         start: 'top 90%',
         once: true,
@@ -158,7 +175,28 @@ document.addEventListener('DOMContentLoaded', () => {
             stagger: 0.08,
             ease: 'power3.out',
             overwrite: 'auto'
-        }).then(() => batch.forEach(el => el.classList.remove('no-transform-transition')))
+        }).then(() => {
+            batch.forEach(el => {
+                el.classList.remove('no-transform-transition');
+                // Clear inline transform so CSS :hover scale can apply
+                gsap.set(el, { clearProps: 'transform' });
+                // Mark this card ready for interaction as soon as it finished revealing
+                el.classList.add('is-ready');
+                if (!el.dataset.revealed) {
+                    el.dataset.revealed = 'true';
+                    revealedCount += 1;
+                }
+            });
+            markInteractiveIfDone();
+        })
     });
+
+    // In case some cards are already in view on load and immediately revealed by GSAP,
+    // double-check once the document is idle to avoid race conditions.
+    if ('requestIdleCallback' in window) {
+        requestIdleCallback(() => markInteractiveIfDone());
+    } else {
+        setTimeout(markInteractiveIfDone, 500);
+    }
 
 }); // End of 'DOMContentLoaded'
