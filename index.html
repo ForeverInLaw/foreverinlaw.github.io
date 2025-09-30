@@ -1,125 +1,169 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-	<title>ForeverInLaw</title>
-
-	<link
-	rel="stylesheet"
-	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"
-	integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/CuL7qxO8w=="
-	crossorigin="anonymous"/>
+	
+	<title>ForeverInLaw - Creative Developer & Software Engineer</title>
+	<meta name="description" content="Creative developer specializing in Python, Node.js, and modern web technologies. Check out my projects including Telegram bots, Django applications, and full-stack web solutions.">
+	<meta name="author" content="ForeverInLaw">
+	<meta name="keywords" content="web developer, software engineer, python developer, nodejs, telegram bots, django, react, nextjs">
+	<meta name="theme-color" content="#f492f0">
+	
+	<meta property="og:title" content="ForeverInLaw - Creative Developer">
+	<meta property="og:description" content="Creative developer specializing in Python, Node.js, and modern web technologies.">
+	<meta property="og:type" content="website">
+	<meta property="og:url" content="https://foreverinlaw.github.io">
+	<meta property="og:image" content="https://foreverinlaw.github.io/img/switch.svg">
+	
+	<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+	<link rel="preconnect" href="https://open.spotify.com" crossorigin>
+	<link rel="dns-prefetch" href="https://spotify-show-last-68db402e666c.herokuapp.com">
+	
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/CuL7qxO8w==" crossorigin="anonymous" media="print" onload="this.media='all'">
+	<noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"></noscript>
 	<link rel="stylesheet" href="css/main.css">
-	<link rel="SHORTCUT ICON" type="image/svg" href="img/switch.svg">
+	<link rel="icon" type="image/svg+xml" href="img/switch.svg">
+	
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "Person",
+		"name": "ForeverInLaw",
+		"jobTitle": "Creative Developer",
+		"url": "https://foreverinlaw.github.io",
+		"sameAs": [
+			"https://github.com/ForeverInLaw",
+			"https://t.me/shxdowgxd",
+			"https://www.youtube.com/channel/UCPwNfqoxDW0wELPkgm1v9og",
+			"https://instagram.com/sxwxrslxt/",
+			"https://vk.com/jebana/",
+			"https://open.spotify.com/user/aj9lqav0oqw73nb9ra85orfil"
+		]
+	}
+	</script>
 
 	<script src="libs/gsap/gsap.min.js" defer></script>
 	<script src="libs/gsap/ScrollTrigger.min.js" defer></script>
 	<script src="libs/gsap/ScrollSmoother.min.js" defer></script>
 	<script src="js/SplitText.min.js" defer></script>
-
 	<script src="js/app.js" defer></script>
 </head>
 <body>
 
+<button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme" title="Toggle dark/light mode">
+	<span class="theme-toggle__icon theme-toggle__icon--sun" aria-hidden="true"></span>
+	<span class="theme-toggle__icon theme-toggle__icon--moon" aria-hidden="true"></span>
+</button>
+
 <div class="wrapper">
 	<div class="content">
 
-		<section class="hero">
+		<header class="hero">
 			<div class="hero__inner">
 				<h1>ForeverInLaw</h1>
 				<p class="subtitle">Creative Developer</p>
-				<div id="links" class="hero__links">
+				<nav id="links" class="hero__links" aria-label="Social media links">
 					<h2 class="section-title">Connect</h2>
 					<ul class="links-grid">
 						<li>
-							<a class="link-card telegram" href="https://t.me/shxdowgxd" target="_blank" rel="noopener noreferrer">
-								<i class="fab fa-telegram"></i>
+							<a class="link-card telegram" href="https://t.me/shxdowgxd" target="_blank" rel="noopener noreferrer" aria-label="Connect on Telegram">
+								<i class="fab fa-telegram" aria-hidden="true"></i>
 								<span>Telegram</span>
 							</a>
 						</li>
 						<li>
-							<a class="link-card youtube" href="https://www.youtube.com/channel/UCPwNfqoxDW0wELPkgm1v9og" target="_blank" rel="noopener noreferrer">
-								<i class="fab fa-youtube"></i>
+							<a class="link-card youtube" href="https://www.youtube.com/channel/UCPwNfqoxDW0wELPkgm1v9og" target="_blank" rel="noopener noreferrer" aria-label="Subscribe on YouTube">
+								<i class="fab fa-youtube" aria-hidden="true"></i>
 								<span>YouTube</span>
 							</a>
 						</li>
 						<li>
-							<a class="link-card instagram" href="https://instagram.com/sxwxrslxt/" target="_blank" rel="noopener noreferrer">
-								<i class="fab fa-instagram"></i>
+							<a class="link-card instagram" href="https://instagram.com/sxwxrslxt/" target="_blank" rel="noopener noreferrer" aria-label="Follow on Instagram">
+								<i class="fab fa-instagram" aria-hidden="true"></i>
 								<span>Instagram</span>
 							</a>
 						</li>
 						<li>
-							<a class="link-card vk" href="https://vk.com/jebana/" target="_blank" rel="noopener noreferrer">
-								<i class="fab fa-vk"></i>
+							<a class="link-card vk" href="https://vk.com/jebana/" target="_blank" rel="noopener noreferrer" aria-label="Connect on VK">
+								<i class="fab fa-vk" aria-hidden="true"></i>
 								<span>VK</span>
 							</a>
 						</li>
 						<li>
-							<a class="link-card spotify" href="https://open.spotify.com/user/aj9lqav0oqw73nb9ra85orfil?si=e17b7de344de4724" target="_blank" rel="noopener noreferrer">
-								<i class="fab fa-spotify"></i>
+							<a class="link-card spotify" href="https://open.spotify.com/user/aj9lqav0oqw73nb9ra85orfil?si=e17b7de344de4724" target="_blank" rel="noopener noreferrer" aria-label="Follow on Spotify">
+								<i class="fab fa-spotify" aria-hidden="true"></i>
 								<span>Spotify</span>
 							</a>
 						</li>
 						<li>
-							<a class="link-card github" href="https://github.com/ForeverInLaw" target="_blank" rel="noopener noreferrer">
-								<i class="fab fa-github"></i>
+							<a class="link-card github" href="https://github.com/ForeverInLaw" target="_blank" rel="noopener noreferrer" aria-label="View GitHub profile">
+								<i class="fab fa-github" aria-hidden="true"></i>
 								<span>GitHub</span>
 							</a>
 						</li>
 					</ul>
-				</div>
+				</nav>
 				<section class="projects" aria-labelledby="projects-title">
-					<h3 id="projects-title" class="projects-title">Projects</h3>
+					<h2 id="projects-title" class="projects-title">Projects</h2>
 					<ul class="projects-row">
 						<li>
-							<a class="project-card" href="https://github.com/ForeverInLaw/ForeverLaw-Escrow/" target="_blank" rel="noopener noreferrer">
-								<h4>ForeverLaw Escrow</h4>
+							<a class="project-card" href="https://github.com/ForeverInLaw/ForeverLaw-Escrow/" target="_blank" rel="noopener noreferrer" aria-label="ForeverLaw Escrow project on GitHub">
+								<h3>ForeverLaw Escrow</h3>
 								<p>Modular Node.js bot for secure P2P transactions in Telegram. Payments via Stars, Cryptobot, Bitpapa. MySQL-backed.</p>
 							</a>
 						</li>
-						<li class="project-card">
-							<h4>Nellexint</h4>
-							<p>OSINT bot in Go for Big Data processing with integrated PostgreSQL for storage and retrieval.</p>
-						</li>
-						<li class="project-card">
-							<h4>Django Helpdesk Integration</h4>
-							<p>Enhanced Django helpdesk with WhatsApp ticketing and RustDesk remote support integration.</p>
-						</li>
-						<li class="project-card">
-							<h4>Unsolvable Admin</h4>
-							<p>Telegram administration bot in Python with robust moderation and PostgreSQL persistence.</p>
-						</li>
-						<li class="project-card">
-							<h4>PLON Klasyk Bot</h4>
-							<p>Python bot for students providing schedules and school news updates in Warsaw.</p>
-						</li>
-						<li class="project-card">
-							<h4>Spotify Downloader Bot</h4>
-							<p>Aiogram + Spotipy + Pytube bot that downloads tracks from Spotify links.</p>
-						</li>
-						<li class="project-card">
-							<h4>Spotify Show Last</h4>
-							<p>Embeddable web widget showing the current or last Spotify track with preview.</p>
+						<li>
+							<article class="project-card">
+								<h3>Nellexint</h3>
+								<p>OSINT bot in Go for Big Data processing with integrated PostgreSQL for storage and retrieval.</p>
+							</article>
 						</li>
 						<li>
-							<a class="project-card" href="https://dev.cosymc.net/" target="_blank" rel="noopener noreferrer">
-								<h4>CosyMC</h4>
+							<article class="project-card">
+								<h3>Django Helpdesk Integration</h3>
+								<p>Enhanced Django helpdesk with WhatsApp ticketing and RustDesk remote support integration.</p>
+							</article>
+						</li>
+						<li>
+							<article class="project-card">
+								<h3>Unsolvable Admin</h3>
+								<p>Telegram administration bot in Python with robust moderation and PostgreSQL persistence.</p>
+							</article>
+						</li>
+						<li>
+							<article class="project-card">
+								<h3>PLON Klasyk Bot</h3>
+								<p>Python bot for students providing schedules and school news updates in Warsaw.</p>
+							</article>
+						</li>
+						<li>
+							<article class="project-card">
+								<h3>Spotify Downloader Bot</h3>
+								<p>Aiogram + Spotipy + Pytube bot that downloads tracks from Spotify links.</p>
+							</article>
+						</li>
+						<li>
+							<article class="project-card">
+								<h3>Spotify Show Last</h3>
+								<p>Embeddable web widget showing the current or last Spotify track with preview.</p>
+							</article>
+						</li>
+						<li>
+							<a class="project-card" href="https://dev.cosymc.net/" target="_blank" rel="noopener noreferrer" aria-label="CosyMC project website">
+								<h3>CosyMC</h3>
 								<p>Next.js web for the CosyMC Minecraft project Discord login, skin management, launcher integration and profile management.</p>
 							</a>
 						</li>
 					</ul>
 				</section>
-				<div class="spotify-widget-container">
+				<aside class="spotify-widget-container" aria-label="Spotify player">
 					<h3 class="spotify-title">Loading...</h3>
-					<div id="spotify-now-playing"></div>
-				</div>
+					<div id="spotify-now-playing" aria-live="polite" aria-atomic="true"></div>
+				</aside>
 			</div>
-		</section>
+		</header>
 	</div>
 </div>
 

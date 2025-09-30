@@ -1,50 +1,89 @@
-window.addEventListener('scroll', e=> {
-	document.body.style.cssText += `--scrollTop: ${this.scrollY}px`
-})
+(function initTheme() {
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', theme);
+})();
+
+window.addEventListener('scroll', () => {
+	document.body.style.cssText += `--scrollTop: ${window.scrollY}px`;
+}, { passive: true });
 
 document.addEventListener('DOMContentLoaded', () => {
+    const themeToggle = document.getElementById('theme-toggle');
+    
+    if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+            if (metaThemeColor) {
+                metaThemeColor.setAttribute('content', newTheme === 'dark' ? '#f492f0' : '#c960c5');
+            }
+        });
+    }
     gsap.registerPlugin(SplitText, ScrollTrigger);
 
     const heroTitle = document.querySelector('.hero__inner h1');
     if (heroTitle) {
-        const split = new SplitText(heroTitle, { type: 'chars' });
-        gsap.from(split.chars, {
-            duration: 0.6,
-            ease: 'power3.out',
-            y: 40,
-            opacity: 0,
-            stagger: 0.05
-        });
+        try {
+            const split = new SplitText(heroTitle, { type: 'chars' });
+            gsap.from(split.chars, {
+                duration: 0.6,
+                ease: 'power3.out',
+                y: 40,
+                opacity: 0,
+                stagger: 0.05
+            });
+        } catch (error) {
+            console.warn('SplitText animation failed:', error);
+        }
     }
 
     const spotifyWidget = document.getElementById('spotify-now-playing');
     const spotifyTitle = document.querySelector('.spotify-title');
     const apiUrl = 'https://spotify-show-last-68db402e666c.herokuapp.com/api/now-playing';
     
-    // Add loading class initially
     if (spotifyTitle) {
         spotifyTitle.classList.add('loading');
     }
 
-    // --- Helper Functions ---
-    async function fetchJsonWithFallback(url) {
-        try {
-            const response = await fetch(url, { cache: 'no-store' });
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+    async function fetchJsonWithFallback(url, retries = 3) {
+        for (let i = 0; i < retries; i++) {
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 10000);
+                
+                const response = await fetch(url, { 
+                    cache: 'no-store',
+                    signal: controller.signal 
+                });
+                
+                clearTimeout(timeoutId);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return await response.json();
+            } catch (error) {
+                if (i === retries - 1) {
+                    console.error('Fetch failed after retries:', error);
+                    return null;
+                }
+                await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
             }
-            return await response.json();
-        } catch (error) {
-            console.error('Fetch failed:', error);
-            return null;
         }
+        return null;
     }
 
-    // --- State and DOM Management ---
     let currentTrackId = null;
     let currentIframe = null;
+    let isFetching = false;
     
-    // Function to smoothly update title text
     function updateTitleText(newText) {
         if (!spotifyTitle || spotifyTitle.textContent === newText) return;
         
@@ -55,7 +94,6 @@ document.addEventListener('DOMContentLoaded', () => {
             spotifyTitle.classList.remove('fade-out');
             spotifyTitle.classList.add('fade-in');
             
-            // Remove loading class when we have actual content
             if (newText !== 'Loading...') {
                 spotifyTitle.classList.remove('loading');
             }
@@ -66,44 +104,59 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 200);
     }
 
-    // Create and append the placeholder initially
-    const placeholder = document.createElement('div');
-    placeholder.className = 'np-placeholder';
-    placeholder.setAttribute('aria-hidden', 'true');
-    placeholder.innerHTML = '<div></div>'; // for the shimmer effect
-    spotifyWidget.appendChild(placeholder);
+    if (spotifyWidget) {
+        const placeholder = document.createElement('div');
+        placeholder.className = 'np-placeholder';
+        placeholder.setAttribute('aria-hidden', 'true');
+        placeholder.innerHTML = '<div></div>';
+        spotifyWidget.appendChild(placeholder);
+    }
 
     function showTrack(html) {
-        // Create a new iframe from the oEmbed HTML
+        if (!spotifyWidget) return;
+        
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = html;
         const newIframe = tempDiv.querySelector('iframe');
 
         if (!newIframe) return;
 
-        // Remove the old iframe if it exists
         if (currentIframe) {
             currentIframe.remove();
         }
         currentIframe = newIframe;
         
-        // Append the new iframe (it's initially invisible due to CSS)
+        newIframe.title = 'Spotify player';
+        newIframe.loading = 'lazy';
+        
         spotifyWidget.appendChild(currentIframe);
 
-        // Once the iframe content has loaded, trigger the cross-fade
         currentIframe.onload = () => {
             spotifyWidget.classList.add('is-loaded');
+        };
+        
+        currentIframe.onerror = () => {
+            console.error('Failed to load Spotify iframe');
+            showPlaceholder();
         };
     }
 
     function showPlaceholder() {
-        spotifyWidget.classList.remove('is-loaded');
+        if (spotifyWidget) {
+            spotifyWidget.classList.remove('is-loaded');
+        }
     }
 
-    // --- Main Logic ---
     async function fetchNowPlaying() {
+        if (isFetching) return;
+        isFetching = true;
+        
         try {
             const data = await fetchJsonWithFallback(apiUrl);
+
+            if (!data) {
+                throw new Error('No data received');
+            }
 
             const newTitle = data?.isPlaying ? 'Now Playing' : 'Last Played';
             updateTitleText(newTitle);
@@ -117,11 +170,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             if (data.trackId === currentTrackId) {
-                return; // Track hasn't changed
+                return;
             }
 
             currentTrackId = data.trackId;
-            const spotifyTrackUrl = `https://open.spotify.com/track/${data.trackId}`;
+            const spotifyTrackUrl = `https://open.spotify.com/track/${encodeURIComponent(data.trackId)}`;
             const oembedUrl = `https://open.spotify.com/oembed?url=${encodeURIComponent(spotifyTrackUrl)}`;
             const oembedData = await fetchJsonWithFallback(oembedUrl);
 
@@ -138,20 +191,49 @@ document.addEventListener('DOMContentLoaded', () => {
                 spotifyTitle.classList.add('loading');
             }
             showPlaceholder();
+        } finally {
+            isFetching = false;
         }
     }
 
-    fetchNowPlaying();
-    setInterval(fetchNowPlaying, 15000);
+    if (spotifyWidget) {
+        fetchNowPlaying();
+        setInterval(fetchNowPlaying, 15000);
+    }
 
-    // Reveal animations (desktop & mobile consistent)
-    // Initial state for cards: match desktop effect (fade + scale)
-    // Also add a temporary class to disable CSS transform transitions during reveal
+    window.masonryLayout = function() {
+        const container = document.querySelector('.projects-row');
+        if (!container) return;
+
+        const items = Array.from(container.children);
+        if (items.length === 0) return;
+
+        const gap = 12;
+        const containerWidth = container.offsetWidth;
+        const itemMinWidth = 200;
+        const columns = Math.max(1, Math.floor((containerWidth + gap) / (itemMinWidth + gap)));
+        const itemWidth = (containerWidth - (gap * (columns - 1))) / columns;
+
+        const columnHeights = new Array(columns).fill(0);
+
+        items.forEach((item, index) => {
+            const column = index % columns;
+            
+            item.style.width = `${itemWidth}px`;
+            item.style.left = `${column * (itemWidth + gap)}px`;
+            item.style.top = `${columnHeights[column]}px`;
+            
+            columnHeights[column] += item.offsetHeight + gap;
+        });
+
+        container.style.height = `${Math.max(...columnHeights) - gap}px`;
+    }
+
+    window.masonryLayout();
+
     const cards = document.querySelectorAll('.link-card, .project-card');
-    // Start hidden; avoid initial transform that could block :hover
     gsap.set(cards, { autoAlpha: 0 });
 
-    // Batch-animate link cards on enter
     ScrollTrigger.batch('.link-card', {
         start: 'top 90%',
         once: true,
@@ -163,20 +245,18 @@ document.addEventListener('DOMContentLoaded', () => {
             overwrite: 'auto'
         }).then(() => {
             batch.forEach(el => {
-                // Clear inline transform so :hover can work seamlessly
                 gsap.set(el, { clearProps: 'transform' });
             });
         })
     });
 
-    // Batch-animate project cards on enter and enable hover only after all revealed
     const projectsRow = document.querySelector('.projects-row');
     const projectCards = document.querySelectorAll('.project-card');
     let revealedCount = 0;
 
     function markInteractiveIfDone() {
-        if (!projectsRow) return;
-        if (revealedCount >= projectCards.length && projectCards.length > 0) {
+        if (!projectsRow || projectCards.length === 0) return;
+        if (revealedCount >= projectCards.length) {
             projectsRow.classList.add('is-interactive');
         }
     }
@@ -192,7 +272,6 @@ document.addEventListener('DOMContentLoaded', () => {
             overwrite: 'auto'
         }).then(() => {
             batch.forEach(el => {
-                // Ensure no inline transform remains to block CSS :hover
                 gsap.set(el, { clearProps: 'transform' });
                 if (!el.dataset.revealed) {
                     el.dataset.revealed = 'true';
@@ -200,14 +279,47 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
             markInteractiveIfDone();
+            setTimeout(() => {
+                if (window.masonryLayout) window.masonryLayout();
+            }, 100);
         })
     });
 
-    // Keep the global flag logic (harmless now), but it’s no longer required for hover to work.
     if ('requestIdleCallback' in window) {
         requestIdleCallback(() => markInteractiveIfDone());
     } else {
         setTimeout(markInteractiveIfDone, 500);
     }
 
-}); // End of 'DOMContentLoaded'
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (prefersReducedMotion.matches) {
+        ScrollTrigger.getAll().forEach(trigger => {
+            trigger.kill();
+        });
+        gsap.set(cards, { autoAlpha: 1 });
+    }
+
+    window.addEventListener('beforeunload', () => {
+        ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+    });
+
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(window.masonryLayout, 150);
+    });
+
+    const observer = new MutationObserver(() => {
+        window.masonryLayout();
+    });
+
+    const projectsContainer = document.querySelector('.projects-row');
+    if (projectsContainer) {
+        observer.observe(projectsContainer, {
+            childList: true,
+            subtree: true,
+            attributes: true
+        });
+    }
+
+});
