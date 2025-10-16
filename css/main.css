@@ -49,6 +49,11 @@
 
 html {
     scroll-behavior: smooth;
+    scrollbar-width: none;
+}
+
+::-webkit-scrollbar {
+    display: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -346,6 +351,7 @@ body::before {
 .link-card.vk { --brand: #4C75A3; }
 .link-card.spotify { --brand: #1DB954; }
 .link-card.github { --brand: var(--github-brand); }
+.link-card.email { --brand: #7b5fb8; }
 
 .site-footer {
     border-top: 1px solid var(--border);
@@ -472,6 +478,50 @@ body::before {
     position: relative;
     font-weight: 700;
     text-shadow: 0 0 20px rgba(244, 146, 240, 0);
+}
+
+.github-stats {
+    margin-top: 24px;
+    margin-bottom: 24px;
+}
+
+.github-stats-title {
+    color: var(--muted);
+    font-size: 13px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.github-stats-card {
+    background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    transition: transform .25s ease, border-color .25s ease, background .25s ease, box-shadow .25s ease;
+    max-width: 500px;
+    display: inline-block;
+}
+
+.github-stats-card:hover {
+    transform: translateY(-2px);
+    border-color: #2c2c2c;
+    background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+    box-shadow: 0 10px 30px -10px rgba(0,0,0,.6);
+}
+
+.github-stats-card img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 6px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .github-stats-card:hover {
+        transform: none;
+    }
 }
 
 .spotify-widget-container {
