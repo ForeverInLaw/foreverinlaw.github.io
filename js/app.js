@@ -51,13 +51,20 @@ document.addEventListener('DOMContentLoaded', () => {
     if (heroTitle) {
         try {
             const split = new SplitText(heroTitle, { type: 'chars' });
-            gsap.from(split.chars, {
-                duration: 0.6,
-                ease: 'power3.out',
-                y: 40,
-                opacity: 0,
-                stagger: 0.05
-            });
+            gsap.fromTo(split.chars, 
+                {
+                    y: 40,
+                    opacity: 0
+                },
+                {
+                    duration: 0.6,
+                    ease: 'power3.out',
+                    y: 0,
+                    opacity: 1,
+                    stagger: 0.05,
+                    clearProps: 'transform,opacity'
+                }
+            );
         } catch (error) {
             console.warn('SplitText animation failed:', error);
         }
