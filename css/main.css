@@ -406,7 +406,6 @@ body::before {
     transition: transform .25s ease, border-color .25s ease, background .25s ease, box-shadow .25s ease;
     will-change: transform;
     visibility: hidden;
-    cursor: default;
 }
 
 .projects-row a.project-card,
@@ -414,11 +413,6 @@ body::before {
     text-decoration: none;
     color: inherit;
     display: flex;
-    cursor: pointer;
-}
-
-.projects-row article.project-card {
-    cursor: default;
 }
 
 .project-card:hover,
