@@ -112,6 +112,28 @@
             // Отправляем событие об окончании драга
             document.body.classList.remove('slider-dragging');
             
+            // Проверяем, нужно ли убрать hover с курсора
+            // setTimeout чтобы дать время событию mouseout сработать естественно
+            setTimeout(() => {
+                const cursor = document.querySelector('.custom-cursor');
+                if (!cursor) return;
+                
+                // Получаем элемент под курсором (используем последнюю известную позицию мыши)
+                const elementsUnderCursor = document.querySelectorAll(':hover');
+                const interactiveSelector = window.INTERACTIVE_ELEMENTS || 'a, button, input, textarea, select, .link-card, .project-card, .theme-toggle, .slide-button-handle';
+                
+                let isOverInteractive = false;
+                elementsUnderCursor.forEach(el => {
+                    if (el.matches(interactiveSelector) || el.closest(interactiveSelector)) {
+                        isOverInteractive = true;
+                    }
+                });
+                
+                if (!isOverInteractive) {
+                    cursor.classList.remove('cursor-hover');
+                }
+            }, 0);
+            
             // Используем реальную позицию handle, а не target
             const progress = currentX / maxDragDistance;
             
