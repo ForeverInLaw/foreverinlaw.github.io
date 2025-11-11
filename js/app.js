@@ -10,23 +10,6 @@ window.addEventListener('scroll', () => {
 }, { passive: true });
 
 document.addEventListener('DOMContentLoaded', () => {
-    function updateGithubStats(theme) {
-        const githubStatsImg = document.querySelector('.github-stats-card img');
-        if (!githubStatsImg) return;
-        
-        const isDark = theme === 'dark';
-        const textColor = isDark ? 'f5f5f7' : '1d1d1f';
-        const titleColor = '5e429c';
-        const iconColor = '7b5fb8';
-        
-        const url = `https://github-readme-stats.vercel.app/api?username=ForeverInLaw&show_icons=true&theme=transparent&hide_border=true&title_color=${titleColor}&icon_color=${iconColor}&text_color=${textColor}&bg_color=00000000`;
-        
-        githubStatsImg.src = url;
-    }
-    
-    const initialTheme = document.documentElement.getAttribute('data-theme') || 'dark';
-    updateGithubStats(initialTheme);
-    
     const themeToggle = document.getElementById('theme-toggle');
     
     if (themeToggle) {
@@ -37,11 +20,22 @@ document.addEventListener('DOMContentLoaded', () => {
             document.documentElement.setAttribute('data-theme', newTheme);
             localStorage.setItem('theme', newTheme);
             
-            updateGithubStats(newTheme);
-            
             const metaThemeColor = document.querySelector('meta[name="theme-color"]');
             if (metaThemeColor) {
                 metaThemeColor.setAttribute('content', newTheme === 'dark' ? '#f492f0' : '#c960c5');
+            }
+            
+            // Update aria-hidden attributes for GitHub stats images
+            const darkImg = document.querySelector('.github-stats-img--dark');
+            const lightImg = document.querySelector('.github-stats-img--light');
+            if (darkImg && lightImg) {
+                if (newTheme === 'dark') {
+                    darkImg.setAttribute('aria-hidden', 'false');
+                    lightImg.setAttribute('aria-hidden', 'true');
+                } else {
+                    darkImg.setAttribute('aria-hidden', 'true');
+                    lightImg.setAttribute('aria-hidden', 'false');
+                }
             }
         });
     }

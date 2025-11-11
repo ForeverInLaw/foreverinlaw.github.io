@@ -491,11 +491,43 @@ body::before {
     box-shadow: 0 10px 30px -10px rgba(0,0,0,.6);
 }
 
-.github-stats-card img {
+.github-stats-images {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 6px;
+}
+
+.github-stats-img {
     display: block;
     width: 100%;
     height: auto;
     border-radius: 6px;
+    transition: opacity 0.4s ease-in-out;
+}
+
+.github-stats-img--dark {
+    position: relative;
+    opacity: 1;
+    z-index: 2;
+}
+
+.github-stats-img--light {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    z-index: 1;
+}
+
+:root[data-theme="light"] .github-stats-img--dark {
+    opacity: 0;
+    z-index: 1;
+}
+
+:root[data-theme="light"] .github-stats-img--light {
+    opacity: 1;
+    z-index: 2;
 }
 
 
