@@ -40,28 +40,33 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     gsap.registerPlugin(SplitText, ScrollTrigger);
-
-    const heroTitle = document.querySelector('.hero__inner h1');
-    if (heroTitle) {
-        try {
-            const split = new SplitText(heroTitle, { type: 'chars' });
-            gsap.fromTo(split.chars, 
-                {
-                    y: 40,
-                    opacity: 0
-                },
-                {
-                    duration: 0.6,
-                    ease: 'power3.out',
-                    y: 0,
-                    opacity: 1,
-                    stagger: 0.05,
-                    clearProps: 'transform,opacity'
-                }
-            );
-        } catch (error) {
-            console.warn('SplitText animation failed:', error);
+    
+    function initPageAnimations() {
+        const heroTitle = document.querySelector('.hero__inner h1');
+        if (heroTitle) {
+            try {
+                const split = new SplitText(heroTitle, { type: 'chars' });
+                gsap.fromTo(split.chars, 
+                    {
+                        y: 40,
+                        opacity: 0
+                    },
+                    {
+                        duration: 0.6,
+                        ease: 'power3.out',
+                        y: 0,
+                        opacity: 1,
+                        stagger: 0.05,
+                        clearProps: 'transform,opacity'
+                    }
+                );
+            } catch (error) {
+                console.warn('SplitText animation failed:', error);
+            }
         }
+        
+        // Запускаем scroll анимации
+        initScrollAnimations();
     }
 
     const spotifyWidget = document.getElementById('spotify-now-playing');
@@ -250,11 +255,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     window.masonryLayout();
+    
+    // Проверяем, показывать ли entry screen
+    const entryScreen = document.getElementById('entry-screen');
+    const shouldShowEntry = entryScreen && !entryScreen.classList.contains('hidden');
+    
+    if (!shouldShowEntry) {
+        // Если entry screen не показывается, запускаем анимации сразу
+        initPageAnimations();
+    } else {
+        // Ждем события от slider (once: true - удаляет listener после первого срабатывания)
+        window.addEventListener('entryCompleted', initPageAnimations, { once: true });
+    }
 
-    const cards = document.querySelectorAll('.link-card, .project-card');
-    gsap.set(cards, { autoAlpha: 0 });
+    function initScrollAnimations() {
+        const cards = document.querySelectorAll('.link-card, .project-card');
+        gsap.set(cards, { autoAlpha: 0 });
 
-    ScrollTrigger.batch('.link-card', {
+        ScrollTrigger.batch('.link-card', {
         start: 'top 90%',
         once: true,
         onEnter: (batch) => gsap.to(batch, {
@@ -311,17 +329,18 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(markInteractiveIfDone, 500);
     }
 
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    if (prefersReducedMotion.matches) {
-        ScrollTrigger.getAll().forEach(trigger => {
-            trigger.kill();
-        });
-        gsap.set(cards, { autoAlpha: 1 });
-    }
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+        if (prefersReducedMotion.matches) {
+            ScrollTrigger.getAll().forEach(trigger => {
+                trigger.kill();
+            });
+            gsap.set(cards, { autoAlpha: 1 });
+        }
 
-    window.addEventListener('beforeunload', () => {
-        ScrollTrigger.getAll().forEach(trigger => trigger.kill());
-    });
+        window.addEventListener('beforeunload', () => {
+            ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+        });
+    }
 
     let resizeTimeout;
     window.addEventListener('resize', () => {
@@ -377,16 +396,21 @@ document.addEventListener('DOMContentLoaded', () => {
         
         animate();
 
-        const interactiveElements = 'a, button, input, textarea, select, .link-card, .project-card, .theme-toggle';
+        // Общий список интерактивных элементов для кастомного курсора
+        window.INTERACTIVE_ELEMENTS = 'a, button, input, textarea, select, .link-card, .project-card, .theme-toggle, .slide-button-handle';
         
         document.addEventListener('mouseover', (e) => {
-            if (e.target.closest(interactiveElements)) {
+            if (e.target.closest(window.INTERACTIVE_ELEMENTS)) {
                 cursor.classList.add('cursor-hover');
             }
         });
 
         document.addEventListener('mouseout', (e) => {
-            if (e.target.closest(interactiveElements)) {
+            // Не убираем hover если идет драг слайдера
+            if (document.body.classList.contains('slider-dragging')) {
+                return;
+            }
+            if (e.target.closest(window.INTERACTIVE_ELEMENTS)) {
                 cursor.classList.remove('cursor-hover');
             }
         });

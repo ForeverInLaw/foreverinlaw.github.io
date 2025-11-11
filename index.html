@@ -24,6 +24,7 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/CuL7qxO8w==" crossorigin="anonymous" media="print" onload="this.media='all'">
 	<noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"></noscript>
 	<link rel="stylesheet" href="css/main.css">
+	<link rel="stylesheet" href="css/slide-button.css">
 	<link rel="icon" type="image/svg+xml" href="img/switch.svg">
 	
 	<script type="application/ld+json">
@@ -48,9 +49,31 @@
 	<script src="libs/gsap/ScrollTrigger.min.js" defer></script>
 	<script src="libs/gsap/ScrollSmoother.min.js" defer></script>
 	<script src="js/SplitText.min.js" defer></script>
+	<script src="js/slide-button.js" defer></script>
 	<script src="js/app.js" defer></script>
 </head>
 <body>
+
+<div class="entry-screen" id="entry-screen">
+	<div class="entry-screen-grain"></div>
+	<div class="entry-container">
+		<div class="slide-button-wrapper">
+			<div class="slide-button-container" id="slide-container">
+				<div class="slide-button-track" id="slide-track"></div>
+				<div class="slide-button-handle" id="slide-handle">
+					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+						<path stroke-linecap="round" stroke-linejoin="round" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+					</svg>
+				</div>
+				<div class="slide-button-status" id="slide-status">
+					<svg class="slide-button-status-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+						<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+					</svg>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 
 <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme" title="Toggle dark/light mode">
 	<span class="theme-toggle__icon theme-toggle__icon--sun" aria-hidden="true"></span>
