@@ -348,4 +348,54 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    if (window.matchMedia('(pointer: fine)').matches) {
+        const cursor = document.createElement('div');
+        cursor.className = 'custom-cursor';
+        document.body.appendChild(cursor);
+
+        let mouseX = 0;
+        let mouseY = 0;
+        let cursorX = 0;
+        let cursorY = 0;
+        let hasMovedMouse = false;
+
+        window.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            
+            if (!hasMovedMouse) {
+                cursorX = mouseX;
+                cursorY = mouseY;
+                cursor.style.opacity = '1';
+                hasMovedMouse = true;
+            }
+        });
+
+        function animate() {
+            cursorX += (mouseX - cursorX) * 0.15;
+            cursorY += (mouseY - cursorY) * 0.15;
+            
+            cursor.style.setProperty('--cursor-x', cursorX + 'px');
+            cursor.style.setProperty('--cursor-y', cursorY + 'px');
+            
+            requestAnimationFrame(animate);
+        }
+        
+        animate();
+
+        const interactiveElements = 'a, button, input, textarea, select, .link-card, .project-card, .theme-toggle';
+        
+        document.addEventListener('mouseover', (e) => {
+            if (e.target.closest(interactiveElements)) {
+                cursor.classList.add('cursor-hover');
+            }
+        });
+
+        document.addEventListener('mouseout', (e) => {
+            if (e.target.closest(interactiveElements)) {
+                cursor.classList.remove('cursor-hover');
+            }
+        });
+    }
+
 });
