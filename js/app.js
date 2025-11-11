@@ -272,8 +272,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const cards = document.querySelectorAll('.link-card, .project-card');
         gsap.set(cards, { autoAlpha: 0 });
 
+        // Используем более раннюю активацию для мобильных устройств
+        const isMobile = window.innerWidth <= 768;
+        const startPosition = isMobile ? 'top 105%' : 'top 90%';
+
         ScrollTrigger.batch('.link-card', {
-        start: 'top 90%',
+        start: startPosition,
         once: true,
         onEnter: (batch) => gsap.to(batch, {
             duration: 0.5,
@@ -300,7 +304,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     ScrollTrigger.batch('.project-card', {
-        start: 'top 90%',
+        start: startPosition,
         once: true,
         onEnter: (batch) => gsap.to(batch, {
             duration: 0.6,

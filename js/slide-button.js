@@ -130,6 +130,13 @@
                 entryScreen.classList.add('hidden');
                 // Оповещаем что entry screen завершен
                 window.dispatchEvent(new Event('entryCompleted'));
+                
+                // Пересчитываем позиции ScrollTrigger после скрытия entry screen
+                if (typeof ScrollTrigger !== 'undefined') {
+                    setTimeout(() => {
+                        ScrollTrigger.refresh();
+                    }, 100);
+                }
             }, ANIMATION_DURATION);
         }
         
