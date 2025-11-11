@@ -706,7 +706,7 @@ body::before {
     background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
     backdrop-filter: saturate(180%) blur(20px);
     -webkit-backdrop-filter: saturate(180%) blur(20px);
-    cursor: pointer;
+    cursor: none;
     display: flex;
     align-items: center;
     justify-content: center;
