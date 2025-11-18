@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const metaThemeColor = document.querySelector('meta[name="theme-color"]');
             if (metaThemeColor) {
-                metaThemeColor.setAttribute('content', newTheme === 'dark' ? '#f492f0' : '#c960c5');
+                metaThemeColor.setAttribute('content', newTheme === 'dark' ? '#050505' : '#fafafa');
             }
             
             // Update aria-hidden attributes for GitHub stats images
@@ -233,26 +233,47 @@ document.addEventListener('DOMContentLoaded', () => {
         const items = Array.from(container.children);
         if (items.length === 0) return;
 
-        const gap = 12;
+        // Reset styles if mobile
+        if (window.innerWidth <= 768) {
+            container.style.height = 'auto';
+            items.forEach(item => {
+                item.style.position = 'relative';
+                item.style.top = 'auto';
+                item.style.left = 'auto';
+                item.style.width = '100%';
+            });
+            return;
+        }
+
+        const gap = 16;
         const containerWidth = container.offsetWidth;
-        const itemMinWidth = 200;
+        const itemMinWidth = 280;
         const columns = Math.max(1, Math.floor((containerWidth + gap) / (itemMinWidth + gap)));
         const itemWidth = (containerWidth - (gap * (columns - 1))) / columns;
 
         const columnHeights = new Array(columns).fill(0);
 
         items.forEach((item, index) => {
+            item.style.width = `${itemWidth}px`;
+            item.style.position = 'absolute';
+            
             const column = index % columns;
             
-            item.style.width = `${itemWidth}px`;
             item.style.left = `${column * (itemWidth + gap)}px`;
             item.style.top = `${columnHeights[column]}px`;
             
             columnHeights[column] += item.offsetHeight + gap;
         });
 
-        container.style.height = `${Math.max(...columnHeights) - gap}px`;
+        container.style.height = `${Math.max(...columnHeights)}px`;
+        
+        if (typeof ScrollTrigger !== 'undefined') {
+            ScrollTrigger.refresh();
+        }
     }
+
+    window.addEventListener('load', window.masonryLayout);
+    setTimeout(window.masonryLayout, 500);
 
     window.masonryLayout();
     
@@ -383,7 +404,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!hasMovedMouse) {
                 cursorX = mouseX;
                 cursorY = mouseY;
-                cursor.style.opacity = '1';
+                cursor.classList.add('has-moved');
                 hasMovedMouse = true;
             }
         });
