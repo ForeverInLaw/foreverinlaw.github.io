@@ -360,14 +360,14 @@ body[data-scrolled="true"] .site-header {
     margin-bottom: 40px;
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 900px) {
     .spotify-widget-container {
         position: fixed;
         bottom: 32px;
         right: 32px;
         top: auto;
         z-index: 100;
-        width: 280px;
+        width: 300px;
         margin: 0;
     }
 }
@@ -375,7 +375,7 @@ body[data-scrolled="true"] .site-header {
 #spotify-now-playing {
     height: 154px;
 
-    width: 300px;
+    width: 100%;
     border-radius: 16px;
     overflow: hidden;
     background: var(--card);
