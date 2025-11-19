@@ -154,21 +154,22 @@ document.addEventListener('DOMContentLoaded', () => {
                     char.style.color = color;
                 });
 
-                gsap.fromTo(splitInstance.chars,
-                    {
-                        opacity: 0,
-                        y: 40
-                    },
-                    {
-                        duration: 0.6,
-                        ease: 'power3.out',
-                        opacity: 1,
-                        y: 0,
-                        stagger: 0.1,
-                        willChange: 'transform, opacity',
-                        force3D: true
-                    }
-                );
+                // Set initial state
+                gsap.set(splitInstance.chars, {
+                    opacity: 0,
+                    y: 40
+                });
+
+                // Animate in
+                gsap.to(splitInstance.chars, {
+                    duration: 0.6,
+                    ease: 'power3.out',
+                    opacity: 1,
+                    y: 0,
+                    stagger: 0.1,
+                    willChange: 'transform, opacity',
+                    force3D: true
+                });
             } catch (error) {
                 console.warn('SplitText animation failed:', error);
                 // Fallback to visible if animation fails
@@ -182,6 +183,18 @@ document.addEventListener('DOMContentLoaded', () => {
             new Promise(resolve => setTimeout(resolve, 1000))
         ]).then(() => {
             runHeroAnimation();
+
+            // Animate link cards after a short delay
+            const linkCards = document.querySelectorAll('.link-card');
+
+            gsap.to(linkCards, {
+                autoAlpha: 1,
+                y: 0,
+                duration: 0.5,
+                stagger: 0.1,
+                ease: 'power3.out',
+                delay: 0.3 // Start shortly after hero animation begins
+            });
         });
 
         // Запускаем scroll анимации
@@ -409,31 +422,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function initScrollAnimations() {
-        const cards = document.querySelectorAll('.link-card, .project-card');
-        gsap.set(cards, { autoAlpha: 0 });
+        const projectCards = document.querySelectorAll('.project-card');
+        gsap.set(projectCards, { autoAlpha: 0 });
 
         // Используем более раннюю активацию для мобильных устройств
         const isMobile = window.innerWidth <= 768;
         const startPosition = isMobile ? 'top 105%' : 'top 90%';
 
-        ScrollTrigger.batch('.link-card', {
-            start: startPosition,
-            once: true,
-            onEnter: (batch) => gsap.to(batch, {
-                duration: 0.5,
-                autoAlpha: 1,
-                stagger: 0.08,
-                ease: 'power3.out',
-                overwrite: 'auto'
-            }).then(() => {
-                batch.forEach(el => {
-                    gsap.set(el, { clearProps: 'transform' });
-                });
-            })
-        });
-
         const projectsRow = document.querySelector('.projects-row');
-        const projectCards = document.querySelectorAll('.project-card');
         let revealedCount = 0;
 
         function markInteractiveIfDone() {
@@ -478,7 +474,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ScrollTrigger.getAll().forEach(trigger => {
                 trigger.kill();
             });
-            gsap.set(cards, { autoAlpha: 1 });
+            gsap.set(projectCards, { autoAlpha: 1 });
         }
 
         window.addEventListener('beforeunload', () => {
