@@ -13,11 +13,11 @@
     --border-hover: rgba(255, 255, 255, 0.2);
     --accent: #f492f0;
     --accent-glow: rgba(244, 146, 240, 0.4);
-    --transition-smooth: cubic-bezier(0.22, 1, 0.36, 1); 
+    --transition-smooth: cubic-bezier(0.22, 1, 0.36, 1);
     --transition-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
-    --noise-opacity: 0.07; 
-    --gradient-1: rgba(244, 146, 240, 0.35); 
-    --gradient-2: rgba(94, 66, 156, 0.35); 
+    --noise-opacity: 0.07;
+    --gradient-1: rgba(244, 146, 240, 0.35);
+    --gradient-2: rgba(94, 66, 156, 0.35);
     --gradient-3: rgba(0, 0, 0, 0.4);
     --github-brand: #ffffff;
 }
@@ -31,9 +31,9 @@
     --border-hover: rgba(0, 0, 0, 0.15);
     --accent: #d04ec5;
     --accent-glow: rgba(208, 78, 197, 0.3);
-    --noise-opacity: 0.05; 
-    --gradient-1: rgba(244, 146, 240, 0.5); 
-    --gradient-2: rgba(94, 66, 156, 0.5); 
+    --noise-opacity: 0.05;
+    --gradient-1: rgba(244, 146, 240, 0.5);
+    --gradient-2: rgba(94, 66, 156, 0.5);
     --gradient-3: rgba(255, 255, 255, 0.5);
     --github-brand: #1d1d1f;
 }
@@ -79,7 +79,9 @@ body {
 }
 
 @media (pointer: coarse) {
-    body, * {
+
+    body,
+    * {
         cursor: auto;
     }
 }
@@ -116,8 +118,13 @@ body::before {
 }
 
 @keyframes gradientFloat {
-    0% { transform: translate(0, 0); }
-    100% { transform: translate(-20px, 20px); }
+    0% {
+        transform: translate(0, 0);
+    }
+
+    100% {
+        transform: translate(-20px, 20px);
+    }
 }
 
 .content {
@@ -146,7 +153,7 @@ body[data-scrolled="true"] .site-header {
 .hero {
     min-height: 80vh;
     display: flex;
-    align-items: center; 
+    align-items: center;
     justify-content: flex-start;
     padding: 120px 24px 60px;
     position: relative;
@@ -164,16 +171,20 @@ body[data-scrolled="true"] .site-header {
     font-weight: 900;
     line-height: 0.95;
     margin-bottom: 0.2em;
-    color: var(--fg); /* Fallback for browsers not supporting background-clip: text */
+    color: var(--fg);
+    /* Fallback */
+    padding-right: 0.1em;
+    /* Prevent cropping of italic/wide glyphs */
 }
 
 @supports (-webkit-background-clip: text) or (background-clip: text) {
     .hero h1 {
-        background: linear-gradient(to right, var(--fg) 20%, var(--muted) 100%);
+        background-image: linear-gradient(to right, var(--fg) 20%, var(--muted) 100%);
         -webkit-background-clip: text;
         background-clip: text;
+        -webkit-text-fill-color: transparent;
         color: transparent;
-        display: inline-block; 
+        display: inline-block;
     }
 }
 
@@ -223,7 +234,8 @@ body[data-scrolled="true"] .site-header {
 }
 
 /* Cards (Links & Projects) */
-.link-card, .project-card {
+.link-card,
+.project-card {
     display: flex;
     flex-direction: column;
     padding: 24px;
@@ -256,25 +268,28 @@ body[data-scrolled="true"] .site-header {
 }
 
 /* Card Hover Effects */
-.link-card::after, .project-card::after {
+.link-card::after,
+.project-card::after {
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(600px circle at var(--mouse-x, center) var(--mouse-y, center), rgba(255,255,255,0.06), transparent 40%);
+    background: radial-gradient(600px circle at var(--mouse-x, center) var(--mouse-y, center), rgba(255, 255, 255, 0.06), transparent 40%);
     opacity: 0;
     transition: opacity 0.3s ease;
     z-index: 1;
     pointer-events: none;
 }
 
-.link-card:hover::after, .project-card:hover::after {
+.link-card:hover::after,
+.project-card:hover::after {
     opacity: 1;
 }
 
-.link-card:hover, .project-card:hover {
+.link-card:hover,
+.project-card:hover {
     transform: translateY(-4px);
     border-color: var(--border-hover);
-    box-shadow: 0 20px 40px -10px rgba(0,0,0,0.3);
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.3);
 }
 
 .link-card:hover i {
@@ -283,13 +298,33 @@ body[data-scrolled="true"] .site-header {
 }
 
 /* Specific Colors for brands on hover */
-.link-card.telegram:hover i { color: #229ED9; }
-.link-card.youtube:hover i { color: #FF0000; }
-.link-card.instagram:hover i { color: #E1306C; }
-.link-card.vk:hover i { color: #4C75A3; }
-.link-card.spotify:hover i { color: #1DB954; }
-.link-card.github:hover i { color: var(--github-brand); }
-.link-card.email:hover i { color: var(--accent); }
+.link-card.telegram:hover i {
+    color: #229ED9;
+}
+
+.link-card.youtube:hover i {
+    color: #FF0000;
+}
+
+.link-card.instagram:hover i {
+    color: #E1306C;
+}
+
+.link-card.vk:hover i {
+    color: #4C75A3;
+}
+
+.link-card.spotify:hover i {
+    color: #1DB954;
+}
+
+.link-card.github:hover i {
+    color: var(--github-brand);
+}
+
+.link-card.email:hover i {
+    color: var(--accent);
+}
 
 /* Projects Section */
 .projects {
@@ -302,9 +337,11 @@ body[data-scrolled="true"] .site-header {
     margin-top: 32px;
 }
 
-.projects-row > li {
-    position: absolute; /* For Masonry */
-    width: 100%; /* Will be overridden by JS */
+.projects-row>li {
+    position: absolute;
+    /* For Masonry */
+    width: 100%;
+    /* Will be overridden by JS */
 }
 
 .project-card {
@@ -343,7 +380,7 @@ body[data-scrolled="true"] .site-header {
 }
 
 #spotify-now-playing {
-    height: 152px; 
+    height: 152px;
     border-radius: 16px;
     overflow: hidden;
     background: var(--card);
@@ -353,7 +390,7 @@ body[data-scrolled="true"] .site-header {
 
 #spotify-now-playing:hover {
     transform: scale(1.02);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
 .github-stats {
@@ -436,7 +473,7 @@ body[data-scrolled="true"] .site-header {
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    background-color: var(--fg);
+    background-color: #ffffff;
     pointer-events: none;
     z-index: 99999;
     left: var(--cursor-x, 0);
@@ -454,7 +491,7 @@ body:hover .custom-cursor.has-moved {
 
 .custom-cursor.cursor-hover {
     transform: translate(-50%, -50%) scale(3);
-    background-color: var(--fg);
+    background-color: #ffffff;
     opacity: 1;
     mix-blend-mode: difference;
 }
@@ -473,15 +510,15 @@ body:hover .custom-cursor.has-moved {
     .links-grid {
         grid-template-columns: repeat(2, 1fr);
     }
-    
-    .projects-row > li {
+
+    .projects-row>li {
         position: relative !important;
         top: auto !important;
         left: auto !important;
         width: 100% !important;
         margin-bottom: 16px;
     }
-    
+
     .projects-row {
         display: flex;
         flex-direction: column;
@@ -526,30 +563,30 @@ body:hover .custom-cursor.has-moved {
     font-size: 11px;
     font-weight: 600;
     padding: 6px 10px;
-    background: rgba(255,255,255,0.05);
+    background: rgba(255, 255, 255, 0.05);
     border-radius: 6px;
     color: var(--muted);
     transition: color 0.3s ease, background 0.3s ease;
 }
 
 .project-card:hover .project-tag {
-    background: rgba(255,255,255,0.1);
+    background: rgba(255, 255, 255, 0.1);
     color: var(--fg);
 }
 
 :root[data-theme="light"] .project-tag {
-    background: rgba(0,0,0,0.05);
+    background: rgba(0, 0, 0, 0.05);
 }
 
 :root[data-theme="light"] .project-card:hover .project-tag {
-    background: rgba(0,0,0,0.08);
+    background: rgba(0, 0, 0, 0.08);
 }
 
 
 .github-stats-images {
     position: relative;
     width: 100%;
-    line-height: 0; 
+    line-height: 0;
 }
 
 .github-stats-img {
@@ -583,4 +620,10 @@ body:hover .custom-cursor.has-moved {
     z-index: 2;
 }
 
-
+.split-char {
+    display: inline-block;
+    background-image: none !important;
+    -webkit-background-clip: initial !important;
+    background-clip: initial !important;
+    -webkit-text-fill-color: initial !important;
+}

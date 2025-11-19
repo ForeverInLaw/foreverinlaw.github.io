@@ -6,25 +6,25 @@
 })();
 
 window.addEventListener('scroll', () => {
-	document.body.style.cssText += `--scrollTop: ${window.scrollY}px`;
+    document.body.style.cssText += `--scrollTop: ${window.scrollY}px`;
 }, { passive: true });
 
 document.addEventListener('DOMContentLoaded', () => {
     const themeToggle = document.getElementById('theme-toggle');
-    
+
     if (themeToggle) {
         themeToggle.addEventListener('click', () => {
             const currentTheme = document.documentElement.getAttribute('data-theme');
             const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            
+
             document.documentElement.setAttribute('data-theme', newTheme);
             localStorage.setItem('theme', newTheme);
-            
+
             const metaThemeColor = document.querySelector('meta[name="theme-color"]');
             if (metaThemeColor) {
                 metaThemeColor.setAttribute('content', newTheme === 'dark' ? '#050505' : '#fafafa');
             }
-            
+
             // Update aria-hidden attributes for GitHub stats images
             const darkImg = document.querySelector('.github-stats-img--dark');
             const lightImg = document.querySelector('.github-stats-img--light');
@@ -37,34 +37,153 @@ document.addEventListener('DOMContentLoaded', () => {
                     lightImg.setAttribute('aria-hidden', 'false');
                 }
             }
+
+            // Update hero title gradient colors with smooth transition
+            updateHeroTitleColors();
         });
     }
     gsap.registerPlugin(SplitText, ScrollTrigger);
-    
+
+    function updateHeroTitleColors() {
+        const heroTitle = document.querySelector('.hero__inner h1');
+        if (!heroTitle || !heroTitle._rbsplitInstance) return;
+
+        const computedStyle = getComputedStyle(document.documentElement);
+        const fgColor = computedStyle.getPropertyValue('--fg').trim();
+        const mutedColor = computedStyle.getPropertyValue('--muted').trim();
+
+        const interpolateColor = (color1, color2, factor) => {
+            const c1 = parseInt(color1.replace('#', ''), 16);
+            const c2 = parseInt(color2.replace('#', ''), 16);
+
+            const r1 = (c1 >> 16) & 0xff;
+            const g1 = (c1 >> 8) & 0xff;
+            const b1 = c1 & 0xff;
+
+            const r2 = (c2 >> 16) & 0xff;
+            const g2 = (c2 >> 8) & 0xff;
+            const b2 = c2 & 0xff;
+
+            const r = Math.round(r1 + (r2 - r1) * factor);
+            const g = Math.round(g1 + (g2 - g1) * factor);
+            const b = Math.round(b1 + (b2 - b1) * factor);
+
+            return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
+        };
+
+        const totalChars = heroTitle._rbsplitInstance.chars.length;
+
+        // Animate color transition smoothly with GSAP
+        heroTitle._rbsplitInstance.chars.forEach((char, index) => {
+            const position = index / (totalChars - 1);
+            let targetColor;
+            if (position <= 0.2) {
+                targetColor = fgColor;
+            } else {
+                const gradientFactor = (position - 0.2) / 0.8;
+                targetColor = interpolateColor(fgColor, mutedColor, gradientFactor);
+            }
+
+            gsap.to(char, {
+                color: targetColor,
+                duration: 0.5,
+                ease: 'power2.out'
+            });
+        });
+    }
+
     function initPageAnimations() {
         const heroTitle = document.querySelector('.hero__inner h1');
-        if (heroTitle) {
+
+        const runHeroAnimation = () => {
+            if (!heroTitle) return;
+
+            // Cleanup if exists
+            if (heroTitle._rbsplitInstance) {
+                try { heroTitle._rbsplitInstance.revert(); } catch (e) { }
+                heroTitle._rbsplitInstance = null;
+            }
+
             try {
-                const split = new SplitText(heroTitle, { type: 'chars' });
-                gsap.fromTo(split.chars, 
+                const splitInstance = new SplitText(heroTitle, {
+                    type: 'chars',
+                    smartWrap: true,
+                    charsClass: 'split-char',
+                    reduceWhiteSpace: false,
+                    tag: 'span'
+                });
+
+                heroTitle._rbsplitInstance = splitInstance;
+
+                // Get CSS variable colors
+                const computedStyle = getComputedStyle(document.documentElement);
+                const fgColor = computedStyle.getPropertyValue('--fg').trim();
+                const mutedColor = computedStyle.getPropertyValue('--muted').trim();
+
+                // Helper to interpolate between two hex colors
+                const interpolateColor = (color1, color2, factor) => {
+                    const c1 = parseInt(color1.replace('#', ''), 16);
+                    const c2 = parseInt(color2.replace('#', ''), 16);
+
+                    const r1 = (c1 >> 16) & 0xff;
+                    const g1 = (c1 >> 8) & 0xff;
+                    const b1 = c1 & 0xff;
+
+                    const r2 = (c2 >> 16) & 0xff;
+                    const g2 = (c2 >> 8) & 0xff;
+                    const b2 = c2 & 0xff;
+
+                    const r = Math.round(r1 + (r2 - r1) * factor);
+                    const g = Math.round(g1 + (g2 - g1) * factor);
+                    const b = Math.round(b1 + (b2 - b1) * factor);
+
+                    return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
+                };
+
+                // Assign color to each character based on position
+                const totalChars = splitInstance.chars.length;
+                splitInstance.chars.forEach((char, index) => {
+                    const position = index / (totalChars - 1); // 0 to 1
+                    let color;
+                    if (position <= 0.2) {
+                        color = fgColor;
+                    } else {
+                        const gradientFactor = (position - 0.2) / 0.8;
+                        color = interpolateColor(fgColor, mutedColor, gradientFactor);
+                    }
+                    char.style.color = color;
+                });
+
+                gsap.fromTo(splitInstance.chars,
                     {
-                        y: 40,
-                        opacity: 0
+                        opacity: 0,
+                        y: 40
                     },
                     {
                         duration: 0.6,
                         ease: 'power3.out',
-                        y: 0,
                         opacity: 1,
-                        stagger: 0.05,
-                        clearProps: 'transform,opacity'
+                        y: 0,
+                        stagger: 0.1,
+                        willChange: 'transform, opacity',
+                        force3D: true
                     }
                 );
             } catch (error) {
                 console.warn('SplitText animation failed:', error);
+                // Fallback to visible if animation fails
+                gsap.set(heroTitle, { opacity: 1, clearProps: 'all' });
             }
-        }
-        
+        };
+
+        // Run animation when fonts load or after timeout
+        Promise.race([
+            document.fonts.ready,
+            new Promise(resolve => setTimeout(resolve, 1000))
+        ]).then(() => {
+            runHeroAnimation();
+        });
+
         // Запускаем scroll анимации
         initScrollAnimations();
     }
@@ -72,7 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const spotifyWidget = document.getElementById('spotify-now-playing');
     const spotifyTitle = document.querySelector('.spotify-title');
     const apiUrl = 'https://spotify-show-last-68db402e666c.herokuapp.com/api/now-playing';
-    
+
     if (spotifyTitle) {
         spotifyTitle.classList.add('loading');
     }
@@ -82,14 +201,14 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), 10000);
-                
-                const response = await fetch(url, { 
+
+                const response = await fetch(url, {
                     cache: 'no-store',
-                    signal: controller.signal 
+                    signal: controller.signal
                 });
-                
+
                 clearTimeout(timeoutId);
-                
+
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -108,21 +227,21 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentTrackId = null;
     let currentIframe = null;
     let isFetching = false;
-    
+
     function updateTitleText(newText) {
         if (!spotifyTitle || spotifyTitle.textContent === newText) return;
-        
+
         spotifyTitle.classList.add('fade-out');
-        
+
         setTimeout(() => {
             spotifyTitle.textContent = newText;
             spotifyTitle.classList.remove('fade-out');
             spotifyTitle.classList.add('fade-in');
-            
+
             if (newText !== 'Loading...') {
                 spotifyTitle.classList.remove('loading');
             }
-            
+
             setTimeout(() => {
                 spotifyTitle.classList.remove('fade-in');
             }, 500);
@@ -139,7 +258,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function showTrack(html) {
         if (!spotifyWidget) return;
-        
+
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = html;
         const newIframe = tempDiv.querySelector('iframe');
@@ -150,16 +269,16 @@ document.addEventListener('DOMContentLoaded', () => {
             currentIframe.remove();
         }
         currentIframe = newIframe;
-        
+
         newIframe.title = 'Spotify player';
         newIframe.loading = 'lazy';
-        
+
         spotifyWidget.appendChild(currentIframe);
 
         currentIframe.onload = () => {
             spotifyWidget.classList.add('is-loaded');
         };
-        
+
         currentIframe.onerror = () => {
             console.error('Failed to load Spotify iframe');
             showPlaceholder();
@@ -175,7 +294,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function fetchNowPlaying() {
         if (isFetching) return;
         isFetching = true;
-        
+
         try {
             const data = await fetchJsonWithFallback(apiUrl);
 
@@ -226,7 +345,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setInterval(fetchNowPlaying, 15000);
     }
 
-    window.masonryLayout = function() {
+    window.masonryLayout = function () {
         const container = document.querySelector('.projects-row');
         if (!container) return;
 
@@ -256,17 +375,17 @@ document.addEventListener('DOMContentLoaded', () => {
         items.forEach((item, index) => {
             item.style.width = `${itemWidth}px`;
             item.style.position = 'absolute';
-            
+
             const column = index % columns;
-            
+
             item.style.left = `${column * (itemWidth + gap)}px`;
             item.style.top = `${columnHeights[column]}px`;
-            
+
             columnHeights[column] += item.offsetHeight + gap;
         });
 
         container.style.height = `${Math.max(...columnHeights)}px`;
-        
+
         if (typeof ScrollTrigger !== 'undefined') {
             ScrollTrigger.refresh();
         }
@@ -276,11 +395,11 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(window.masonryLayout, 500);
 
     window.masonryLayout();
-    
+
     // Проверяем, показывать ли entry screen
     const entryScreen = document.getElementById('entry-screen');
     const shouldShowEntry = entryScreen && !entryScreen.classList.contains('hidden');
-    
+
     if (!shouldShowEntry) {
         // Если entry screen не показывается, запускаем анимации сразу
         initPageAnimations();
@@ -298,61 +417,61 @@ document.addEventListener('DOMContentLoaded', () => {
         const startPosition = isMobile ? 'top 105%' : 'top 90%';
 
         ScrollTrigger.batch('.link-card', {
-        start: startPosition,
-        once: true,
-        onEnter: (batch) => gsap.to(batch, {
-            duration: 0.5,
-            autoAlpha: 1,
-            stagger: 0.08,
-            ease: 'power3.out',
-            overwrite: 'auto'
-        }).then(() => {
-            batch.forEach(el => {
-                gsap.set(el, { clearProps: 'transform' });
-            });
-        })
-    });
+            start: startPosition,
+            once: true,
+            onEnter: (batch) => gsap.to(batch, {
+                duration: 0.5,
+                autoAlpha: 1,
+                stagger: 0.08,
+                ease: 'power3.out',
+                overwrite: 'auto'
+            }).then(() => {
+                batch.forEach(el => {
+                    gsap.set(el, { clearProps: 'transform' });
+                });
+            })
+        });
 
-    const projectsRow = document.querySelector('.projects-row');
-    const projectCards = document.querySelectorAll('.project-card');
-    let revealedCount = 0;
+        const projectsRow = document.querySelector('.projects-row');
+        const projectCards = document.querySelectorAll('.project-card');
+        let revealedCount = 0;
 
-    function markInteractiveIfDone() {
-        if (!projectsRow || projectCards.length === 0) return;
-        if (revealedCount >= projectCards.length) {
-            projectsRow.classList.add('is-interactive');
+        function markInteractiveIfDone() {
+            if (!projectsRow || projectCards.length === 0) return;
+            if (revealedCount >= projectCards.length) {
+                projectsRow.classList.add('is-interactive');
+            }
         }
-    }
 
-    ScrollTrigger.batch('.project-card', {
-        start: startPosition,
-        once: true,
-        onEnter: (batch) => gsap.to(batch, {
-            duration: 0.6,
-            autoAlpha: 1,
-            stagger: 0.08,
-            ease: 'power3.out',
-            overwrite: 'auto'
-        }).then(() => {
-            batch.forEach(el => {
-                gsap.set(el, { clearProps: 'transform' });
-                if (!el.dataset.revealed) {
-                    el.dataset.revealed = 'true';
-                    revealedCount += 1;
-                }
-            });
-            markInteractiveIfDone();
-            setTimeout(() => {
-                if (window.masonryLayout) window.masonryLayout();
-            }, 100);
-        })
-    });
+        ScrollTrigger.batch('.project-card', {
+            start: startPosition,
+            once: true,
+            onEnter: (batch) => gsap.to(batch, {
+                duration: 0.6,
+                autoAlpha: 1,
+                stagger: 0.08,
+                ease: 'power3.out',
+                overwrite: 'auto'
+            }).then(() => {
+                batch.forEach(el => {
+                    gsap.set(el, { clearProps: 'transform' });
+                    if (!el.dataset.revealed) {
+                        el.dataset.revealed = 'true';
+                        revealedCount += 1;
+                    }
+                });
+                markInteractiveIfDone();
+                setTimeout(() => {
+                    if (window.masonryLayout) window.masonryLayout();
+                }, 100);
+            })
+        });
 
-    if ('requestIdleCallback' in window) {
-        requestIdleCallback(() => markInteractiveIfDone());
-    } else {
-        setTimeout(markInteractiveIfDone, 500);
-    }
+        if ('requestIdleCallback' in window) {
+            requestIdleCallback(() => markInteractiveIfDone());
+        } else {
+            setTimeout(markInteractiveIfDone, 500);
+        }
 
         const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
         if (prefersReducedMotion.matches) {
@@ -400,7 +519,7 @@ document.addEventListener('DOMContentLoaded', () => {
         window.addEventListener('mousemove', (e) => {
             mouseX = e.clientX;
             mouseY = e.clientY;
-            
+
             if (!hasMovedMouse) {
                 cursorX = mouseX;
                 cursorY = mouseY;
@@ -412,18 +531,18 @@ document.addEventListener('DOMContentLoaded', () => {
         function animate() {
             cursorX += (mouseX - cursorX) * 0.15;
             cursorY += (mouseY - cursorY) * 0.15;
-            
+
             cursor.style.setProperty('--cursor-x', cursorX + 'px');
             cursor.style.setProperty('--cursor-y', cursorY + 'px');
-            
+
             requestAnimationFrame(animate);
         }
-        
+
         animate();
 
         // Общий список интерактивных элементов для кастомного курсора
         window.INTERACTIVE_ELEMENTS = 'a, button, input, textarea, select, .link-card, .project-card, .theme-toggle, .slide-button-handle';
-        
+
         document.addEventListener('mouseover', (e) => {
             if (e.target.closest(window.INTERACTIVE_ELEMENTS)) {
                 cursor.classList.add('cursor-hover');
