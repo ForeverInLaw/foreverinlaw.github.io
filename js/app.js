@@ -389,7 +389,15 @@ document.addEventListener('DOMContentLoaded', () => {
             item.style.width = `${itemWidth}px`;
             item.style.position = 'absolute';
 
-            const column = index % columns;
+            // Find the column with the smallest height to create a true masonry layout
+            let minHeight = columnHeights[0];
+            let column = 0;
+            for (let i = 1; i < columns; i++) {
+                if (columnHeights[i] < minHeight) {
+                    minHeight = columnHeights[i];
+                    column = i;
+                }
+            }
 
             item.style.left = `${column * (itemWidth + gap)}px`;
             item.style.top = `${columnHeights[column]}px`;
