@@ -17,18 +17,13 @@
 	<meta property="og:description" content="Building digital experiences with code and creativity.">
 	<meta property="og:type" content="website">
 	<meta property="og:url" content="https://foreverinlaw.github.io">
-	<meta property="og:image" content="https://foreverinlaw.github.io/img/switch.svg">
-
-	<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-	<link rel="preconnect" href="https://open.spotify.com" crossorigin>
-	<link rel="dns-prefetch" href="https://spotify-show-last-68db402e666c.herokuapp.com">
-
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-		crossorigin="anonymous">
-	<link rel="stylesheet" href="css/main.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+	<link rel="stylesheet" href="css/variables.css">
+	<link rel="stylesheet" href="css/base.css">
+	<link rel="stylesheet" href="css/layout.css">
+	<link rel="stylesheet" href="css/components.css">
+	<link rel="stylesheet" href="css/sections.css">
 	<link rel="stylesheet" href="css/slide-button.css">
-	<link rel="icon" type="image/svg+xml" href="img/switch.svg">
-
 	<script src="libs/gsap/gsap.min.js" defer></script>
 	<script src="libs/gsap/ScrollTrigger.min.js" defer></script>
 	<script src="libs/gsap/ScrollSmoother.min.js" defer></script>
@@ -224,16 +219,56 @@
 						</ul>
 					</div>
 
+					<div class="playlists-section">
+						<div class="section-title">My Playlists</div>
+						<ul class="playlists-row" id="playlists-container">
+							<!-- Playlists will be injected here -->
+						</ul>
+					</div>
+
 					<section class="github-stats" aria-labelledby="github-stats-title">
-						<div class="section-title" id="github-stats-title">Contribution Graph</div>
-						<div class="github-stats-card">
-							<div class="github-stats-images">
-								<img class="github-stats-img github-stats-img--dark"
-									src="https://github-readme-stats-red-beta-89.vercel.app/api?username=ForeverInLaw&show_icons=true&theme=transparent&hide_border=true&title_color=f492f0&icon_color=a1a1a6&text_color=f5f5f7&bg_color=00000000"
-									alt="ForeverInLaw's GitHub Stats" loading="lazy">
-								<img class="github-stats-img github-stats-img--light"
-									src="https://github-readme-stats-red-beta-89.vercel.app/api?username=ForeverInLaw&show_icons=true&theme=transparent&hide_border=true&title_color=d04ec5&icon_color=666666&text_color=111111&bg_color=00000000"
-									alt="ForeverInLaw's GitHub Stats" loading="lazy" aria-hidden="true">
+						<div class="section-header-wrapper">
+							<h2 class="section-title" id="github-stats-title">Contribution Graph</h2>
+							<p class="section-subtitle">Code contributions and activity analytics.</p>
+						</div>
+
+						<div class="stats-grid">
+							<!-- Stats Card -->
+							<div class="stat-card overview-card">
+								<div class="card-glow"></div>
+								<div class="card-header">
+									<span class="card-label">Overview</span>
+									<i class="fab fa-github card-icon" aria-hidden="true"></i>
+								</div>
+								<div class="card-content">
+									<div class="stats-image-wrapper">
+										<img class="stats-img stats-img--dark"
+											src="https://github-readme-stats-red-beta-89.vercel.app/api?username=ForeverInLaw&show_icons=true&theme=transparent&hide_border=true&title_color=f492f0&icon_color=a1a1a6&text_color=f5f5f7&bg_color=00000000"
+											alt="ForeverInLaw's GitHub Stats" loading="lazy">
+										<img class="stats-img stats-img--light"
+											src="https://github-readme-stats-red-beta-89.vercel.app/api?username=ForeverInLaw&show_icons=true&theme=transparent&hide_border=true&title_color=d04ec5&icon_color=666666&text_color=111111&bg_color=00000000"
+											alt="ForeverInLaw's GitHub Stats" loading="lazy" aria-hidden="true">
+									</div>
+								</div>
+							</div>
+
+							<!-- Graph Card -->
+							<div class="stat-card graph-card">
+								<div class="card-glow"></div>
+								<div class="card-header">
+									<span class="card-label">Contribution Map</span>
+									<i class="fas fa-history card-icon" aria-hidden="true"></i>
+								</div>
+								<div class="card-content">
+									<div class="graph-wrapper">
+										<img class="graph-img graph-img--dark"
+											src="https://ghchart.rshah.org/0b6d0f/ForeverInLaw"
+											alt="ForeverInLaw's Contribution Graph" loading="lazy">
+										<img class="graph-img graph-img--light"
+											src="https://ghchart.rshah.org/d04ec5/ForeverInLaw"
+											alt="ForeverInLaw's Contribution Graph" loading="lazy" aria-hidden="true">
+									</div>
+								</div>
 							</div>
 						</div>
 					</section>

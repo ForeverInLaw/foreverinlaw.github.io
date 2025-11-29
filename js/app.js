@@ -26,17 +26,19 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // Update aria-hidden attributes for GitHub stats images
-            const darkImg = document.querySelector('.github-stats-img--dark');
-            const lightImg = document.querySelector('.github-stats-img--light');
-            if (darkImg && lightImg) {
-                if (newTheme === 'dark') {
-                    darkImg.setAttribute('aria-hidden', 'false');
-                    lightImg.setAttribute('aria-hidden', 'true');
-                } else {
-                    darkImg.setAttribute('aria-hidden', 'true');
-                    lightImg.setAttribute('aria-hidden', 'false');
-                }
-            }
+            const updateStatsImages = () => {
+                const darkImgs = document.querySelectorAll('.stats-img--dark, .graph-img--dark');
+                const lightImgs = document.querySelectorAll('.stats-img--light, .graph-img--light');
+
+                darkImgs.forEach(img => {
+                    img.setAttribute('aria-hidden', newTheme === 'dark' ? 'false' : 'true');
+                });
+
+                lightImgs.forEach(img => {
+                    img.setAttribute('aria-hidden', newTheme === 'light' ? 'false' : 'true');
+                });
+            };
+            updateStatsImages();
 
             // Update hero title gradient colors with smooth transition
             updateHeroTitleColors();
@@ -545,7 +547,7 @@ document.addEventListener('DOMContentLoaded', () => {
         animate();
 
         // Общий список интерактивных элементов для кастомного курсора
-        window.INTERACTIVE_ELEMENTS = 'a, button, input, textarea, select, .link-card, .project-card, .theme-toggle, .slide-button-handle';
+        window.INTERACTIVE_ELEMENTS = 'a, button, input, textarea, select, .link-card, .project-card, .theme-toggle, .slide-button-handle, .playlist-card';
 
         document.addEventListener('mouseover', (e) => {
             if (e.target.closest(window.INTERACTIVE_ELEMENTS)) {
@@ -563,5 +565,84 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // Fetch and render playlists
+    async function fetchPlaylists() {
+        const container = document.getElementById('playlists-container');
+        if (!container) return;
+
+        try {
+            const response = await fetch('https://spotify-show-last-68db402e666c.herokuapp.com/api/playlists');
+            if (!response.ok) throw new Error('Failed to fetch playlists');
+
+            const playlists = await response.json();
+
+            container.innerHTML = playlists.map(playlist => `
+                <li>
+                    <a class="playlist-card" href="${playlist.url}" target="_blank" rel="noopener noreferrer">
+                        <div class="vinyl-wrapper">
+                            <div class="vinyl-record">
+                                <div class="vinyl-rotator">
+                                    <div class="vinyl-label" style="background-image: url('${playlist.image}')"></div>
+                                </div>
+                            </div>
+                            <div class="playlist-cover-art">
+                                <img src="${playlist.image}" alt="${playlist.name}" loading="lazy" />
+                            </div>
+                        </div>
+                        <div class="playlist-content">
+                            <span class="playlist-meta">${playlist.tracks} Tracks</span>
+                            <div class="playlist-header">
+                                <h3>${playlist.name}</h3>
+                            </div>
+                            <p class="playlist-description">${playlist.description || 'A curated Spotify playlist.'}</p>
+                        </div>
+                    </a>
+                </li>
+            `).join('');
+
+            // Add interactive listeners for mobile tap-to-animate-then-navigate
+            const cards = container.querySelectorAll('.playlist-card');
+            cards.forEach(card => {
+                card.addEventListener('click', (e) => {
+                    // Check for mobile breakpoint
+                    if (window.matchMedia('(max-width: 768px)').matches) {
+                        e.preventDefault();
+
+                        // Prevent double tap if animation is already running
+                        if (card.classList.contains('is-active')) return;
+
+                        const url = card.href;
+
+                        // Reset others
+                        cards.forEach(c => c.classList.remove('is-active'));
+
+                        // Activate current
+                        card.classList.add('is-active');
+
+                        // Wait for animation then navigate
+                        setTimeout(() => {
+                            window.open(url, '_blank');
+                            
+                            // Reset state after a short delay so it closes smoothly
+                            setTimeout(() => {
+                                card.classList.remove('is-active');
+                            }, 100);
+                        }, 1000);
+                    }
+                });
+            });
+
+            // Trigger scroll animations for new elements
+            if (typeof ScrollTrigger !== 'undefined') {
+                ScrollTrigger.refresh();
+            }
+        } catch (error) {
+            console.error('Error loading playlists:', error);
+            container.innerHTML = '<p style="color: var(--muted); padding: 20px;">Unable to load playlists at the moment.</p>';
+        }
+    }
+
+    fetchPlaylists();
 
 });
