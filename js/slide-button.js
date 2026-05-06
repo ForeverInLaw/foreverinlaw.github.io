@@ -22,14 +22,30 @@
         const handle = document.getElementById('slide-handle');
         const track = document.getElementById('slide-track');
         const statusElement = document.getElementById('slide-status');
-        
+
         if (!entryScreen || !container || !handle || !track || !statusElement) {
             console.error('Slide button elements not found');
+            document.body.classList.remove('entry-active');
             return;
+        }
+
+        // Skip entry screen if already completed this session
+        if (sessionStorage.getItem('entryCompleted')) {
+            entryScreen.classList.add('hidden');
+            document.body.classList.remove('entry-active');
+            window.dispatchEvent(new Event('entryCompleted'));
+            return;
+        }
+
+        if (!entryScreen.classList.contains('hidden')) {
+            document.body.classList.add('entry-active');
+        } else {
+            document.body.classList.remove('entry-active');
         }
         
         if (typeof gsap === 'undefined') {
             console.error('GSAP not loaded');
+            document.body.classList.remove('entry-active');
             return;
         }
     
@@ -80,12 +96,18 @@
             document.body.classList.add('slider-dragging');
             
             e.preventDefault();
+            if (e.type.startsWith('touch')) {
+                e.stopPropagation();
+            }
         }
         
         function handleDragMove(e) {
             if (!isDragging) return;
             
             e.preventDefault();
+            if (e.type.startsWith('touch')) {
+                e.stopPropagation(); // Critical: Stop event from bubbling to iOS navigation handlers
+            }
             targetDragX = Math.max(0, Math.min(getClientX(e) - startX, maxDragDistance));
             
             animState.x = currentX;
@@ -150,6 +172,8 @@
             
             setTimeout(() => {
                 entryScreen.classList.add('hidden');
+                document.body.classList.remove('entry-active');
+                sessionStorage.setItem('entryCompleted', '1');
                 // Оповещаем что entry screen завершен
                 window.dispatchEvent(new Event('entryCompleted'));
                 

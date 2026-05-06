@@ -5,59 +5,25 @@
     overflow-x: hidden;
 }
 
-.wrapper::before {
-    content: '';
+.grainient-bg {
     position: fixed;
     inset: 0;
-    z-index: -2;
-    background:
-        radial-gradient(circle 900px at 80% -10%, var(--gradient-1), transparent 65%),
-        radial-gradient(circle 650px at 10% 100%, var(--gradient-2), transparent 60%);
-    filter: blur(50px);
-    opacity: 0.9;
-    animation: gradientFloat 18s ease-in-out infinite alternate;
+    z-index: 0;
     pointer-events: none;
+    overflow: hidden;
+    opacity: 0.78;
+    min-height: 100vh;
+    min-height: 100dvh;
 }
 
-.wrapper::after {
-    content: '';
-    position: fixed;
-    inset: 0;
-    z-index: -3;
-    background:
-        radial-gradient(circle 950px at 15% 120%, var(--gradient-2), transparent 70%),
-        radial-gradient(circle 700px at 90% 0%, var(--gradient-1), transparent 70%);
-    filter: blur(70px);
-    opacity: 0;
-    pointer-events: none;
-    animation: heroGradientFade 14s ease-in-out infinite;
+.grainient-bg canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
 }
 
-@keyframes gradientFloat {
-    0% {
-        transform: translate(0, 0) scale(1);
-    }
-
-    100% {
-        transform: translate(-30px, 25px) scale(1.05);
-    }
-}
-
-@keyframes heroGradientFade {
-    0% {
-        opacity: 0.15;
-        transform: translate(10px, -10px) scale(0.98);
-    }
-
-    50% {
-        opacity: 0.55;
-        transform: translate(-20px, 15px) scale(1.05);
-    }
-
-    100% {
-        opacity: 0.15;
-        transform: translate(15px, -5px) scale(1);
-    }
+:root[data-theme="light"] .grainient-bg {
+    opacity: 0.64;
 }
 
 .content {

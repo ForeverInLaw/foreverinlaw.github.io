@@ -29,10 +29,12 @@
 	<script src="libs/gsap/ScrollSmoother.min.js" defer></script>
 	<script src="js/SplitText.min.js" defer></script>
 	<script src="js/slide-button.js" defer></script>
+	<script src="js/grainient-background.js" defer></script>
 	<script src="js/app.js" defer></script>
 </head>
 
-<body>
+<body class="entry-active">
+		<div class="grainient-bg" id="grainient-bg" aria-hidden="true"></div>
 
 	<div class="entry-screen" id="entry-screen">
 		<div class="entry-screen-grain"></div>
@@ -56,6 +58,7 @@
 			</div>
 		</div>
 	</div>
+	<script>if(sessionStorage.getItem('entryCompleted')){document.body.classList.remove('entry-active');document.getElementById('entry-screen').classList.add('hidden')}</script>
 
 	<button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme" title="Toggle dark/light mode">
 		<span class="theme-toggle__icon theme-toggle__icon--sun" aria-hidden="true"></span>
@@ -89,7 +92,7 @@
 								</a>
 							</li>
 							<li>
-								<a class="link-card email" href="mailto:x@c0.md">
+								<a class="link-card email" href="#" data-user="x" data-host="c0" data-tld="md">
 									<i class="fas fa-envelope" aria-hidden="true"></i>
 									<span>Email</span>
 								</a>
@@ -124,8 +127,23 @@
 						<div class="section-title">Selected Works</div>
 						<ul class="projects-row">
 							<li>
+								<a class="project-card" href="https://magical-haupia-5e409c.netlify.app/" target="_blank"
+									rel="noopener noreferrer" data-screenshot="screenshots/mlefia.webp">
+									<div>
+										<h3>Mlefia</h3>
+										<p>Cinematic tattoo studio landing with WebGL dither shader, GSAP scroll
+											animations, and horizontal gallery. Vintage burgundy/mauve aesthetic.</p>
+									</div>
+									<div class="project-tags">
+										<span class="project-tag">Next.js</span>
+										<span class="project-tag">Three.js</span>
+										<span class="project-tag">GSAP</span>
+									</div>
+								</a>
+							</li>
+							<li>
 								<a class="project-card" href="https://t.me/axiome_ai_bot" target="_blank"
-									rel="noopener noreferrer">
+									rel="noopener noreferrer" data-screenshot="screenshots/axiome.webp">
 									<div>
 										<h3>Axiome Chat</h3>
 										<p>AI chat platform with Google Gemini integration. Next.js & Telegram Web App.
@@ -152,6 +170,21 @@
 								</a>
 							</li>
 							<li>
+								<a class="project-card" href="https://github.com/ForeverInLaw/ForeverInMusic"
+									target="_blank" rel="noopener noreferrer">
+									<div>
+										<h3>ForeverInMusic</h3>
+										<p>Discord music bot for YouTube and Spotify playback. Interactive button
+											controls, permission system, and EN/RU localization.</p>
+									</div>
+									<div class="project-tags">
+										<span class="project-tag">TypeScript</span>
+										<span class="project-tag">Discord.js</span>
+										<span class="project-tag">Prisma</span>
+									</div>
+								</a>
+							</li>
+							<li>
 								<article class="project-card">
 									<div>
 										<h3>Nellexint</h3>
@@ -166,7 +199,7 @@
 							</li>
 							<li>
 								<a class="project-card" href="https://dev.cosymc.net/" target="_blank"
-									rel="noopener noreferrer">
+									rel="noopener noreferrer" data-screenshot="screenshots/cosymc.webp">
 									<div>
 										<h3>CosyMC</h3>
 										<p>Minecraft project ecosystem. Web portal, launcher integration, skin
@@ -216,7 +249,88 @@
 									</div>
 								</a>
 							</li>
+							<li>
+								<a class="project-card" href="https://eliasklarherz.eugenhergert.com/" target="_blank"
+									rel="noopener noreferrer" data-screenshot="screenshots/elias.webp">
+									<div>
+										<h3>Eugen Hergert</h3>
+										<p>Personal website for a German children's book author. SSR/SSG with SEO
+											optimization, scroll-reveal animations, and Docker deployment via Cloudflare
+											Tunnel.</p>
+									</div>
+									<div class="project-tags">
+										<span class="project-tag">Next.js</span>
+										<span class="project-tag">TypeScript</span>
+										<span class="project-tag">Docker</span>
+									</div>
+								</a>
+							</li>
+							<li>
+								<a class="project-card" href="https://github.com/ForeverInLaw/BD-CompleteRecentQuest"
+									target="_blank" rel="noopener noreferrer">
+									<div>
+										<h3>CompleteRecentQuest</h3>
+										<p>BetterDiscord plugin for automatic Discord quest completion with UI panel,
+											real-time progress tracking, and RU/EN localization.</p>
+									</div>
+									<div class="project-tags">
+										<span class="project-tag">JavaScript</span>
+										<span class="project-tag">BetterDiscord</span>
+									</div>
+								</a>
+							</li>
+							<li>
+								<a class="project-card" href="https://naturalis.beauty"
+									target="_blank" rel="noopener noreferrer" data-screenshot="screenshots/naturalis.webp">
+									<div>
+										<h3>Naturalis by Anastasiia</h3>
+										<p>Multilingual (DE/RU) cosmetics & wellness landing page featuring smooth scroll
+											navigation, parallax hero, before/after comparisons, and animated service showcases.</p>
+									</div>
+									<div class="project-tags">
+										<span class="project-tag">Next.js</span>
+										<span class="project-tag">GSAP</span>
+										<span class="project-tag">i18n</span>
+										<span class="project-tag">Motion</span>
+									</div>
+								</a>
+							</li>
+							<li>
+								<a class="project-card" href="https://core-logic-x.com" target="_blank"
+									rel="noopener noreferrer" data-screenshot="screenshots/corelogicx.webp">
+									<div>
+										<h3>Core LogicX</h3>
+										<p>Bilingual page built with Next.js 16. Route-based i18n, SEO metadata, structured data, and scroll-driven UI interactions. Production-ready setup with TypeScript, Playwright smoke e2e coverage, and Docker standalone deployment.</p>
+									</div>
+									<div class="project-tags">
+										<span class="project-tag">Next.js</span>
+										<span class="project-tag">TypeScript</span>
+										<span class="project-tag">i18n</span>
+										<span class="project-tag">Playwright</span>
+										<span class="project-tag">Docker</span>
+									</div>
+								</a>
+							</li>
+							<li>
+								<a class="project-card" href="https://github.com/ForeverInLaw/whispertocode"
+									target="_blank" rel="noopener noreferrer">
+									<div>
+										<h3>WhisperToCode</h3>
+										<p>Cross-platform push-to-talk tool that uses speech-to-text ML model. The text is automatically typed into any focused input. Supports different languages.</p>
+									</div>
+									<div class="project-tags">
+										<span class="project-tag">Python</span>
+										<span class="project-tag">Automation</span>
+										<span class="project-tag">Speech Recognition</span>
+										<span class="project-tag">ML/AI</span>
+									</div>
+								</a>
+							</li>
 						</ul>
+						<button class="projects-show-more" id="projects-show-more" aria-expanded="false">
+							<span class="projects-show-more__text">Show all projects</span>
+							<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+						</button>
 					</div>
 
 					<div class="playlists-section">
@@ -243,10 +357,10 @@
 								<div class="card-content">
 									<div class="stats-image-wrapper">
 										<img class="stats-img stats-img--dark"
-											src="https://github-readme-stats-red-beta-89.vercel.app/api?username=ForeverInLaw&show_icons=true&theme=transparent&hide_border=true&title_color=f492f0&icon_color=a1a1a6&text_color=f5f5f7&bg_color=00000000"
+											src="https://github-readme-stats-green-one-48.vercel.app/api?username=ForeverInLaw&show_icons=true&theme=transparent&hide_border=true&title_color=f492f0&icon_color=a1a1a6&text_color=f5f5f7&bg_color=00000000"
 											alt="ForeverInLaw's GitHub Stats" loading="lazy">
 										<img class="stats-img stats-img--light"
-											src="https://github-readme-stats-red-beta-89.vercel.app/api?username=ForeverInLaw&show_icons=true&theme=transparent&hide_border=true&title_color=d04ec5&icon_color=666666&text_color=111111&bg_color=00000000"
+											src="https://github-readme-stats-green-one-48.vercel.app/api?username=ForeverInLaw&show_icons=true&theme=transparent&hide_border=true&title_color=d04ec5&icon_color=666666&text_color=111111&bg_color=00000000"
 											alt="ForeverInLaw's GitHub Stats" loading="lazy" aria-hidden="true">
 									</div>
 								</div>
@@ -291,8 +405,48 @@
 		</main>
 	</div>
 
+	<div class="project-preview-modal" id="project-preview-modal" aria-hidden="true">
+		<div class="project-preview-shell">
+			<div class="preview-browser">
+				<div class="preview-browser-bar">
+					<div class="preview-window-dots" aria-hidden="true">
+						<span></span>
+						<span></span>
+						<span></span>
+					</div>
+					<p class="preview-domain" id="preview-domain">Preview</p>
+				</div>
+				<div class="preview-image-wrapper">
+					<img src="" alt="" id="preview-image" loading="lazy" decoding="async">
+					<div class="preview-image-shade" aria-hidden="true"></div>
+					<div class="preview-image-empty">Preview unavailable</div>
+				</div>
+			</div>
+			<div class="preview-info">
+				<p class="preview-eyebrow">Project snapshot</p>
+				<h3 id="preview-title"></h3>
+				<p id="preview-desc"></p>
+				<div class="preview-tags" id="preview-tags"></div>
+			</div>
+		</div>
+	</div>
+
 	<script>
 		document.getElementById('year').textContent = new Date().getFullYear();
+
+		const obfuscatedEmailLink = document.querySelector('.link-card.email[data-user][data-host][data-tld]');
+		if (obfuscatedEmailLink) {
+			obfuscatedEmailLink.addEventListener('click', function (event) {
+				event.preventDefault();
+				const user = this.dataset.user;
+				const host = this.dataset.host;
+				const tld = this.dataset.tld;
+				if (!user || !host || !tld) return;
+				const mailto = 'mailto:' + user + '@' + host + '.' + tld;
+				this.href = mailto;
+				window.location.href = mailto;
+			});
+		}
 	</script>
 
 </body>

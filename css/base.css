@@ -19,8 +19,8 @@
 }
 
 html {
-    scroll-behavior: smooth;
     scrollbar-width: none;
+    background-color: var(--bg);
 }
 
 ::-webkit-scrollbar {
@@ -39,6 +39,7 @@ body {
     transition: background-color 0.5s var(--transition-smooth), color 0.5s var(--transition-smooth);
     cursor: none;
     overflow-x: hidden;
+    touch-action: manipulation;
 }
 
 @media (pointer: coarse) {

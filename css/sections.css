@@ -477,20 +477,49 @@
     -webkit-text-fill-color: initial !important;
 }
 
+/* Projects Show More */
+.projects-show-more {
+    display: none;
+}
+
+/* Playlist Stack Dots (mobile only) */
+.stack-dots {
+    display: none;
+}
+
 /* Media Queries */
 @media (max-width: 768px) {
     .hero {
-        padding: 100px 20px 40px;
+        padding: 80px 20px 32px;
         display: block;
         min-height: auto;
     }
 
     .hero h1 {
-        font-size: 48px;
+        font-size: clamp(36px, 10vw, 48px);
+    }
+
+    .subtitle {
+        font-size: 15px;
+        margin-top: 12px;
+    }
+
+    .hero__links {
+        margin-top: 48px;
     }
 
     .links-grid {
         grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .link-card {
+        padding: 18px;
+        gap: 12px;
+    }
+
+    .projects {
+        margin-top: 64px;
     }
 
     .projects-row>li {
@@ -498,12 +527,297 @@
         top: auto !important;
         left: auto !important;
         width: 100% !important;
-        margin-bottom: 16px;
+        margin-bottom: 12px;
     }
 
     .projects-row {
         display: flex;
         flex-direction: column;
+    }
+
+    .project-card {
+        padding: 20px;
+        min-height: auto;
+    }
+
+    .project-card h3 {
+        font-size: 17px;
+    }
+
+    .project-card p {
+        font-size: 13px;
+    }
+
+    .project-tags {
+        margin-top: 12px;
+    }
+
+    .projects-row:not(.is-expanded) > li:nth-child(n+6) {
+        display: none;
+    }
+
+    .projects-show-more {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        margin-top: 16px;
+        padding: 14px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        color: var(--muted);
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        cursor: pointer;
+        transition: color 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+    }
+
+    .projects-show-more:hover {
+        color: var(--fg);
+        border-color: var(--border-hover);
+    }
+
+    .projects-show-more svg {
+        transition: transform 0.3s var(--transition-smooth);
+    }
+
+    .projects-show-more[aria-expanded="true"] svg {
+        transform: rotate(180deg);
+    }
+
+    .playlists-section {
+        margin-top: 64px;
+    }
+
+    .playlists-row {
+        display: block;
+        position: relative;
+        height: auto;
+        touch-action: pan-y;
+    }
+
+    .playlists-row > li {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 16px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+        transition: transform 0.5s var(--transition-smooth), opacity 0.5s ease;
+        transform-origin: center bottom;
+        will-change: transform, opacity;
+    }
+
+    /* First card (active) */
+    .playlists-row > li.stack-active {
+        position: relative;
+        z-index: 3;
+        transform: none;
+        opacity: 1;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Second card (peek) — offset right + slight tilt */
+    .playlists-row > li.stack-next {
+        z-index: 2;
+        transform: translateY(10px) translateX(6px) scale(0.96) rotate(1.5deg);
+        opacity: 0.7;
+        pointer-events: none;
+    }
+
+    /* Third card (deep peek) — offset left + opposite tilt */
+    .playlists-row > li.stack-after {
+        z-index: 1;
+        transform: translateY(20px) translateX(-6px) scale(0.92) rotate(-1.5deg);
+        opacity: 0.4;
+        pointer-events: none;
+    }
+
+    /* Hidden cards */
+    .playlists-row > li.stack-hidden {
+        z-index: 0;
+        transform: translateY(24px) scale(0.88);
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    /* Swipe exit animation */
+    .playlists-row > li.stack-exit-left {
+        z-index: 4;
+        transform: translateX(-110%) rotate(-8deg);
+        opacity: 0;
+        transition: transform 0.4s var(--transition-smooth), opacity 0.35s ease;
+        pointer-events: none;
+    }
+
+    .playlists-row > li.stack-exit-right {
+        z-index: 4;
+        transform: translateX(110%) rotate(8deg);
+        opacity: 0;
+        transition: transform 0.4s var(--transition-smooth), opacity 0.35s ease;
+        pointer-events: none;
+    }
+
+
+    /* Stack dots indicator */
+    .stack-dots {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 20px;
+        position: relative;
+        z-index: 10;
+    }
+
+    .stack-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--muted);
+        opacity: 0.3;
+        transition: opacity 0.3s ease, transform 0.3s ease, background 0.3s ease;
+        cursor: pointer;
+        border: none;
+        padding: 0;
+    }
+
+    .stack-dot.is-active {
+        opacity: 1;
+        background: var(--accent);
+        transform: scale(1.3);
+    }
+
+    .vinyl-wrapper {
+        margin-bottom: 16px;
+    }
+
+    /* Disable vinyl hover/active effects on mobile */
+    .playlist-card:hover .vinyl-record,
+    .playlist-card.is-active .vinyl-record {
+        transform: none;
+    }
+
+    .playlist-card:hover .vinyl-rotator,
+    .playlist-card.is-active .vinyl-rotator {
+        animation-play-state: paused;
+    }
+
+    .playlist-card:hover .playlist-cover-art,
+    .playlist-card.is-active .playlist-cover-art {
+        transform: none;
+        box-shadow: 0 10px 20px -5px rgba(0,0,0,0.3), inset 0 0 0 1px rgba(255,255,255,0.1);
+    }
+
+    .playlist-card:hover .playlist-cover-art img,
+    .playlist-card.is-active .playlist-cover-art img {
+        transform: none;
+    }
+
+    .playlist-card:hover .playlist-cover-art::after,
+    .playlist-card.is-active .playlist-cover-art::after {
+        background-position: 100% 0;
+    }
+
+    .playlist-card:hover .playlist-header h3,
+    .playlist-card.is-active .playlist-header h3 {
+        color: var(--fg);
+    }
+
+    .github-stats {
+        margin-top: 64px;
+        margin-bottom: 64px;
+    }
+
+    .section-header-wrapper {
+        margin-bottom: 24px;
+    }
+
+    .section-subtitle {
+        font-size: 14px;
+    }
+
+    .stats-grid {
+        gap: 16px;
+    }
+
+    .stat-card {
+        border-radius: 16px;
+    }
+
+    .stat-card:hover {
+        transform: none;
+    }
+
+    .card-header {
+        padding: 14px 16px;
+    }
+
+    .card-label {
+        font-size: 11px;
+    }
+
+    .card-icon {
+        font-size: 15px;
+    }
+
+    .card-content {
+        padding: 12px;
+        min-height: auto;
+    }
+
+    /* Make contribution graph scrollable on mobile */
+    .graph-card .card-content {
+        padding: 12px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+
+    .graph-card .card-content::-webkit-scrollbar {
+        display: none;
+    }
+
+    .graph-card .graph-wrapper {
+        min-width: 640px;
+    }
+
+    .graph-card .card-content.fade-left {
+        -webkit-mask-image: linear-gradient(to left, black 80%, transparent 100%);
+        mask-image: linear-gradient(to left, black 80%, transparent 100%);
+    }
+
+    .graph-card .card-content.fade-right {
+        -webkit-mask-image: linear-gradient(to right, black 80%, transparent 100%);
+        mask-image: linear-gradient(to right, black 80%, transparent 100%);
+    }
+
+    .graph-card .card-content.fade-both {
+        -webkit-mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
+        mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
+    }
+
+
+    .spotify-widget-container {
+        margin-top: 48px;
+        margin-bottom: 24px;
+    }
+
+    .site-footer {
+        margin-top: 48px;
+        padding: 28px 0;
+    }
+
+    .site-footer__inner {
+        flex-direction: column;
+        text-align: center;
+        gap: 12px;
     }
 
     .theme-toggle {
@@ -513,7 +827,34 @@
 }
 
 @media (max-width: 480px) {
+    .hero {
+        padding: 72px 16px 24px;
+    }
+
     .links-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .link-card {
+        padding: 16px;
+        gap: 10px;
+    }
+
+    .link-card i {
+        font-size: 20px;
+    }
+
+    .link-card span {
+        font-size: 13px;
+    }
+
+    .project-card {
+        padding: 16px;
+    }
+
+    .section-title {
+        font-size: 11px;
+        margin-bottom: 16px;
     }
 }
