@@ -3,7 +3,10 @@ main = "spotify-now-playing.js"
 compatibility_date = "2024-12-01"
 
 [vars]
-CORS_ORIGIN = "https://zaebal.dev"
+# ponytail: wildcard — the endpoint serves public, unauthenticated now-playing
+# data and reads no cookies, so any origin may call it. Switch to a comma-split
+# allowlist here and in corsHeaders() if the worker ever returns private data.
+CORS_ORIGIN = "*"
 
 # Secrets set via `wrangler secret put NAME`:
 #   SPOTIFY_CLIENT_ID
