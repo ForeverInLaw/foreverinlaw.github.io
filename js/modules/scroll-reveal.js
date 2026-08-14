@@ -1,4 +1,5 @@
-import { masonryLayout } from './masonry.js';
+import { invalidateMasonry } from './masonry.js';
+import { isCompact, prefersReducedMotion } from './viewport.js';
 
 export function initScrollAnimations() {
     const projectCards = document.querySelectorAll('.project-card');
@@ -6,7 +7,7 @@ export function initScrollAnimations() {
     const scrollRevealCards = document.querySelectorAll(scrollRevealSelector);
     const projectsRow = document.querySelector('.projects-row');
 
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (prefersReducedMotion()) {
         gsap.set(scrollRevealCards, { autoAlpha: 1, y: 0, filter: 'none' });
         scrollRevealCards.forEach(el => { el.dataset.revealed = 'true'; });
         if (projectsRow) projectsRow.classList.add('is-interactive');
@@ -20,7 +21,7 @@ export function initScrollAnimations() {
         filter: 'blur(8px)'
     });
 
-    const isMobile = window.innerWidth <= 768;
+    const isMobile = isCompact();
     const startPosition = isMobile ? 'top 105%' : 'top 90%';
 
     let revealedCount = projectCards.length - scrollRevealCards.length;
@@ -53,7 +54,7 @@ export function initScrollAnimations() {
                     }
                 });
                 markInteractiveIfDone();
-                setTimeout(() => masonryLayout(), 100);
+                invalidateMasonry();
             })
         });
     }

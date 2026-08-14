@@ -1,8 +1,8 @@
 import { initScrollAnimations } from './scroll-reveal.js';
+import { revealHeroTitle, showHeroTitle } from './hero-title.js';
+import { prefersReducedMotion } from './viewport.js';
 
 export function initPageAnimations() {
-    const heroTitle = document.querySelector('.hero__inner h1');
-
     function forceShowPrimarySections() {
         const connectTitle = document.querySelector('.hero__links .section-title');
         const projectsTitle = document.querySelector('.projects .section-title');
@@ -92,89 +92,15 @@ export function initPageAnimations() {
         }
     }
 
-    const runHeroAnimation = () => {
-        if (!heroTitle) return;
-
-        if (heroTitle._rbsplitInstance) {
-            try { heroTitle._rbsplitInstance.revert(); } catch (e) { }
-            heroTitle._rbsplitInstance = null;
-        }
-
-        try {
-            const splitInstance = new SplitText(heroTitle, {
-                type: 'chars',
-                smartWrap: true,
-                charsClass: 'split-char',
-                reduceWhiteSpace: false,
-                tag: 'span'
-            });
-
-            heroTitle._rbsplitInstance = splitInstance;
-
-            const computedStyle = getComputedStyle(document.documentElement);
-            const fgColor = computedStyle.getPropertyValue('--fg').trim();
-            const mutedColor = computedStyle.getPropertyValue('--muted').trim();
-
-            const interpolateColor = (color1, color2, factor) => {
-                const c1 = Number.parseInt(color1.replace('#', ''), 16);
-                const c2 = Number.parseInt(color2.replace('#', ''), 16);
-
-                const r1 = (c1 >> 16) & 0xff;
-                const g1 = (c1 >> 8) & 0xff;
-                const b1 = c1 & 0xff;
-
-                const r2 = (c2 >> 16) & 0xff;
-                const g2 = (c2 >> 8) & 0xff;
-                const b2 = c2 & 0xff;
-
-                const r = Math.round(r1 + (r2 - r1) * factor);
-                const g = Math.round(g1 + (g2 - g1) * factor);
-                const b = Math.round(b1 + (b2 - b1) * factor);
-
-                return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
-            };
-
-            const totalChars = splitInstance.chars.length;
-            splitInstance.chars.forEach((char, index) => {
-                const position = index / (totalChars - 1);
-                let color;
-                if (position <= 0.2) {
-                    color = fgColor;
-                } else {
-                    const gradientFactor = (position - 0.2) / 0.8;
-                    color = interpolateColor(fgColor, mutedColor, gradientFactor);
-                }
-                char.style.color = color;
-            });
-
-            gsap.set(splitInstance.chars, { opacity: 0, y: 40 });
-
-            gsap.to(splitInstance.chars, {
-                duration: 0.6,
-                ease: 'power3.out',
-                opacity: 1,
-                y: 0,
-                stagger: 0.1,
-                willChange: 'transform, opacity',
-                force3D: true
-            });
-        } catch (error) {
-            console.warn('SplitText animation failed:', error);
-            gsap.set(heroTitle, { opacity: 1, clearProps: 'all' });
-        }
-    };
-
     const runIntroSequence = () => {
-        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-        if (prefersReducedMotion) {
+        if (prefersReducedMotion()) {
             forceShowPrimarySections();
-            if (heroTitle) gsap.set(heroTitle, { opacity: 1, clearProps: 'all' });
+            showHeroTitle();
             initScrollAnimations();
             return;
         }
 
-        runHeroAnimation();
+        revealHeroTitle();
         runSectionsIntro();
         initScrollAnimations();
 

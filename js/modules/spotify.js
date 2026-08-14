@@ -1,11 +1,7 @@
-const NP_API = import.meta.env?.DEV
-    ? '/api/now-playing'
-    : 'https://spotify-now-playing.foreverinlaw.workers.dev/';
-const POLL_INTERVAL_MS = 15000;
+import { apiEndpoint, escapeHtml, fetchJson, safeUrl } from './remote.js';
 
-const escapeHtml = (s) => String(s).replace(/[&<>"']/g, (c) => ({
-    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-})[c]);
+const NP_API = apiEndpoint('/api/now-playing', 'https://spotify-now-playing.foreverinlaw.workers.dev/');
+const POLL_INTERVAL_MS = 15000;
 
 export function initSpotify() {
     const spotifyWidget = document.getElementById('spotify-now-playing');
@@ -52,10 +48,12 @@ export function initSpotify() {
         const isStale = !data.isPlaying;
         const pulse = data.isPlaying ? '<span class="np-card__pulse" aria-hidden="true"></span>' : '';
         const badge = '<span class="np-card__badge" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0Zm3.67 11.54a.5.5 0 0 1-.69.17c-1.88-1.15-4.25-1.41-7.04-.77a.5.5 0 1 1-.22-.97c3.05-.7 5.67-.4 7.78.88a.5.5 0 0 1 .17.69Zm.98-2.18a.62.62 0 0 1-.86.21c-2.16-1.32-5.45-1.7-8-.93a.62.62 0 1 1-.36-1.2c2.93-.88 6.55-.46 9 1.06a.62.62 0 0 1 .22.86Zm.08-2.27c-2.59-1.54-6.86-1.68-9.34-.93a.75.75 0 0 1-.43-1.44c2.84-.85 7.55-.69 10.53 1.08a.75.75 0 0 1-.76 1.29Z"/></svg></span>';
+        const trackUrl = safeUrl(t.url);
+        const albumArt = safeUrl(t.albumArt);
         spotifyWidget.innerHTML = `
-            <a class="np-card${isStale ? ' is-stale' : ''}" href="${escapeHtml(t.url)}" target="_blank" rel="noopener noreferrer" aria-label="${escapeHtml(t.name)} by ${escapeHtml(t.artists)}">
+            <a class="np-card${isStale ? ' is-stale' : ''}" href="${escapeHtml(trackUrl)}" target="_blank" rel="noopener noreferrer" aria-label="${escapeHtml(t.name)} by ${escapeHtml(t.artists)}">
                 <div class="np-card__art">
-                    ${t.albumArt ? `<img src="${escapeHtml(t.albumArt)}" alt="" loading="lazy" decoding="async">` : ''}
+                    ${albumArt ? `<img src="${escapeHtml(albumArt)}" alt="" loading="lazy" decoding="async">` : ''}
                     ${pulse}
                     ${badge}
                 </div>
@@ -66,11 +64,6 @@ export function initSpotify() {
                 </div>
             </a>
         `;
-    }
-
-    function showEmpty() {
-        if (!spotifyWidget) return;
-        spotifyWidget.innerHTML = '<div class="np-placeholder" aria-hidden="true"><div></div></div>';
     }
 
     function showMessage(text) {
@@ -114,12 +107,7 @@ export function initSpotify() {
         if (npFetching) return;
         npFetching = true;
         try {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 8000);
-            const res = await fetch(NP_API, { cache: 'no-store', signal: controller.signal });
-            clearTimeout(timeoutId);
-            if (!res.ok) throw new Error(`status ${res.status}`);
-            const data = await res.json();
+            const data = await fetchJson(NP_API, { cache: 'no-store' });
             npFailCount = 0;
 
             if (!data || !data.track) {

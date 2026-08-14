@@ -1,4 +1,5 @@
-import { getProjectDomain } from './project-card.js';
+import { readProjectCard, screenshotCards } from './project-card.js';
+import { isTouchReel } from './viewport.js';
 
 // The desktop hover preview (preview-modal.js) is inert on touch, so the project
 // screenshots never reached mobile at all. Here every card that has one carries
@@ -10,8 +11,6 @@ import { getProjectDomain } from './project-card.js';
 // page height above the viewport and yank the view out from under the reader,
 // and compensating for that means scrolling the page programmatically — worse
 // than simply leaving a shot open once it has been seen.
-
-const REEL_QUERY = '(max-width: 768px) and (hover: none)';
 
 // Reveal once the card reaches the lower third of the viewport. Anchored to the
 // bottom edge only, so even the last card in the list still triggers.
@@ -30,17 +29,16 @@ const FRAME_TEMPLATE = `
 // Returns false when the card has no usable screenshot, so the caller can skip
 // observing a card that would never have anything to reveal.
 function mountShot(card) {
-    const src = card.getAttribute('data-screenshot');
-    if (!src) return false;
+    const { screenshot, title, domain } = readProjectCard(card);
+    if (!screenshot) return false;
 
-    const title = card.querySelector('h3')?.textContent?.trim() || 'Project';
     const shot = document.createElement('div');
     shot.className = 'project-shot';
     shot.innerHTML = FRAME_TEMPLATE;
-    shot.querySelector('.project-shot__domain').textContent = getProjectDomain(card);
+    shot.querySelector('.project-shot__domain').textContent = domain;
 
     const image = shot.querySelector('img');
-    image.src = src;
+    image.src = screenshot;
     image.alt = `${title} screenshot`;
 
     card.appendChild(shot);
@@ -50,9 +48,9 @@ function mountShot(card) {
 export function initWorksReel() {
     // Bound to the same breakpoint that turns masonry off (masonry.js), so the
     // reel never fights absolutely-positioned cards on a wide touch screen.
-    if (!window.matchMedia(REEL_QUERY).matches) return;
+    if (!isTouchReel()) return;
 
-    const cards = document.querySelectorAll('.projects .project-card[data-screenshot]');
+    const cards = screenshotCards();
     if (!cards.length) return;
 
     const observer = new IntersectionObserver((entries, self) => {

@@ -64,3 +64,19 @@ body[data-scrolled="true"] .site-header {
     flex-wrap: wrap;
     gap: 20px;
 }
+
+/* Live clock in the footer. Tabular figures so the minute ticking over
+   doesn't shift the sentence around it. */
+.footer-clock {
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum' 1;
+}
+
+.footer-clock__state::before {
+    content: '(';
+}
+
+.footer-clock__state::after {
+    content: ')';
+}

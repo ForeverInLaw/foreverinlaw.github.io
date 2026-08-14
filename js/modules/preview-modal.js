@@ -1,4 +1,7 @@
-import { getProjectDomain } from './project-card.js';
+import { readProjectCard, screenshotCards, SCREENSHOT_CARD_SELECTOR } from './project-card.js';
+import { canHoverPreview, prefersReducedMotion } from './viewport.js';
+import { createFollower, placeNearPointer } from './pointer-follower.js';
+import { createImageSlot } from './image-slot.js';
 
 function initProjectPreview() {
     const modal = document.getElementById('project-preview-modal');
@@ -12,8 +15,8 @@ function initProjectPreview() {
     const previewBrowser = modal.querySelector('.preview-browser');
     const previewInfo = modal.querySelector('.preview-info');
     const previewImageWrapper = modal.querySelector('.preview-image-wrapper');
-    const cardSelector = '.projects .project-card[data-screenshot]';
-    const projectCards = document.querySelectorAll(cardSelector);
+    const cardSelector = SCREENSHOT_CARD_SELECTOR;
+    const projectCards = screenshotCards();
 
     if (!previewImage || !previewTitle || !previewDesc || !previewDomain || !previewTags || !previewBrowser || !previewInfo || projectCards.length === 0) {
         return;
@@ -22,12 +25,21 @@ function initProjectPreview() {
     const pointerOffset = 20;
     let hideTimer = null;
     let activeCard = null;
-    let activeImageToken = 0;
     let contentTransitionToken = 0;
     const lastPointer = { x: 0, y: 0 };
     const contentTargets = [previewBrowser, previewInfo];
-    const followState = { x: 0, y: 0, targetX: 0, targetY: 0, rafId: 0 };
     const tiltState = { x: 0, y: 0 };
+
+    const follower = createFollower({
+        ease: 0.3,
+        onUpdate: (x, y) => gsap.set(modal, { x, y })
+    });
+
+    const imageSlot = createImageSlot(previewImage, (state, aspect) => {
+        modal.classList.toggle('is-loading', state === 'loading');
+        modal.classList.toggle('is-error', state === 'error');
+        if (aspect) previewImageWrapper.style.setProperty('--preview-aspect', aspect);
+    });
 
     const applyTiltState = () => {
         modal.style.setProperty('--preview-tilt-x', `${tiltState.x.toFixed(2)}deg`);
@@ -50,71 +62,16 @@ function initProjectPreview() {
         tiltYTo(0);
     };
 
-    const stopFollowLoop = () => {
-        if (!followState.rafId) return;
-        cancelAnimationFrame(followState.rafId);
-        followState.rafId = 0;
-    };
-
-    const runFollowLoop = () => {
-        if (followState.rafId) return;
-
-        const tick = () => {
-            if (!activeCard || !modal.classList.contains('is-visible')) {
-                followState.rafId = 0;
-                return;
-            }
-
-            const dx = followState.targetX - followState.x;
-            const dy = followState.targetY - followState.y;
-
-            if (Math.abs(dx) < 0.15 && Math.abs(dy) < 0.15) {
-                followState.x = followState.targetX;
-                followState.y = followState.targetY;
-                gsap.set(modal, { x: followState.x, y: followState.y });
-                followState.rafId = 0;
-                return;
-            }
-
-            followState.x += dx * 0.3;
-            followState.y += dy * 0.3;
-            gsap.set(modal, { x: followState.x, y: followState.y });
-            followState.rafId = requestAnimationFrame(tick);
-        };
-
-        followState.rafId = requestAnimationFrame(tick);
-    };
-
     const setModalPosition = (pointerX, pointerY, immediate = false) => {
-        const { width, height } = modal.getBoundingClientRect();
-        const maxX = window.innerWidth - pointerOffset;
-        const maxY = window.innerHeight - pointerOffset;
+        const { x, y } = placeNearPointer(
+            { x: pointerX, y: pointerY },
+            modal.getBoundingClientRect(),
+            { width: window.innerWidth, height: window.innerHeight },
+            pointerOffset
+        );
 
-        let targetX = pointerX + pointerOffset;
-        let targetY = pointerY + pointerOffset;
-
-        if (targetX + width > maxX) {
-            targetX = pointerX - width - pointerOffset;
-        }
-        if (targetY + height > maxY) {
-            targetY = pointerY - height - pointerOffset;
-        }
-
-        targetX = Math.max(pointerOffset, Math.min(targetX, maxX - width));
-        targetY = Math.max(pointerOffset, Math.min(targetY, maxY - height));
-
-        followState.targetX = targetX;
-        followState.targetY = targetY;
-
-        if (immediate) {
-            stopFollowLoop();
-            followState.x = targetX;
-            followState.y = targetY;
-            gsap.set(modal, { x: targetX, y: targetY });
-            return;
-        }
-
-        runFollowLoop();
+        if (immediate) follower.jumpTo(x, y);
+        else follower.moveTo(x, y);
     };
 
     const setTiltFromPointer = (event, card = activeCard) => {
@@ -139,77 +96,26 @@ function initProjectPreview() {
         tiltYTo(rotateY);
     };
 
-    const fillPreviewTags = (card) => {
-        previewTags.innerHTML = '';
-        const tags = card.querySelectorAll('.project-tag');
-        if (!tags.length) return;
-
+    const fillPreviewTags = (tags) => {
         const fragment = document.createDocumentFragment();
-        tags.forEach((tag, index) => {
-            if (index > 3) return;
+        tags.forEach((tag) => {
             const chip = document.createElement('span');
             chip.className = 'preview-tag-chip';
-            chip.textContent = tag.textContent?.trim() || '';
+            chip.textContent = tag;
             fragment.appendChild(chip);
         });
-        previewTags.appendChild(fragment);
+        previewTags.replaceChildren(fragment);
     };
 
     const updatePreviewContent = (card) => {
-        const screenshot = card.getAttribute('data-screenshot') || '';
-        const title = card.querySelector('h3')?.textContent?.trim() || 'Project';
-        const desc = card.querySelector('p')?.textContent?.trim() || 'No short description provided.';
+        const { title, description, screenshot, domain, tags } = readProjectCard(card);
 
         previewTitle.textContent = title;
-        previewDesc.textContent = desc;
-        previewDomain.textContent = getProjectDomain(card);
-        fillPreviewTags(card);
+        previewDesc.textContent = description;
+        previewDomain.textContent = domain;
+        fillPreviewTags(tags);
 
-        modal.classList.remove('is-error');
-        modal.classList.add('is-loading');
-
-        const token = ++activeImageToken;
-        previewImage.alt = `${title} screenshot`;
-
-        if (!screenshot) {
-            previewImage.removeAttribute('src');
-            modal.classList.remove('is-loading');
-            modal.classList.add('is-error');
-            return;
-        }
-
-        const applyNaturalAspect = () => {
-            if (previewImage.naturalWidth > 0 && previewImage.naturalHeight > 0) {
-                previewImageWrapper.style.setProperty(
-                    '--preview-aspect',
-                    `${previewImage.naturalWidth} / ${previewImage.naturalHeight}`
-                );
-            }
-        };
-
-        previewImage.onload = () => {
-            if (token !== activeImageToken) return;
-            applyNaturalAspect();
-            modal.classList.remove('is-loading', 'is-error');
-        };
-
-        previewImage.onerror = () => {
-            if (token !== activeImageToken) return;
-            modal.classList.remove('is-loading');
-            modal.classList.add('is-error');
-        };
-
-        previewImage.src = screenshot;
-
-        if (previewImage.complete) {
-            if (previewImage.naturalWidth > 0) {
-                applyNaturalAspect();
-                modal.classList.remove('is-loading', 'is-error');
-            } else {
-                modal.classList.remove('is-loading');
-                modal.classList.add('is-error');
-            }
-        }
+        imageSlot.show(screenshot, `${title} screenshot`);
     };
 
     const transitionPreviewContent = (card) => {
@@ -334,8 +240,9 @@ function initProjectPreview() {
             activeCard = null;
             modal.setAttribute('aria-hidden', 'true');
             modal.classList.remove('is-loading');
+            imageSlot.cancel();
             resetTilt();
-            stopFollowLoop();
+            follower.stop();
             contentTransitionToken += 1;
             gsap.killTweensOf(contentTargets);
             gsap.set(contentTargets, { autoAlpha: 1, filter: 'blur(0px)', scale: 1 });
@@ -393,21 +300,20 @@ function initProjectPreview() {
 }
 
 export function initPreviewModal() {
-    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (!canHoverPreview()) return;
+    if (prefersReducedMotion()) return;
     initProjectPreview();
 
     if ('requestIdleCallback' in window) {
         requestIdleCallback(() => {
-            document.querySelectorAll('.project-card[data-screenshot]').forEach(card => {
-                const src = card.getAttribute('data-screenshot');
-                if (src) {
-                    const link = document.createElement('link');
-                    link.rel = 'preload';
-                    link.as = 'image';
-                    link.href = src;
-                    document.head.appendChild(link);
-                }
+            screenshotCards().forEach(card => {
+                const { screenshot } = readProjectCard(card);
+                if (!screenshot) return;
+                const link = document.createElement('link');
+                link.rel = 'preload';
+                link.as = 'image';
+                link.href = screenshot;
+                document.head.appendChild(link);
             });
         }, { timeout: 2000 });
     }

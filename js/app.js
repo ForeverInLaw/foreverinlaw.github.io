@@ -10,6 +10,8 @@ import { initSpotify } from './modules/spotify.js';
 import { initShowMore } from './modules/show-more.js';
 import { initGithubStats } from './modules/github-stats.js';
 import { initPlaylists } from './modules/playlists.js';
+import { initSlideButton } from './slide-button.js';
+import { initLocalTime } from './modules/local-time.js';
 
 // Apply saved theme before paint to avoid flash.
 initTheme();
@@ -19,6 +21,10 @@ window.addEventListener('scroll', () => {
 }, { passive: true });
 
 document.addEventListener('DOMContentLoaded', () => {
+    // The entry screen sits above everything, so its slider goes up first.
+    initSlideButton();
+
+    // Reordering has to finish before masonry measures the row.
     prioritizeScreenshotProjects();
     initConnectCodeHover();
     attachThemeToggle();
@@ -44,4 +50,5 @@ document.addEventListener('DOMContentLoaded', () => {
     initShowMore();
     initGithubStats();
     initPlaylists();
+    initLocalTime();
 });

@@ -64,9 +64,7 @@
 	<link rel="stylesheet" href="css/components.css">
 	<link rel="stylesheet" href="css/sections.css">
 	<link rel="stylesheet" href="css/slide-button.css">
-	<script>window.INTERACTIVE_ELEMENTS = 'a, button, input, textarea, select, .link-card, .project-card, .theme-toggle, .slide-button-handle, .playlist-card';</script>
 	<script src="libs/gsap/gsap-bundle.min.js" defer></script>
-	<script src="js/slide-button.js" defer></script>
 	<script src="js/grainient-background.js" defer></script>
 	<script type="module" src="js/app.js"></script>
 </head>
@@ -593,7 +591,9 @@
 					<footer class="site-footer">
 						<div class="site-footer__inner">
 							<p>&copy; <span id="year"></span> ForeverInLaw.</p>
-							<p>Hand-built at <span style="color: var(--accent);">2am</span> with Raleway, grain &amp; GSAP.</p>
+							<p>Hand-built at <time class="footer-clock" id="local-time" datetime="">--:--</time>
+								<span class="footer-clock__state" id="night-clock-state">after dark</span>
+								&mdash; Raleway, grain &amp; GSAP.</p>
 						</div>
 					</footer>
 

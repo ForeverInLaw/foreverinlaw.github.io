@@ -1,16 +1,10 @@
-const PLAYLISTS_API = import.meta.env?.DEV
-    ? '/api/playlists'
-    : 'https://spotify-show-last-68db402e666c.herokuapp.com/api/playlists';
+import { apiEndpoint, escapeHtml, fetchJson, safeUrl } from './remote.js';
+import { isCompact } from './viewport.js';
 
-const escapeHtml = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({
-    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-})[c]);
-
-// Only allow http(s) URLs so remote data can't inject javascript:/data: into href/src
-const safeUrl = (u) => {
-    const s = String(u ?? '').trim();
-    return /^https?:\/\//i.test(s) ? s : '';
-};
+const PLAYLISTS_API = apiEndpoint(
+    '/api/playlists',
+    'https://spotify-show-last-68db402e666c.herokuapp.com/api/playlists'
+);
 
 function initPlaylistStack(container) {
     const items = Array.from(container.children);
@@ -134,10 +128,7 @@ export async function initPlaylists() {
     if (!container) return;
 
     try {
-        const response = await fetch(PLAYLISTS_API);
-        if (!response.ok) throw new Error('Failed to fetch playlists');
-
-        const playlists = await response.json();
+        const playlists = await fetchJson(PLAYLISTS_API);
 
         container.innerHTML = playlists.map(playlist => {
             const image = escapeHtml(safeUrl(playlist.image));
@@ -172,13 +163,13 @@ export async function initPlaylists() {
             if (src) el.style.backgroundImage = `url("${src}")`;
         });
 
-        if (window.matchMedia('(max-width: 768px)').matches) {
+        if (isCompact()) {
             initPlaylistStack(container);
         } else {
             const cards = container.querySelectorAll('.playlist-card');
             cards.forEach(card => {
                 card.addEventListener('click', (e) => {
-                    if (!window.matchMedia('(max-width: 768px)').matches) return;
+                    if (!isCompact()) return;
                     e.preventDefault();
                     if (card.classList.contains('is-active')) return;
                     const url = card.href;
