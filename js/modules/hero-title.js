@@ -81,7 +81,7 @@ export function showHeroTitle() {
 
 /**
  * Splits the title, paints the gradient and plays the character stagger.
- * Safe to call twice — the previous split is reverted first.
+ * Safe to call twice - the previous split is reverted first.
  */
 export function revealHeroTitle() {
     const heroTitle = heroTitleEl();

@@ -9,12 +9,17 @@ import { isTouchReel } from './viewport.js';
 //
 // The reveal is one-way on purpose. Collapsing a card again would change the
 // page height above the viewport and yank the view out from under the reader,
-// and compensating for that means scrolling the page programmatically — worse
+// and compensating for that means scrolling the page programmatically - worse
 // than simply leaving a shot open once it has been seen.
 
 // Reveal once the card reaches the lower third of the viewport. Anchored to the
 // bottom edge only, so even the last card in the list still triggers.
 const REVEAL_MARGIN = '0px 0px -30% 0px';
+
+// Start downloading two screens ahead of the reveal. loading="lazy" cannot do
+// this job here: the image sits inside a 0fr grid row, so as far as the browser
+// is concerned it has no height and no position worth pre-fetching for.
+const FETCH_MARGIN = '200% 0px 200% 0px';
 
 // The inner frame is the single grid item the 0fr -> 1fr reveal collapses.
 const FRAME_TEMPLATE = `
@@ -23,7 +28,7 @@ const FRAME_TEMPLATE = `
             <span></span><span></span><span></span>
             <em class="project-shot__domain"></em>
         </div>
-        <img alt="" loading="lazy" decoding="async">
+        <img alt="" decoding="async">
     </div>`;
 
 // Returns false when the card has no usable screenshot, so the caller can skip
@@ -36,13 +41,28 @@ function mountShot(card) {
     shot.className = 'project-shot';
     shot.innerHTML = FRAME_TEMPLATE;
     shot.querySelector('.project-shot__domain').textContent = domain;
+    shot.dataset.src = screenshot;
 
     const image = shot.querySelector('img');
-    image.src = screenshot;
     image.alt = `${title} screenshot`;
 
     card.appendChild(shot);
     return true;
+}
+
+/**
+ * Starts the download and marks the shot ready once the pixels are decoded, so
+ * the CSS fade has something to fade in. A shot that fails to load keeps its
+ * frame closed rather than opening onto a broken image.
+ */
+function loadShot(shot) {
+    const image = shot.querySelector('img');
+    if (image.src) return;
+
+    image.src = shot.dataset.src;
+    image.decode()
+        .then(() => shot.classList.add('is-shot-ready'))
+        .catch(() => { /* broken screenshot: leave the frame empty */ });
 }
 
 export function initWorksReel() {
@@ -53,15 +73,30 @@ export function initWorksReel() {
     const cards = screenshotCards();
     if (!cards.length) return;
 
-    const observer = new IntersectionObserver((entries, self) => {
+    // Two passes over the same cards at different distances: fetch early so the
+    // file is decoded by the time the frame opens, reveal late so the opening
+    // lands where the reader is looking.
+    const fetcher = new IntersectionObserver((entries, self) => {
         entries.forEach((entry) => {
             if (!entry.isIntersecting) return;
+            loadShot(entry.target.querySelector('.project-shot'));
+            self.unobserve(entry.target);
+        });
+    }, { rootMargin: FETCH_MARGIN });
+
+    const revealer = new IntersectionObserver((entries, self) => {
+        entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            // A card revealed before its fetch margin fired still needs the shot.
+            loadShot(entry.target.querySelector('.project-shot'));
             entry.target.classList.add('is-revealed');
             self.unobserve(entry.target);
         });
     }, { rootMargin: REVEAL_MARGIN });
 
     cards.forEach((card) => {
-        if (mountShot(card)) observer.observe(card);
+        if (!mountShot(card)) return;
+        fetcher.observe(card);
+        revealer.observe(card);
     });
 }

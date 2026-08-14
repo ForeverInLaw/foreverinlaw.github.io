@@ -1,4 +1,4 @@
-// Live local-time clock in the footer ("Hand-built after dark") — the 2am
+// Live local-time clock in the footer ("Hand-built after dark") - the 2am
 // joke becomes real. Runs on a 1s interval, paused when the tab is hidden.
 // No motion beyond a CSS glow; reduced-motion users get a static label.
 export function initLocalTime() {

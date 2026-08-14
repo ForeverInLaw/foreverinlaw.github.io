@@ -10,7 +10,7 @@ const MIN_ITEM_WIDTH = 280;
 
 const container = () => document.querySelector('.projects-row');
 
-/** Puts the cards back in normal flow — used on compact screens and on failure. */
+/** Puts the cards back in normal flow - used on compact screens and on failure. */
 function resetToFlow(el, items) {
     el.style.height = 'auto';
     items.forEach(item => {
@@ -88,7 +88,7 @@ let pendingFrame = 0;
 
 /**
  * Requests a layout pass on the next frame. Safe to call from a resize handler
- * or an animation callback — repeated calls before the frame lands collapse
+ * or an animation callback - repeated calls before the frame lands collapse
  * into a single pass.
  */
 export function invalidateMasonry() {
@@ -107,7 +107,7 @@ export function initMasonry() {
     window.addEventListener('load', invalidateMasonry);
 
     // Card heights change with their own content (images decoding, the reveal
-    // clearing its transform), which is what actually invalidates the columns —
+    // clearing its transform), which is what actually invalidates the columns -
     // so observe the cards themselves rather than the style attributes this
     // module writes.
     const resizeObserver = new ResizeObserver(invalidateMasonry);

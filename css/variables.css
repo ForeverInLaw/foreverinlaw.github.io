@@ -11,7 +11,15 @@
     --accent-glow: rgba(244, 146, 240, 0.4);
     --transition-smooth: cubic-bezier(0.22, 1, 0.36, 1);
     --transition-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
-    /* transitions.dev tokens — only the patterns this site actually uses.
+    /* Corner scale. A box nested inside another sets its radius to
+       calc(outer - gap) so the two curves stay concentric; picking a value by
+       eye is what makes nested corners look wrong. */
+    --radius-xs: 6px;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+    /* transitions.dev tokens - only the patterns this site actually uses.
        Card resize: how long a box takes to tween between two sizes. */
     --resize-dur: 300ms;
     /* Text states swap */

@@ -286,7 +286,7 @@ function initProjectPreview() {
 
     // Fire hide once per scroll gesture. performHide sets activeCard=null, so
     // the guard skips the 60fps follow-up scroll events that would otherwise
-    // call gsap.killTweensOf + a fresh gsap.to every frame — restarting the
+    // call gsap.killTweensOf + a fresh gsap.to every frame - restarting the
     // fade from the current opacity and stalling it until scrolling stops.
     window.addEventListener('scroll', () => {
         if (activeCard) hidePreview(true);

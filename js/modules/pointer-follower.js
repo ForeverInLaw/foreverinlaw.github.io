@@ -11,7 +11,7 @@ const SETTLE_EPSILON = 0.15;
 /**
  * Places a box of `size` next to `pointer`, flipping to the other side when it
  * would overrun the viewport and clamping so it always stays fully visible.
- * Pure — the geometry can be checked without a DOM.
+ * Pure - the geometry can be checked without a DOM.
  */
 export function placeNearPointer(pointer, size, viewport, offset) {
     const limit = { x: viewport.width - offset, y: viewport.height - offset };
@@ -69,7 +69,7 @@ export function createFollower({ ease = DEFAULT_EASE, onUpdate }) {
             if (!rafId) rafId = requestAnimationFrame(tick);
         },
 
-        /** Jumps to (x, y) without easing — for the first appearance. */
+        /** Jumps to (x, y) without easing - for the first appearance. */
         jumpTo(x, y) {
             stop();
             current.x = target.x = x;

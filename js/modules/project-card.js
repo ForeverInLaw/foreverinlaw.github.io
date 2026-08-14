@@ -1,7 +1,7 @@
 // The "Selected Works" cards are plain markup: an <a class="project-card"> (or
 // a bare <article> when the project is private) carrying data-screenshot, an
-// <h3>, a <p> and some .project-tag chips. Three consumers need that data — the
-// desktop hover preview, the mobile reel and the ordering pass — so the markup
+// <h3>, a <p> and some .project-tag chips. Three consumers need that data - the
+// desktop hover preview, the mobile reel and the ordering pass - so the markup
 // contract is read here once instead of being re-scraped in each of them.
 
 const PRIVATE_LABEL = 'Private project';

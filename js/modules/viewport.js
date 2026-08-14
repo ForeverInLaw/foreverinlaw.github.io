@@ -2,7 +2,7 @@
 //
 // Everything here goes through matchMedia rather than window.innerWidth. The
 // two disagree by the width of the scrollbar, and modules that mixed them could
-// land on opposite sides of the same breakpoint — the compact layout drops
+// land on opposite sides of the same breakpoint - the compact layout drops
 // masonry's absolute positioning, so a module that thinks it is on desktop
 // while another thinks it is on mobile produces overlapping cards.
 
@@ -21,13 +21,13 @@ const matches = (query) => window.matchMedia(query).matches;
 /** Single-column layout: masonry off, stacked cards. */
 export const isCompact = () => matches(COMPACT_QUERY);
 
-/** Small screen with no hover — the inline screenshot reel applies. */
+/** Small screen with no hover - the inline screenshot reel applies. */
 export const isTouchReel = () => matches(TOUCH_REEL_QUERY);
 
 /** A real pointer that can hover, i.e. the floating project preview applies. */
 export const canHoverPreview = () => matches(HOVER_PREVIEW_QUERY);
 
-/** A precise pointer, hover or not — enough for the custom cursor. */
+/** A precise pointer, hover or not - enough for the custom cursor. */
 export const hasFinePointer = () => matches(FINE_POINTER_QUERY);
 
 export const prefersReducedMotion = () => matches(REDUCED_MOTION_QUERY);

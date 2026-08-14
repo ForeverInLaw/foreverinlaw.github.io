@@ -157,7 +157,7 @@
     position: absolute;
     inset: 0;
     background: var(--card);
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     overflow: hidden;
     z-index: 10;
     box-shadow:
@@ -320,9 +320,14 @@
 }
 
 .stat-card {
+    /* The nested image wrapper reads both of these, so the inner corner is
+       always the outer corner minus the gap. */
+    --card-radius: var(--radius-xl);
+    --card-pad: 24px;
+
     background: var(--card);
     border: 1px solid var(--border);
-    border-radius: 24px;
+    border-radius: var(--card-radius);
     overflow: hidden;
     position: relative;
     transition: transform 0.4s var(--transition-smooth), border-color 0.4s ease, box-shadow 0.4s ease;
@@ -389,7 +394,7 @@
 }
 
 .card-content {
-    padding: 24px;
+    padding: var(--card-pad);
     position: relative;
     z-index: 1;
     flex-grow: 1;
@@ -405,12 +410,19 @@
     width: 100%;
     position: relative;
     line-height: 0;
-    border-radius: 12px;
+    /* The gap here is as wide as the card's own corner, so the two curves never
+       meet and this box reads as its own surface - it keeps a radius of its
+       own. The mobile rule below is where the gap shrinks and concentricity
+       starts to matter. */
+    border-radius: var(--radius-md);
     overflow: hidden;
 }
 
+/* Outline on the stats block only. It is a solid panel, so an edge reads as
+   the image's own boundary; the contribution graph is loose squares on
+   nothing, where the same line just frames empty space. */
 .stats-image-wrapper {
-    /* Neutral image outline — pure white (dark) / pure black (light) */
+    /* Neutral image outline - pure white (dark) / pure black (light) */
     outline: 1px solid oklch(1 0 0 / 0.1);
     outline-offset: -1px;
 }
@@ -466,17 +478,9 @@
 .graph-card .card-content {
     overflow-x: hidden;
     justify-content: center;
-    padding: 24px;
+    padding: var(--card-pad);
     display: flex;
     align-items: center;
-}
-
-.graph-wrapper {
-    width: 100%;
-    position: relative;
-    line-height: 0;
-    border-radius: 8px;
-    overflow: hidden; 
 }
 
 .graph-img--dark {
@@ -590,7 +594,7 @@
         padding: 14px;
         background: var(--card);
         border: 1px solid var(--border);
-        border-radius: 12px;
+        border-radius: var(--radius-md);
         color: var(--muted);
         font-family: inherit;
         font-size: 13px;
@@ -635,7 +639,7 @@
         width: 100%;
         background: var(--bg);
         border: 1px solid var(--border);
-        border-radius: 16px;
+        border-radius: var(--radius-lg);
         padding: 16px;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
         transition: transform 0.5s var(--transition-smooth), opacity 0.5s ease;
@@ -651,7 +655,7 @@
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     }
 
-    /* Second card (peek) — offset right + slight tilt */
+    /* Second card (peek) - offset right + slight tilt */
     .playlists-row > li.stack-next {
         z-index: 2;
         transform: translateY(10px) translateX(6px) scale(0.96) rotate(1.5deg);
@@ -659,7 +663,7 @@
         pointer-events: none;
     }
 
-    /* Third card (deep peek) — offset left + opposite tilt */
+    /* Third card (deep peek) - offset left + opposite tilt */
     .playlists-row > li.stack-after {
         z-index: 1;
         transform: translateY(20px) translateX(-6px) scale(0.92) rotate(-1.5deg);
@@ -789,8 +793,17 @@
         gap: 16px;
     }
 
+    /* Here the gap (12) is narrower than the card's corner (16), so the two
+       curves sit close enough to be compared and the inner one has to be
+       outer minus gap. */
+    .stats-image-wrapper,
+    .graph-wrapper {
+        border-radius: calc(var(--card-radius) - var(--card-pad));
+    }
+
     .stat-card {
-        border-radius: 16px;
+        --card-radius: var(--radius-lg);
+        --card-pad: 12px;
     }
 
     .stat-card:hover {
@@ -810,13 +823,11 @@
     }
 
     .card-content {
-        padding: 12px;
         min-height: auto;
     }
 
     /* Make contribution graph scrollable on mobile */
     .graph-card .card-content {
-        padding: 12px;
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
         scrollbar-width: none;
@@ -905,7 +916,7 @@
 
    Touch devices never get the hover preview, so each card carries its own shot.
    Each frame opens once, as its card reaches the lower third of the viewport,
-   and stays open — see works-reel.js for why the reveal is one-way.
+   and stays open - see works-reel.js for why the reveal is one-way.
 
    Query is bound to the masonry breakpoint (masonry.js) plus hover:none, so a
    narrow desktop window keeps the hover preview and never gets both. */
@@ -938,7 +949,7 @@
 
     .project-shot__frame {
         overflow: hidden;
-        border-radius: 12px;
+        border-radius: var(--radius-md);
         /* Ring instead of a border: a border keeps 2px of box even at 0fr. */
         box-shadow: 0 0 0 1px var(--border);
         background: rgba(0, 0, 0, 0.35);
@@ -977,7 +988,7 @@
     .project-shot img {
         display: block;
         width: 100%;
-        /* Each shot keeps its own proportions — they run 1.4:1 to 2:1, so any
+        /* Each shot keeps its own proportions - they run 1.4:1 to 2:1, so any
            fixed box would crop the sides off most of them. The 16/9 is only the
            placeholder ratio before the lazy image reports its own. */
         aspect-ratio: auto 16 / 9;
@@ -993,7 +1004,11 @@
             transform 380ms var(--reveal-ease) 50ms;
     }
 
-    .project-card.is-revealed .project-shot img {
+    /* Both classes, deliberately: is-revealed means the frame has opened,
+       is-shot-ready means the file has decoded. Keying the fade on the class
+       alone let the transition finish while the image was still downloading,
+       so it snapped into view mid-reveal instead of easing in. */
+    .project-card.is-revealed .project-shot.is-shot-ready img {
         opacity: 1;
         transform: none;
     }

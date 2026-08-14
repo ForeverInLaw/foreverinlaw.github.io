@@ -11,7 +11,7 @@ test('packColumns fills the shortest column each time', () => {
     assert.deepEqual(placements, [
         { column: 0, top: 0 },
         { column: 1, top: 0 },
-        // Column 1 is at 50+gap, column 0 at 100+gap — the third card goes right.
+        // Column 1 is at 50+gap, column 0 at 100+gap - the third card goes right.
         { column: 1, top: 50 + GAP }
     ]);
     assert.equal(height, 50 + GAP + 50 + GAP);

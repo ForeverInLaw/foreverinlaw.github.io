@@ -204,7 +204,7 @@ body.entry-active .project-preview-modal {
     }
 }
 
-/* Entry hint — tells the visitor the gate is a slider without killing the ritual */
+/* Entry hint - tells the visitor the gate is a slider without killing the ritual */
 .entry-hint {
     margin: 1.6rem 0 0;
     display: flex;
@@ -262,7 +262,7 @@ body.entry-active .project-preview-modal {
     50%      { box-shadow: 0 0 0 9px rgba(244, 146, 240, 0); }
 }
 
-/* Keyboard focus affordance — must be visible since body cursor is hidden */
+/* Keyboard focus affordance - must be visible since body cursor is hidden */
 .slide-button-container:not(.completed) .slide-button-handle:focus-visible {
     outline: none;
     animation: none;
@@ -286,7 +286,7 @@ body.entry-active .project-preview-modal {
 }
 
 /* ───────────────────────────────────────────────
-   No-JS fallback — the hub's core (links, projects,
+   No-JS fallback - the hub's core (links, projects,
    navigation) must stay usable without JavaScript:
    disabled, blocked, crawler, or CDN failure.
    `.js` is set synchronously in <head>; these rules
@@ -323,7 +323,7 @@ html:not(.js) .projects-row > li {
 }
 
 /* These sections are populated by JS (playlists injected, Spotify fetched).
-   Without JS they would sit empty or stuck on "Loading…" — hide them so the
+   Without JS they would sit empty or stuck on "Loading…" - hide them so the
    no-JS view shows only real content (links, projects, static stats, footer). */
 html:not(.js) .playlists-section,
 html:not(.js) .spotify-widget-container {

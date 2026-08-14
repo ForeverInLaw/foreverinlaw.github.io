@@ -31,7 +31,7 @@
     padding: 24px;
     background: var(--card);
     border: 1px solid var(--border);
-    border-radius: 16px;
+    border-radius: var(--radius-lg);
     color: var(--fg);
     text-decoration: none;
     transition: transform 0.4s var(--transition-smooth), border-color 0.4s var(--transition-smooth), box-shadow 0.4s var(--transition-smooth), background 0.4s var(--transition-smooth);
@@ -185,7 +185,7 @@ a.project-card::before {
     width: 16px;
     height: 16px;
     /* One SVG asset, recolored per state via the mask + background-color trick.
-       States (hover, theme) are pure CSS — no per-state data URIs. */
+       States (hover, theme) are pure CSS - no per-state data URIs. */
     background-color: var(--muted);
     -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 7h10v10'/%3E%3Cpath d='M7 17 17 7'/%3E%3C/svg%3E");
     mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 7h10v10'/%3E%3Cpath d='M7 17 17 7'/%3E%3C/svg%3E");
@@ -300,7 +300,7 @@ a.project-card:hover::before {
     font-weight: 600;
     padding: 6px 10px;
     background: rgba(255, 255, 255, 0.05);
-    border-radius: 6px;
+    border-radius: var(--radius-xs);
     color: var(--muted);
     transition: color 0.3s ease, background 0.3s ease;
 }
@@ -354,7 +354,7 @@ a.project-card:hover::before {
 #spotify-now-playing {
     min-height: 96px;
     width: 100%;
-    border-radius: 16px;
+    border-radius: var(--radius-lg);
     overflow: hidden;
     background: var(--card);
     border: 1px solid var(--border);
@@ -386,7 +386,7 @@ a.project-card:hover::before {
     width: 76px;
     height: 76px;
     /* Concentric: container 16px radius − 10px np-card padding = 6px */
-    border-radius: 6px;
+    border-radius: var(--radius-xs);
     overflow: hidden;
     background: rgba(255, 255, 255, 0.04);
     position: relative;
@@ -399,7 +399,7 @@ a.project-card:hover::before {
     display: block;
 }
 
-/* Image outlines — neutral pure-black/white ring for consistent depth.
+/* Image outlines - neutral pure-black/white ring for consistent depth.
    Never a tinted neutral (would read as dirt on the image edge). */
 .np-card__art,
 .preview-image-wrapper {
@@ -626,10 +626,15 @@ a.project-card:hover::before {
 }
 
 .project-preview-shell {
+    /* Same trick as .stat-card: the browser frame inside derives its corner
+       from these two, so the shell and the frame stay concentric. */
+    --shell-radius: var(--radius-xl);
+    --shell-pad: 12px;
+
     display: grid;
-    gap: 12px;
-    padding: 12px;
-    border-radius: 20px;
+    gap: var(--shell-pad);
+    padding: var(--shell-pad);
+    border-radius: var(--shell-radius);
     border: 1px solid rgba(255, 255, 255, 0.1);
     background:
         radial-gradient(120% 80% at 10% 0%, rgba(244, 146, 240, 0.06), transparent 50%),
@@ -657,7 +662,7 @@ a.project-card:hover::before {
 
 .preview-browser {
     position: relative;
-    border-radius: 14px;
+    border-radius: calc(var(--shell-radius) - var(--shell-pad));
     border: 1px solid rgba(255, 255, 255, 0.08);
     background: rgba(0, 0, 0, 0.35);
     overflow: hidden;
@@ -709,7 +714,7 @@ a.project-card:hover::before {
     overflow: hidden;
     text-overflow: ellipsis;
     background: rgba(255, 255, 255, 0.04);
-    border-radius: 6px;
+    border-radius: var(--radius-xs);
     border: 1px solid rgba(255, 255, 255, 0.05);
     max-width: 240px;
 }
@@ -719,7 +724,9 @@ a.project-card:hover::before {
     position: relative;
     width: 100%;
     aspect-ratio: var(--preview-aspect, 16/10);
-    border-radius: 0 0 14px 14px;
+    /* Flush with the frame's bottom corners, so it matches whatever the frame
+       resolved to. */
+    border-radius: 0 0 calc(var(--shell-radius) - var(--shell-pad)) calc(var(--shell-radius) - var(--shell-pad));
     overflow: hidden;
     background:
         radial-gradient(90% 130% at 50% 0%, rgba(255, 255, 255, 0.1), transparent 55%),
@@ -850,7 +857,7 @@ a.project-card:hover::before {
     display: inline-flex;
     align-items: center;
     padding: 4px 9px;
-    border-radius: 6px;
+    border-radius: var(--radius-xs);
     background: rgba(244, 146, 240, 0.08);
     border: 1px solid rgba(244, 146, 240, 0.12);
     color: var(--fg);
