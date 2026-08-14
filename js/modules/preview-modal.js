@@ -1,3 +1,5 @@
+import { getProjectDomain } from './project-card.js';
+
 function initProjectPreview() {
     const modal = document.getElementById('project-preview-modal');
     if (!modal) return;
@@ -157,24 +159,10 @@ function initProjectPreview() {
         const screenshot = card.getAttribute('data-screenshot') || '';
         const title = card.querySelector('h3')?.textContent?.trim() || 'Project';
         const desc = card.querySelector('p')?.textContent?.trim() || 'No short description provided.';
-        const href = card.tagName.toLowerCase() === 'a' ? card.getAttribute('href') || '' : '';
-
-        let domainLabel = 'Private project';
-
-        if (href && /^https?:\/\//i.test(href)) {
-            try {
-                const url = new URL(href);
-                domainLabel = url.hostname.replace(/^www\./, '');
-            } catch (error) {
-                domainLabel = href;
-            }
-        } else if (href) {
-            domainLabel = href;
-        }
 
         previewTitle.textContent = title;
         previewDesc.textContent = desc;
-        previewDomain.textContent = domainLabel;
+        previewDomain.textContent = getProjectDomain(card);
         fillPreviewTags(card);
 
         modal.classList.remove('is-error');

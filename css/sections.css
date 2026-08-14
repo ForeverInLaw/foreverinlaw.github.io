@@ -898,3 +898,107 @@
         margin-bottom: 16px;
     }
 }
+
+/* Mobile screenshot reel (works-reel.js)
+
+   Touch devices never get the hover preview, so each card carries its own shot.
+   Each frame opens once, as its card reaches the lower third of the viewport,
+   and stays open — see works-reel.js for why the reveal is one-way.
+
+   Query is bound to the masonry breakpoint (masonry.js) plus hover:none, so a
+   narrow desktop window keeps the hover preview and never gets both. */
+@media (max-width: 768px) and (hover: none) {
+    /* 0fr -> 1fr animates to the frame's natural height, which max-height cannot
+       do without a magic number. The inner frame owns the clipping. */
+    .project-shot {
+        /* Out-cubic rather than the site's out-quint: on a box this tall the
+           quint's near-instant start reads as a snap, not as an opening. */
+        --reveal-ease: cubic-bezier(0.33, 1, 0.68, 1);
+
+        display: grid;
+        grid-template-rows: 0fr;
+        margin-top: 0;
+        /* Clips the frame's own 1px borders, which a 0fr row cannot collapse. */
+        overflow: hidden;
+        opacity: 0;
+        transition: grid-template-rows 0.7s var(--reveal-ease),
+            margin-top 0.7s var(--reveal-ease),
+            opacity 0.45s ease-out;
+    }
+
+    .project-card.is-revealed .project-shot {
+        grid-template-rows: 1fr;
+        margin-top: 14px;
+        opacity: 1;
+    }
+
+    .project-shot__frame {
+        overflow: hidden;
+        border-radius: 12px;
+        /* Ring instead of a border: a border keeps 2px of box even at 0fr. */
+        box-shadow: 0 0 0 1px var(--border);
+        background: rgba(0, 0, 0, 0.35);
+    }
+
+    .project-shot__bar {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 10px;
+        border-bottom: 1px solid var(--border);
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.015));
+    }
+
+    .project-shot__bar span {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+    }
+
+    .project-shot__bar span:nth-child(1) { background: #ff5f57; }
+    .project-shot__bar span:nth-child(2) { background: #ffbd2f; }
+    .project-shot__bar span:nth-child(3) { background: #28ca42; }
+
+    .project-shot__domain {
+        margin-left: 6px;
+        overflow: hidden;
+        color: var(--muted);
+        font-size: 10px;
+        font-style: normal;
+        letter-spacing: 0.02em;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    .project-shot img {
+        display: block;
+        width: 100%;
+        /* Each shot keeps its own proportions — they run 1.4:1 to 2:1, so any
+           fixed box would crop the sides off most of them. The 16/9 is only the
+           placeholder ratio before the lazy image reports its own. */
+        aspect-ratio: auto 16 / 9;
+        height: auto;
+        /* Seven unrelated sites read as one set only once their palettes are pulled together. */
+        filter: saturate(0.85) contrast(1.05);
+        /* Settles a beat behind the frame so the shot eases in rather than
+           appearing fully formed the moment there is room for it. */
+        opacity: 0;
+        transform: scale(1.05);
+        transition: opacity 0.6s ease-out 0.12s,
+            transform 1s var(--reveal-ease) 0.08s;
+    }
+
+    .project-card.is-revealed .project-shot img {
+        opacity: 1;
+        transform: none;
+    }
+
+    /* Light theme: the chrome flips to dark-on-white like .preview-browser does. */
+    :root[data-theme="light"] .project-shot__frame {
+        background: rgba(255, 255, 255, 0.8);
+    }
+
+    :root[data-theme="light"] .project-shot__bar {
+        background: linear-gradient(180deg, rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.005));
+    }
+}

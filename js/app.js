@@ -5,6 +5,7 @@ import { initMasonry } from './modules/masonry.js';
 import { initPageAnimations } from './modules/intro.js';
 import { initCursor } from './modules/cursor.js';
 import { initPreviewModal } from './modules/preview-modal.js';
+import { initWorksReel } from './modules/works-reel.js';
 import { initSpotify } from './modules/spotify.js';
 import { initShowMore } from './modules/show-more.js';
 import { initGithubStats } from './modules/github-stats.js';
@@ -38,6 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     initCursor();
     initPreviewModal();
+    initWorksReel();
     initSpotify();
     initShowMore();
     initGithubStats();
