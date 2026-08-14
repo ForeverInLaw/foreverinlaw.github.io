@@ -379,6 +379,9 @@ a.project-card:hover::before {
 }
 
 .np-card__art {
+    /* Cross-fades covers via .t-icon-swap. A photo shrinking to the icon
+       default of 0.25 reads as a glitch, so this slot barely scales. */
+    --icon-swap-start-scale: 0.94;
     flex: 0 0 76px;
     width: 76px;
     height: 76px;
@@ -449,7 +452,9 @@ a.project-card:hover::before {
     background: linear-gradient(90deg, var(--accent), #1DB954);
     border-radius: 2px;
     width: 0%;
-    transition: width 0.4s linear;
+    /* No transition on width: spotify.js drives this from a rAF loop, so a
+       transition would restart every frame and leave the bar trailing the
+       track by its own duration. */
 }
 
 .np-card__badge {
@@ -571,7 +576,8 @@ a.project-card:hover::before {
     position: absolute;
     background-repeat: no-repeat;
     background-position: center;
-    transition: opacity 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55), transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    transition: opacity var(--icon-swap-dur) var(--icon-swap-ease),
+        transform var(--icon-swap-dur) var(--icon-swap-ease);
 }
 
 .theme-toggle__icon--sun {
@@ -906,4 +912,65 @@ a.project-card:hover::before {
     .project-preview-modal {
         width: min(500px, calc(100vw - 32px));
     }
+}
+
+/* ── transitions.dev primitives ──────────────────────────────────────────
+   Portable swaps used by the now-playing card and the show-more button.
+   Pasted verbatim from the transitions-dev skill; tune via the tokens in
+   variables.css rather than editing the rules. */
+
+.t-text-swap {
+  display: inline-block;
+  transform: translateY(0);
+  filter: blur(0);
+  opacity: 1;
+  transition:
+    transform var(--text-swap-dur) var(--text-swap-ease),
+    filter    var(--text-swap-dur) var(--text-swap-ease),
+    opacity   var(--text-swap-dur) var(--text-swap-ease);
+  will-change: transform, filter, opacity;
+}
+.t-text-swap.is-exit {
+  transform: translateY(calc(var(--text-swap-translate-y) * -1));
+  filter: blur(var(--text-swap-blur));
+  opacity: 0;
+}
+.t-text-swap.is-enter-start {
+  transform: translateY(var(--text-swap-translate-y));
+  filter: blur(var(--text-swap-blur));
+  opacity: 0;
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .t-text-swap { transition: none !important; }
+}
+
+.t-icon-swap {
+  position: relative;
+  display: inline-grid;
+}
+.t-icon-swap .t-icon {
+  grid-area: 1 / 1;
+  transition:
+    opacity   var(--icon-swap-dur) var(--icon-swap-ease),
+    filter    var(--icon-swap-dur) var(--icon-swap-ease),
+    transform var(--icon-swap-dur) var(--icon-swap-ease);
+  will-change: opacity, filter, transform;
+}
+.t-icon-swap[data-state="a"] .t-icon[data-icon="a"],
+.t-icon-swap[data-state="b"] .t-icon[data-icon="b"] {
+  opacity: 1;
+  filter: blur(0);
+  transform: scale(1);
+}
+.t-icon-swap[data-state="a"] .t-icon[data-icon="b"],
+.t-icon-swap[data-state="b"] .t-icon[data-icon="a"] {
+  opacity: 0;
+  filter: blur(var(--icon-swap-blur));
+  transform: scale(var(--icon-swap-start-scale));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .t-icon-swap .t-icon { transition: none !important; }
 }

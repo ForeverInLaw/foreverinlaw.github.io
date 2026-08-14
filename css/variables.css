@@ -11,6 +11,22 @@
     --accent-glow: rgba(244, 146, 240, 0.4);
     --transition-smooth: cubic-bezier(0.22, 1, 0.36, 1);
     --transition-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+    /* transitions.dev tokens — only the patterns this site actually uses.
+       Card resize: how long a box takes to tween between two sizes. */
+    --resize-dur: 300ms;
+    /* Text states swap */
+    --text-swap-dur: 200ms;
+    --text-swap-translate-y: 8px;
+    --text-swap-blur: 2px;
+    --text-swap-ease: ease-out;
+    /* Playlist swipe: how long a card takes to leave the stack. playlists.js
+       reads this back, so the two never drift apart. */
+    --stack-exit-dur: 400ms;
+    /* Icon swap */
+    --icon-swap-dur: 200ms;
+    --icon-swap-blur: 2px;
+    --icon-swap-start-scale: 0.25;
+    --icon-swap-ease: ease-in-out;
     --noise-opacity: 0.07;
     --github-brand: #ffffff;
     --status-active: #4ade80;

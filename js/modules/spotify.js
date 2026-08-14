@@ -1,4 +1,5 @@
-import { apiEndpoint, escapeHtml, fetchJson, safeUrl } from './remote.js';
+import { apiEndpoint, fetchJson, safeUrl } from './remote.js';
+import { swapText } from './text-swap.js';
 
 const NP_API = apiEndpoint('/api/now-playing', 'https://spotify-now-playing.foreverinlaw.workers.dev/');
 const POLL_INTERVAL_MS = 15000;
@@ -42,28 +43,76 @@ export function initSpotify() {
         return Math.max(0, Math.min(100, pct));
     }
 
-    function renderCard(data) {
+    const BADGE = '<span class="np-card__badge" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0Zm3.67 11.54a.5.5 0 0 1-.69.17c-1.88-1.15-4.25-1.41-7.04-.77a.5.5 0 1 1-.22-.97c3.05-.7 5.67-.4 7.78.88a.5.5 0 0 1 .17.69Zm.98-2.18a.62.62 0 0 1-.86.21c-2.16-1.32-5.45-1.7-8-.93a.62.62 0 1 1-.36-1.2c2.93-.88 6.55-.46 9 1.06a.62.62 0 0 1 .22.86Zm.08-2.27c-2.59-1.54-6.86-1.68-9.34-.93a.75.75 0 0 1-.43-1.44c2.84-.85 7.55-.69 10.53 1.08a.75.75 0 0 1-.76 1.29Z"/></svg></span>';
+
+    // Built once and then updated in place — see updateCard. The art slot holds
+    // two stacked <img> so a new cover can cross-fade over the old one, and the
+    // title and artist carry .t-text-swap so their content changes animate.
+    function renderCard() {
         if (!spotifyWidget) return;
-        const t = data.track;
-        const isStale = !data.isPlaying;
-        const pulse = data.isPlaying ? '<span class="np-card__pulse" aria-hidden="true"></span>' : '';
-        const badge = '<span class="np-card__badge" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0Zm3.67 11.54a.5.5 0 0 1-.69.17c-1.88-1.15-4.25-1.41-7.04-.77a.5.5 0 1 1-.22-.97c3.05-.7 5.67-.4 7.78.88a.5.5 0 0 1 .17.69Zm.98-2.18a.62.62 0 0 1-.86.21c-2.16-1.32-5.45-1.7-8-.93a.62.62 0 1 1-.36-1.2c2.93-.88 6.55-.46 9 1.06a.62.62 0 0 1 .22.86Zm.08-2.27c-2.59-1.54-6.86-1.68-9.34-.93a.75.75 0 0 1-.43-1.44c2.84-.85 7.55-.69 10.53 1.08a.75.75 0 0 1-.76 1.29Z"/></svg></span>';
-        const trackUrl = safeUrl(t.url);
-        const albumArt = safeUrl(t.albumArt);
         spotifyWidget.innerHTML = `
-            <a class="np-card${isStale ? ' is-stale' : ''}" href="${escapeHtml(trackUrl)}" target="_blank" rel="noopener noreferrer" aria-label="${escapeHtml(t.name)} by ${escapeHtml(t.artists)}">
-                <div class="np-card__art">
-                    ${albumArt ? `<img src="${escapeHtml(albumArt)}" alt="" loading="lazy" decoding="async">` : ''}
-                    ${pulse}
-                    ${badge}
+            <a class="np-card" target="_blank" rel="noopener noreferrer">
+                <div class="np-card__art t-icon-swap" data-state="a">
+                    <img class="t-icon" data-icon="a" alt="" decoding="async">
+                    <img class="t-icon" data-icon="b" alt="" decoding="async">
+                    ${BADGE}
                 </div>
                 <div class="np-card__info">
-                    <div class="np-card__title">${escapeHtml(t.name)}</div>
-                    <div class="np-card__artist">${escapeHtml(t.artists)}</div>
-                    <div class="np-card__progress"><div class="np-card__bar" style="width: ${progressPercent(data)}%"></div></div>
+                    <div class="np-card__title"><span class="t-text-swap"></span></div>
+                    <div class="np-card__artist"><span class="t-text-swap"></span></div>
+                    <div class="np-card__progress"><div class="np-card__bar"></div></div>
                 </div>
             </a>
         `;
+    }
+
+    /**
+     * Fades a new cover in over the old one. The state only flips once the
+     * image has actually decoded, so a slow or broken URL leaves the previous
+     * cover up instead of blanking the slot.
+     */
+    async function swapAlbumArt(slot, src) {
+        if (!src || slot.dataset.src === src) return;
+        slot.dataset.src = src;
+
+        const nextIcon = slot.dataset.state === 'a' ? 'b' : 'a';
+        const image = slot.querySelector(`[data-icon="${nextIcon}"]`);
+        image.src = src;
+
+        try {
+            await image.decode();
+        } catch {
+            return;
+        }
+        if (slot.dataset.src !== src) return; // a newer cover won the race
+        slot.dataset.state = nextIcon;
+    }
+
+    function updateCard(data) {
+        const card = spotifyWidget.querySelector('.np-card');
+        if (!card) return;
+
+        const t = data.track;
+        card.href = safeUrl(t.url);
+        card.setAttribute('aria-label', `${t.name} by ${t.artists}`);
+        card.classList.toggle('is-stale', !data.isPlaying);
+
+        swapText(card.querySelector('.np-card__title .t-text-swap'), t.name);
+        swapText(card.querySelector('.np-card__artist .t-text-swap'), t.artists);
+        swapAlbumArt(card.querySelector('.np-card__art'), safeUrl(t.albumArt));
+
+        card.querySelector('.np-card__bar').style.width = `${progressPercent(data)}%`;
+
+        const art = card.querySelector('.np-card__art');
+        const pulse = art.querySelector('.np-card__pulse');
+        if (data.isPlaying && !pulse) {
+            const dot = document.createElement('span');
+            dot.className = 'np-card__pulse';
+            dot.setAttribute('aria-hidden', 'true');
+            art.appendChild(dot);
+        } else if (!data.isPlaying && pulse) {
+            pulse.remove();
+        }
     }
 
     function showMessage(text) {
@@ -121,28 +170,16 @@ export function initSpotify() {
 
             setTitleText(data.isPlaying ? 'Now Playing' : 'Last Played');
 
-            const isNewTrack = data.track.id !== npState.trackId;
             npState.trackId = data.track.id;
             npState.isPlaying = !!data.isPlaying;
             npState.progressMs = data.progressMs || 0;
             npState.durationMs = data.durationMs || 0;
             npState.lastSyncAt = Date.now();
 
-            if (isNewTrack || !spotifyWidget.querySelector('.np-card')) {
-                renderCard(data);
-            } else {
-                const bar = spotifyWidget.querySelector('.np-card__bar');
-                if (bar) bar.style.width = `${progressPercent(data)}%`;
-                const card = spotifyWidget.querySelector('.np-card');
-                if (card) card.classList.toggle('is-stale', !data.isPlaying);
-                const pulse = spotifyWidget.querySelector('.np-card__pulse');
-                if (data.isPlaying && !pulse) {
-                    const art = spotifyWidget.querySelector('.np-card__art');
-                    if (art) art.insertAdjacentHTML('beforeend', '<span class="np-card__pulse" aria-hidden="true"></span>');
-                } else if (!data.isPlaying && pulse) {
-                    pulse.remove();
-                }
-            }
+            // The card is only built once; a track change updates it in place
+            // so the title, artist and cover can animate rather than blink.
+            if (!spotifyWidget.querySelector('.np-card')) renderCard();
+            updateCard(data);
 
             startProgressLoop();
         } catch (err) {

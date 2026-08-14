@@ -6,6 +6,13 @@ const PLAYLISTS_API = apiEndpoint(
     'https://spotify-show-last-68db402e666c.herokuapp.com/api/playlists'
 );
 
+// Matches --stack-exit-dur; only used if the custom property goes missing.
+const EXIT_DUR_FALLBACK = 400;
+
+const exitDuration = () => parseFloat(
+    getComputedStyle(document.documentElement).getPropertyValue('--stack-exit-dur')
+) || EXIT_DUR_FALLBACK;
+
 function initPlaylistStack(container) {
     const items = Array.from(container.children);
     if (items.length === 0) return;
@@ -82,7 +89,7 @@ function initPlaylistStack(container) {
             if (offset === 1) exitingItem.classList.add('stack-next');
             else if (offset === 2) exitingItem.classList.add('stack-after');
             else exitingItem.classList.add('stack-hidden');
-        }, 450);
+        }, exitDuration());
     }
 
     function next() { goTo((current + 1) % items.length, 'left'); }

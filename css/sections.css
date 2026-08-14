@@ -680,7 +680,8 @@
         z-index: 4;
         transform: translateX(-110%) rotate(-8deg);
         opacity: 0;
-        transition: transform 0.4s var(--transition-smooth), opacity 0.35s ease;
+        transition: transform var(--stack-exit-dur) var(--transition-smooth),
+            opacity 0.35s ease;
         pointer-events: none;
     }
 
@@ -688,7 +689,8 @@
         z-index: 4;
         transform: translateX(110%) rotate(8deg);
         opacity: 0;
-        transition: transform 0.4s var(--transition-smooth), opacity 0.35s ease;
+        transition: transform var(--stack-exit-dur) var(--transition-smooth),
+            opacity 0.35s ease;
         pointer-events: none;
     }
 
@@ -912,7 +914,9 @@
        do without a magic number. The inner frame owns the clipping. */
     .project-shot {
         /* Out-cubic rather than the site's out-quint: on a box this tall the
-           quint's near-instant start reads as a snap, not as an opening. */
+           quint's near-instant start reads as a snap, not as an opening. The
+           gentler curve is what lets the reveal run at --resize-dur without
+           feeling abrupt. */
         --reveal-ease: cubic-bezier(0.33, 1, 0.68, 1);
 
         display: grid;
@@ -921,9 +925,9 @@
         /* Clips the frame's own 1px borders, which a 0fr row cannot collapse. */
         overflow: hidden;
         opacity: 0;
-        transition: grid-template-rows 0.7s var(--reveal-ease),
-            margin-top 0.7s var(--reveal-ease),
-            opacity 0.45s ease-out;
+        transition: grid-template-rows var(--resize-dur) var(--reveal-ease),
+            margin-top var(--resize-dur) var(--reveal-ease),
+            opacity 180ms ease-out;
     }
 
     .project-card.is-revealed .project-shot {
@@ -981,11 +985,12 @@
         /* Seven unrelated sites read as one set only once their palettes are pulled together. */
         filter: saturate(0.85) contrast(1.05);
         /* Settles a beat behind the frame so the shot eases in rather than
-           appearing fully formed the moment there is room for it. */
+           appearing fully formed the moment there is room for it. The lag is
+           a fraction of --resize-dur, not a second animation on top of it. */
         opacity: 0;
         transform: scale(1.05);
-        transition: opacity 0.6s ease-out 0.12s,
-            transform 1s var(--reveal-ease) 0.08s;
+        transition: opacity 260ms ease-out 60ms,
+            transform 380ms var(--reveal-ease) 50ms;
     }
 
     .project-card.is-revealed .project-shot img {
