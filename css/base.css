@@ -2,7 +2,27 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    cursor: none;
+}
+
+/* Skip to Content Link */
+.skip-link {
+    position: fixed;
+    top: -100px;
+    left: 16px;
+    z-index: 10001;
+    padding: 12px 20px;
+    background: var(--accent);
+    color: var(--bg);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: top 0.2s var(--transition-smooth);
+}
+
+.skip-link:focus {
+    top: 16px;
 }
 
 @font-face {
@@ -10,7 +30,6 @@
     src: url(../fonts/raleway-regular.woff2);
     font-display: swap;
 }
-
 @font-face {
     font-family: raleway_f;
     src: url(../fonts/raleway-black.woff2);
@@ -43,9 +62,7 @@ body {
 }
 
 @media (pointer: coarse) {
-
-    body,
-    * {
+    body {
         cursor: auto;
     }
 }
@@ -99,5 +116,22 @@ body:hover .custom-cursor.has-moved {
     to {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    .custom-cursor {
+        transition: none;
+    }
+    .np-card__pulse {
+        animation: none;
+    }
+    .np-placeholder > div {
+        animation: none;
     }
 }

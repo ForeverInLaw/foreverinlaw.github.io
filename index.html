@@ -6,17 +6,57 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<title>ForeverInLaw - Creative Developer</title>
-	<meta name="description" content="Creative developer specializing in Python, Node.js, and modern web technologies.">
-	<meta name="author" content="ForeverInLaw">
-	<meta name="keywords"
-		content="web developer, software engineer, python, nodejs, telegram bots, django, react, nextjs, design">
-	<meta name="theme-color" content="#050505">
+	<!-- Progressive enhancement flag: set before paint so JS-only hiding never traps no-JS users -->
+	<script>document.documentElement.classList.add('js');</script>
 
-	<meta property="og:title" content="ForeverInLaw - Creative Developer">
-	<meta property="og:description" content="Building digital experiences with code and creativity.">
+	<title>ForeverInLaw — Creative Developer</title>
+	<meta name="description" content="ForeverInLaw — creative developer. Telegram bots, Next.js sites, Go and Python backends, Tauri desktop apps, and animated UI. Selected works, GitHub activity, and now-playing Spotify card.">
+	<meta name="author" content="ForeverInLaw">
+	<meta name="theme-color" content="#1B1628">
+	<link rel="canonical" href="https://zaebal.dev/">
+
+	<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+	<link rel="icon" href="/favicon.ico" sizes="any">
+	<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+	<meta property="og:title" content="ForeverInLaw — Creative Developer">
+	<meta property="og:description" content="Telegram bots, Next.js sites, Go and Python backends, Tauri desktop apps, animated UI. Selected works and live activity.">
 	<meta property="og:type" content="website">
-	<meta property="og:url" content="https://foreverinlaw.github.io">
+	<meta property="og:url" content="https://zaebal.dev/">
+	<meta property="og:site_name" content="ForeverInLaw">
+	<meta property="og:locale" content="en_US">
+	<meta property="og:image" content="https://zaebal.dev/og.png">
+	<meta property="og:image:width" content="1200">
+	<meta property="og:image:height" content="630">
+	<meta property="og:image:alt" content="ForeverInLaw — Creative Developer">
+
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="ForeverInLaw — Creative Developer">
+	<meta name="twitter:description" content="Telegram bots, Next.js sites, Go and Python backends, Tauri desktop apps, animated UI.">
+	<meta name="twitter:image" content="https://zaebal.dev/og.png">
+
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "Person",
+		"name": "ForeverInLaw",
+		"alternateName": "Sergei",
+		"url": "https://zaebal.dev",
+		"image": "https://zaebal.dev/og.png",
+		"jobTitle": "Creative Developer",
+		"sameAs": [
+			"https://github.com/ForeverInLaw",
+			"https://t.me/nevermorelove",
+			"https://instagram.com/sxwxrslxt",
+			"https://www.youtube.com/channel/UCPwNfqoxDW0wELPkgm1v9og",
+			"https://open.spotify.com/user/aj9lqav0oqw73nb9ra85orfil"
+		],
+		"knowsAbout": ["Next.js", "TypeScript", "Go", "Python", "Telegram Bots", "Tauri", "Rust", "GSAP", "WebGL"]
+	}
+	</script>
+
+	<link rel="preload" href="fonts/raleway-black.woff2" as="font" type="font/woff2" crossorigin>
+
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 	<link rel="stylesheet" href="css/variables.css">
 	<link rel="stylesheet" href="css/base.css">
@@ -24,27 +64,27 @@
 	<link rel="stylesheet" href="css/components.css">
 	<link rel="stylesheet" href="css/sections.css">
 	<link rel="stylesheet" href="css/slide-button.css">
-	<script src="libs/gsap/gsap.min.js" defer></script>
-	<script src="libs/gsap/ScrollTrigger.min.js" defer></script>
-	<script src="libs/gsap/ScrollSmoother.min.js" defer></script>
-	<script src="js/SplitText.min.js" defer></script>
+	<script>window.INTERACTIVE_ELEMENTS = 'a, button, input, textarea, select, .link-card, .project-card, .theme-toggle, .slide-button-handle, .playlist-card';</script>
+	<script src="libs/gsap/gsap-bundle.min.js" defer></script>
 	<script src="js/slide-button.js" defer></script>
 	<script src="js/grainient-background.js" defer></script>
-	<script src="js/app.js" defer></script>
+	<script type="module" src="js/app.js"></script>
 </head>
 
 <body class="entry-active">
+		<a href="#main-content" class="skip-link">Skip to content</a>
 		<div class="grainient-bg" id="grainient-bg" aria-hidden="true"></div>
 
-	<div class="entry-screen" id="entry-screen">
+	<div class="entry-screen" id="entry-screen" role="group" aria-label="Enter zaebal.dev">
 		<div class="entry-screen-grain"></div>
 		<div class="entry-container">
 			<div class="slide-button-wrapper">
 				<div class="slide-button-container" id="slide-container">
 					<div class="slide-button-track" id="slide-track"></div>
-					<div class="slide-button-handle" id="slide-handle">
+					<div class="slide-button-handle" id="slide-handle" role="button" tabindex="0"
+						aria-label="Slide, or press Enter, to enter the site">
 						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-							stroke-width="2">
+							stroke-width="2" aria-hidden="true">
 							<path stroke-linecap="round" stroke-linejoin="round" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
 						</svg>
 					</div>
@@ -56,26 +96,33 @@
 					</div>
 				</div>
 			</div>
+			<p class="entry-hint" id="entry-hint" aria-hidden="true">
+				<span class="entry-hint__label">Slide to enter</span>
+				<svg class="entry-hint__arrow" width="12" height="12" viewBox="0 0 24 24" fill="none"
+					stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"
+					aria-hidden="true">
+					<path d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+				</svg>
+			</p>
 		</div>
 	</div>
 	<script>if(sessionStorage.getItem('entryCompleted')){document.body.classList.remove('entry-active');document.getElementById('entry-screen').classList.add('hidden')}</script>
 
-	<button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme" title="Toggle dark/light mode">
+	<button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme" aria-pressed="true" title="Toggle dark/light mode">
 		<span class="theme-toggle__icon theme-toggle__icon--sun" aria-hidden="true"></span>
 		<span class="theme-toggle__icon theme-toggle__icon--moon" aria-hidden="true"></span>
 	</button>
 
 	<div class="wrapper">
-		<main class="content">
+		<main class="content" id="main-content" style="scroll-margin-top: 80px;">
 
 			<section class="hero">
 				<div class="hero__inner">
 					<h1>ForeverInLaw</h1>
-					<p class="subtitle">Creative Developer & UI/UX Enthusiast. Crafting digital experiences that merge
-						functionality with aesthetics.</p>
+					<p class="subtitle">I build things that move — Telegram bots, P2P messengers, animated web. Mostly after dark.</p>
 
 					<div class="hero__links">
-						<div class="section-title">Connect</div>
+						<h2 class="section-title">Connect</h2>
 						<ul class="links-grid">
 							<li>
 								<a class="link-card telegram" href="https://t.me/nevermorelove" target="_blank"
@@ -124,8 +171,31 @@
 					</div>
 
 					<div class="projects">
-						<div class="section-title">Selected Works</div>
+						<h2 class="section-title">Selected Works</h2>
 						<ul class="projects-row">
+							<li>
+								<a class="project-card" href="https://redstone.md" target="_blank"
+									rel="noopener noreferrer" data-screenshot="screenshots/redstone.webp">
+									<div>
+										<h3>Redstone</h3>
+										<p>Multilingual portfolio for an R&D collective — full-cycle product engineering from concept to production.</p>
+										<div class="project-meta">
+											<span>2026</span>
+											<span class="project-meta__sep">·</span>
+											<span>Client</span>
+											<span class="project-meta__sep">·</span>
+											<span class="project-meta__status project-meta__status--active">
+												<span class="project-meta__dot"></span>Active
+											</span>
+										</div>
+									</div>
+									<div class="project-tags">
+										<span class="project-tag">Design</span>
+										<span class="project-tag">Motion</span>
+										<span class="project-tag">Docker</span>
+									</div>
+								</a>
+							</li>
 							<li>
 								<a class="project-card" href="https://magical-haupia-5e409c.netlify.app/" target="_blank"
 									rel="noopener noreferrer" data-screenshot="screenshots/mlefia.webp">
@@ -133,6 +203,15 @@
 										<h3>Mlefia</h3>
 										<p>Cinematic tattoo studio landing with WebGL dither shader, GSAP scroll
 											animations, and horizontal gallery. Vintage burgundy/mauve aesthetic.</p>
+										<div class="project-meta">
+											<span>2026</span>
+											<span class="project-meta__sep">·</span>
+											<span>Client</span>
+											<span class="project-meta__sep">·</span>
+											<span class="project-meta__status project-meta__status--active">
+												<span class="project-meta__dot"></span>Active
+											</span>
+										</div>
 									</div>
 									<div class="project-tags">
 										<span class="project-tag">Next.js</span>
@@ -148,6 +227,15 @@
 										<h3>Axiome Chat</h3>
 										<p>AI chat platform with Google Gemini integration. Next.js & Telegram Web App.
 											Crypto payments.</p>
+										<div class="project-meta">
+											<span>2026</span>
+											<span class="project-meta__sep">·</span>
+											<span>Client</span>
+											<span class="project-meta__sep">·</span>
+											<span class="project-meta__status project-meta__status--archived">
+												<span class="project-meta__dot"></span>Archived
+											</span>
+										</div>
 									</div>
 									<div class="project-tags">
 										<span class="project-tag">Next.js</span>
@@ -162,6 +250,15 @@
 										<h3>ForeverLaw Escrow</h3>
 										<p>Secure P2P transaction bot. Multi-payment gateway integration (Stars, Crypto,
 											Bitpapa).</p>
+										<div class="project-meta">
+											<span>2025</span>
+											<span class="project-meta__sep">·</span>
+											<span>Client</span>
+											<span class="project-meta__sep">·</span>
+											<span class="project-meta__status project-meta__status--oss">
+												<span class="project-meta__dot"></span>OSS
+											</span>
+										</div>
 									</div>
 									<div class="project-tags">
 										<span class="project-tag">Node.js</span>
@@ -176,6 +273,15 @@
 										<h3>ForeverInMusic</h3>
 										<p>Discord music bot for YouTube and Spotify playback. Interactive button
 											controls, permission system, and EN/RU localization.</p>
+										<div class="project-meta">
+											<span>2025</span>
+											<span class="project-meta__sep">·</span>
+											<span>Solo</span>
+											<span class="project-meta__sep">·</span>
+											<span class="project-meta__status project-meta__status--oss">
+												<span class="project-meta__dot"></span>OSS
+											</span>
+										</div>
 									</div>
 									<div class="project-tags">
 										<span class="project-tag">TypeScript</span>
@@ -190,6 +296,15 @@
 										<h3>Nellexint</h3>
 										<p>High-performance OSINT tool written in Go. Big Data processing with
 											PostgreSQL.</p>
+										<div class="project-meta">
+											<span>2025</span>
+											<span class="project-meta__sep">·</span>
+											<span>Team</span>
+											<span class="project-meta__sep">·</span>
+											<span class="project-meta__status project-meta__status--archived">
+												<span class="project-meta__dot"></span>Archived
+											</span>
+										</div>
 									</div>
 									<div class="project-tags">
 										<span class="project-tag">Go</span>
@@ -204,6 +319,15 @@
 										<h3>CosyMC</h3>
 										<p>Minecraft project ecosystem. Web portal, launcher integration, skin
 											management system.</p>
+										<div class="project-meta">
+											<span>2025</span>
+											<span class="project-meta__sep">·</span>
+											<span>Team</span>
+											<span class="project-meta__sep">·</span>
+											<span class="project-meta__status project-meta__status--active">
+												<span class="project-meta__dot"></span>Active
+											</span>
+										</div>
 									</div>
 									<div class="project-tags">
 										<span class="project-tag">Next.js</span>
@@ -216,6 +340,15 @@
 									<div>
 										<h3>Unsolvable Admin</h3>
 										<p>Advanced Telegram moderation bot. Robust automated administration tools.</p>
+										<div class="project-meta">
+											<span>2025</span>
+											<span class="project-meta__sep">·</span>
+											<span>Client</span>
+											<span class="project-meta__sep">·</span>
+											<span class="project-meta__status project-meta__status--active">
+												<span class="project-meta__dot"></span>Active
+											</span>
+										</div>
 									</div>
 									<div class="project-tags">
 										<span class="project-tag">Python</span>
@@ -228,6 +361,15 @@
 										<h3>Django Helpdesk Integration</h3>
 										<p>Enhanced Django helpdesk with WhatsApp ticketing and RustDesk remote support
 											integration.</p>
+										<div class="project-meta">
+											<span>2025</span>
+											<span class="project-meta__sep">·</span>
+											<span>Client</span>
+											<span class="project-meta__sep">·</span>
+											<span class="project-meta__status project-meta__status--archived">
+												<span class="project-meta__dot"></span>Archived
+											</span>
+										</div>
 									</div>
 									<div class="project-tags">
 										<span class="project-tag">Django</span>
@@ -236,16 +378,26 @@
 								</article>
 							</li>
 							<li>
-								<a class="project-card" href="https://github.com/ForeverInLaw/simple-spotify-downloader"
-									target="_blank" rel="noopener noreferrer">
+								<a class="project-card" href="https://github.com/redstone-md/moss" target="_blank"
+									rel="noopener noreferrer">
 									<div>
-										<h3>Spotify Downloader Bot</h3>
-										<p>Aiogram + Spotipy + yt-dlp Telegram bot that turns Spotify track, album, or
-											playlist links into cover-art-ready MP3 downloads with smart caching.</p>
+										<h3>Moss</h3>
+										<p>Embeddable P2P mesh core in Go exported as a C-shared library via CGO. Tracker-based bootstrapping (BEP 15/3), Noise XX encrypted transport, topic pubsub with peer scoring, NAT profiling, and FFI examples for C/C++/C#/Python/Rust.</p>
+										<div class="project-meta">
+											<span>2026</span>
+											<span class="project-meta__sep">·</span>
+											<span>Team</span>
+											<span class="project-meta__sep">·</span>
+											<span class="project-meta__status project-meta__status--wip">
+												<span class="project-meta__dot"></span>WIP
+											</span>
+										</div>
 									</div>
 									<div class="project-tags">
-										<span class="project-tag">Python</span>
-										<span class="project-tag">Aiogram</span>
+										<span class="project-tag">Go</span>
+										<span class="project-tag">CGO</span>
+										<span class="project-tag">P2P</span>
+										<span class="project-tag">Noise</span>
 									</div>
 								</a>
 							</li>
@@ -257,6 +409,15 @@
 										<p>Personal website for a German children's book author. SSR/SSG with SEO
 											optimization, scroll-reveal animations, and Docker deployment via Cloudflare
 											Tunnel.</p>
+										<div class="project-meta">
+											<span>2025</span>
+											<span class="project-meta__sep">·</span>
+											<span>Client</span>
+											<span class="project-meta__sep">·</span>
+											<span class="project-meta__status project-meta__status--active">
+												<span class="project-meta__dot"></span>Active
+											</span>
+										</div>
 									</div>
 									<div class="project-tags">
 										<span class="project-tag">Next.js</span>
@@ -266,16 +427,26 @@
 								</a>
 							</li>
 							<li>
-								<a class="project-card" href="https://github.com/ForeverInLaw/BD-CompleteRecentQuest"
-									target="_blank" rel="noopener noreferrer">
+								<a class="project-card" href="https://github.com/redstone-md/mosh" target="_blank"
+									rel="noopener noreferrer">
 									<div>
-										<h3>CompleteRecentQuest</h3>
-										<p>BetterDiscord plugin for automatic Discord quest completion with UI panel,
-											real-time progress tracking, and RU/EN localization.</p>
+										<h3>Mosh</h3>
+										<p>Desktop-first decentralized messenger built on the Moss runtime. Tauri v2 + React + TypeScript + Rust, OpenMLS-oriented private 1:1 DM flow, tracker-based discovery, manual fingerprint confirmation out of band.</p>
+										<div class="project-meta">
+											<span>2026</span>
+											<span class="project-meta__sep">·</span>
+											<span>Team</span>
+											<span class="project-meta__sep">·</span>
+											<span class="project-meta__status project-meta__status--wip">
+												<span class="project-meta__dot"></span>WIP
+											</span>
+										</div>
 									</div>
 									<div class="project-tags">
-										<span class="project-tag">JavaScript</span>
-										<span class="project-tag">BetterDiscord</span>
+										<span class="project-tag">Tauri</span>
+										<span class="project-tag">React</span>
+										<span class="project-tag">Rust</span>
+										<span class="project-tag">OpenMLS</span>
 									</div>
 								</a>
 							</li>
@@ -286,6 +457,15 @@
 										<h3>Naturalis by Anastasiia</h3>
 										<p>Multilingual (DE/RU) cosmetics & wellness landing page featuring smooth scroll
 											navigation, parallax hero, before/after comparisons, and animated service showcases.</p>
+										<div class="project-meta">
+											<span>2025</span>
+											<span class="project-meta__sep">·</span>
+											<span>Client</span>
+											<span class="project-meta__sep">·</span>
+											<span class="project-meta__status project-meta__status--archived">
+												<span class="project-meta__dot"></span>Archived
+											</span>
+										</div>
 									</div>
 									<div class="project-tags">
 										<span class="project-tag">Next.js</span>
@@ -301,6 +481,15 @@
 									<div>
 										<h3>Core LogicX</h3>
 										<p>Bilingual page built with Next.js 16. Route-based i18n, SEO metadata, structured data, and scroll-driven UI interactions. Production-ready setup with TypeScript, Playwright smoke e2e coverage, and Docker standalone deployment.</p>
+										<div class="project-meta">
+											<span>2026</span>
+											<span class="project-meta__sep">·</span>
+											<span>Client</span>
+											<span class="project-meta__sep">·</span>
+											<span class="project-meta__status project-meta__status--active">
+												<span class="project-meta__dot"></span>Active
+											</span>
+										</div>
 									</div>
 									<div class="project-tags">
 										<span class="project-tag">Next.js</span>
@@ -317,6 +506,15 @@
 									<div>
 										<h3>WhisperToCode</h3>
 										<p>Cross-platform push-to-talk tool that uses speech-to-text ML model. The text is automatically typed into any focused input. Supports different languages.</p>
+										<div class="project-meta">
+											<span>2025</span>
+											<span class="project-meta__sep">·</span>
+											<span>Solo</span>
+											<span class="project-meta__sep">·</span>
+											<span class="project-meta__status project-meta__status--oss">
+												<span class="project-meta__dot"></span>OSS
+											</span>
+										</div>
 									</div>
 									<div class="project-tags">
 										<span class="project-tag">Python</span>
@@ -334,7 +532,7 @@
 					</div>
 
 					<div class="playlists-section">
-						<div class="section-title">My Playlists</div>
+						<h2 class="section-title">My Playlists</h2>
 						<ul class="playlists-row" id="playlists-container">
 							<!-- Playlists will be injected here -->
 						</ul>
@@ -342,8 +540,8 @@
 
 					<section class="github-stats" aria-labelledby="github-stats-title">
 						<div class="section-header-wrapper">
-							<h2 class="section-title" id="github-stats-title">Contribution Graph</h2>
-							<p class="section-subtitle">Code contributions and activity analytics.</p>
+							<h2 class="section-title" id="github-stats-title">The Grind</h2>
+							<p class="section-subtitle">Proof of work.</p>
 						</div>
 
 						<div class="stats-grid">
@@ -357,10 +555,10 @@
 								<div class="card-content">
 									<div class="stats-image-wrapper">
 										<img class="stats-img stats-img--dark"
-											src="https://github-readme-stats-green-one-48.vercel.app/api?username=ForeverInLaw&show_icons=true&theme=transparent&hide_border=true&title_color=f492f0&icon_color=a1a1a6&text_color=f5f5f7&bg_color=00000000"
+											src="assets/stats-dark.svg"
 											alt="ForeverInLaw's GitHub Stats" loading="lazy">
 										<img class="stats-img stats-img--light"
-											src="https://github-readme-stats-green-one-48.vercel.app/api?username=ForeverInLaw&show_icons=true&theme=transparent&hide_border=true&title_color=d04ec5&icon_color=666666&text_color=111111&bg_color=00000000"
+											src="assets/stats-light.svg"
 											alt="ForeverInLaw's GitHub Stats" loading="lazy" aria-hidden="true">
 									</div>
 								</div>
@@ -376,10 +574,10 @@
 								<div class="card-content">
 									<div class="graph-wrapper">
 										<img class="graph-img graph-img--dark"
-											src="https://ghchart.rshah.org/0b6d0f/ForeverInLaw"
+											src="assets/chart-dark.svg"
 											alt="ForeverInLaw's Contribution Graph" loading="lazy">
 										<img class="graph-img graph-img--light"
-											src="https://ghchart.rshah.org/d04ec5/ForeverInLaw"
+											src="assets/chart-light.svg"
 											alt="ForeverInLaw's Contribution Graph" loading="lazy" aria-hidden="true">
 									</div>
 								</div>
@@ -395,7 +593,7 @@
 					<footer class="site-footer">
 						<div class="site-footer__inner">
 							<p>&copy; <span id="year"></span> ForeverInLaw.</p>
-							<p>Designed & Built with <span style="color: var(--accent);">♥</span></p>
+							<p>Hand-built at <span style="color: var(--accent);">2am</span> with Raleway, grain &amp; GSAP.</p>
 						</div>
 					</footer>
 
@@ -417,7 +615,7 @@
 					<p class="preview-domain" id="preview-domain">Preview</p>
 				</div>
 				<div class="preview-image-wrapper">
-					<img src="" alt="" id="preview-image" loading="lazy" decoding="async">
+					<img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" id="preview-image" loading="lazy" decoding="async">
 					<div class="preview-image-shade" aria-hidden="true"></div>
 					<div class="preview-image-empty">Preview unavailable</div>
 				</div>

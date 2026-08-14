@@ -22,6 +22,7 @@
         const handle = document.getElementById('slide-handle');
         const track = document.getElementById('slide-track');
         const statusElement = document.getElementById('slide-status');
+        const hint = document.getElementById('entry-hint');
 
         if (!entryScreen || !container || !handle || !track || !statusElement) {
             console.error('Slide button elements not found');
@@ -84,9 +85,10 @@
         
         function handleDragStart(e) {
             if (container.classList.contains('completed')) return;
-            
+
             isDragging = true;
-            
+            dismissHint();
+
             // Останавливаем все анимации
             gsap.killTweensOf(animState);
             
@@ -186,8 +188,44 @@
             }, ANIMATION_DURATION);
         }
         
+        function dismissHint() {
+            if (hint) hint.classList.add('is-hidden');
+        }
+
+        // Keyboard path: Enter/Space drives the handle across, then completes
+        function activateViaKeyboard() {
+            if (container.classList.contains('completed')) return;
+            dismissHint();
+
+            if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                currentX = maxDragDistance;
+                updatePosition(currentX);
+                completeSlide();
+                return;
+            }
+
+            gsap.killTweensOf(animState);
+            animState.x = currentX;
+            gsap.to(animState, {
+                x: maxDragDistance,
+                duration: 0.45,
+                ease: "power2.out",
+                onUpdate: function() {
+                    currentX = animState.x;
+                    updatePosition(currentX);
+                },
+                onComplete: completeSlide
+            });
+        }
+
         handle.addEventListener('mousedown', handleDragStart);
         handle.addEventListener('touchstart', handleDragStart, { passive: false });
+        handle.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+                e.preventDefault();
+                activateViaKeyboard();
+            }
+        });
         
         document.addEventListener('mousemove', handleDragMove);
         document.addEventListener('touchmove', handleDragMove, { passive: false });
@@ -203,8 +241,15 @@
         });
     
         calculateMaxDragDistance();
+
+        // Land keyboard focus on the handle so it's reachable without a pointer
+        try {
+            handle.focus({ preventScroll: true });
+        } catch (err) {
+            handle.focus();
+        }
     }
-    
+
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initSlideButton);
     } else {

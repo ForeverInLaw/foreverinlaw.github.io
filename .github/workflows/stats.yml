@@ -1,0 +1,56 @@
+name: Refresh GitHub Stats SVG
+
+on:
+  schedule:
+    - cron: "0 4 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch stats SVGs
+        run: |
+          set -eu
+          mkdir -p assets
+
+          fetch() {
+            local url="$1"
+            local out="$2"
+            local tmp
+            tmp="$(mktemp)"
+            if curl --fail --silent --show-error --max-time 30 --retry 3 --retry-delay 5 "$url" -o "$tmp"; then
+              if [ -s "$tmp" ]; then
+                mv "$tmp" "$out"
+                echo "OK: $out"
+              else
+                echo "EMPTY: $out (keeping existing)" >&2
+                rm -f "$tmp"
+              fi
+            else
+              echo "FAIL: $url (keeping existing $out)" >&2
+              rm -f "$tmp"
+            fi
+          }
+
+          fetch "https://github-readme-stats-green-one-48.vercel.app/api?username=ForeverInLaw&show_icons=true&theme=transparent&hide_border=true&title_color=f492f0&icon_color=a1a1a6&text_color=f5f5f7&bg_color=00000000" assets/stats-dark.svg
+          fetch "https://github-readme-stats-green-one-48.vercel.app/api?username=ForeverInLaw&show_icons=true&theme=transparent&hide_border=true&title_color=d04ec5&icon_color=666666&text_color=111111&bg_color=00000000" assets/stats-light.svg
+          fetch "https://ghchart.rshah.org/0b6d0f/ForeverInLaw" assets/chart-dark.svg
+          fetch "https://ghchart.rshah.org/d04ec5/ForeverInLaw" assets/chart-light.svg
+
+      - name: Commit refreshed SVGs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/*.svg
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git commit -m "chore(stats): refresh github stats svg"
+          git push

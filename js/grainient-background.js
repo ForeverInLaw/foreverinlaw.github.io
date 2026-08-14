@@ -196,9 +196,29 @@ void main(){
       this.vao = null;
       this.raf = 0;
       this.startTime = 0;
+      this.pausedAt = 0;
       this.pixelWidth = 1;
       this.pixelHeight = 1;
       this.onResize = this.resize.bind(this);
+    }
+
+    pause() {
+      if (this.raf) {
+        cancelAnimationFrame(this.raf);
+        this.raf = 0;
+      }
+      if (!this.pausedAt) {
+        this.pausedAt = performance.now();
+      }
+    }
+
+    resume() {
+      if (this.raf || !this.gl || !this.program) return;
+      if (this.pausedAt) {
+        this.startTime += performance.now() - this.pausedAt;
+        this.pausedAt = 0;
+      }
+      this.raf = requestAnimationFrame(this.render.bind(this));
     }
 
     init() {
@@ -401,9 +421,20 @@ void main(){
       attributeFilter: ["data-theme"]
     });
 
+    const onVisibility = () => {
+      if (document.hidden) {
+        grainient.pause();
+      } else {
+        grainient.resume();
+      }
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+
     window.addEventListener(
-      "beforeunload",
-      () => {
+      "pagehide",
+      (event) => {
+        if (event.persisted) return;
+        document.removeEventListener("visibilitychange", onVisibility);
         observer.disconnect();
         grainient.destroy();
       },
