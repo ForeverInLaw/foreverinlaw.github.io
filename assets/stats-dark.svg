@@ -9,7 +9,7 @@
         aria-labelledby="descId"
       >
         <title id="titleId">Sergei 's GitHub Stats, Rank: B+</title>
-        <desc id="descId">Total Stars Earned: 12, Total Commits  (last year) : 1498, Total PRs: 136, Total Issues: 31, Contributed to (last year): 13</desc>
+        <desc id="descId">Total Stars Earned: 13, Total Commits  (last year) : 1498, Total PRs: 136, Total Issues: 37, Contributed to (last year): 13</desc>
         <style>
           .header {
             font: 600 18px 'Segoe UI', Ubuntu, Sans-Serif;
@@ -73,7 +73,7 @@
         stroke-dashoffset: 251.32741228718345;
       }
       to {
-        stroke-dashoffset: 101.83192846153854;
+        stroke-dashoffset: 99.40060548088805;
       }
     }
   
@@ -162,7 +162,7 @@
         x="219.01"
         y="12.5"
         data-testid="stars"
-      >12</text>
+      >13</text>
     </g>
   </g><g transform="translate(0, 25)">
     <g class="stagger" style="animation-delay: 600ms" transform="translate(25, 0)">
@@ -207,7 +207,7 @@
         x="219.01"
         y="12.5"
         data-testid="issues"
-      >31</text>
+      >37</text>
     </g>
   </g><g transform="translate(0, 100)">
     <g class="stagger" style="animation-delay: 1050ms" transform="translate(25, 0)">
